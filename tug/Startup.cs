@@ -36,7 +36,9 @@ namespace tug
             // Node registration
             routeBuilder.MapPost("Nodes(AgentId={AgentId})", context =>
                 {
-                    string AgentId = (string)context.GetRouteValue("AgentId");
+                    var AgentId = context.GetRouteData().Values["AgentId"];
+                    var Body = context.Request.Body;
+                    var Headers = context.Request.Headers;
                     return context.Response.WriteAsync($"Registering node {AgentId}");
                 }
             );
@@ -44,7 +46,9 @@ namespace tug
             // DSC Action
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/DscAction", context =>
                 {
-                    string AgentId = (string)context.GetRouteValue("AgentId");
+                    var AgentId = context.GetRouteData().Values["AgentId"];
+                    var Body = context.Request.Body;
+                    var Headers = context.Request.Headers;
                     return context.Response.WriteAsync($"DSC action for node {AgentId}");
                 }
             );
@@ -52,8 +56,10 @@ namespace tug
             // Asking for a MOF
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/Configurations(ConfigurationName={ConfigurationName})/ConfigurationContent", context =>
                 {
-                    string AgentId = (string)context.GetRouteValue("AgentId");
-                    string AgentId = (string)context.GetRouteValue("ConfigurationName");
+                    var AgentId = context.GetRouteData().Values["AgentId"];
+                    var ConfigurationName = context.GetRouteData().Values["ConfigurationName"];
+                    var Body = context.Request.Body;
+                    var Headers = context.Request.Headers;
                     return context.Response.WriteAsync($"Request from node {AgentId} for configuration {ConfigurationName}");
                 }
             );
@@ -61,8 +67,10 @@ namespace tug
             // Asking for a module
             routeBuilder.MapPost("Modules(ModuleName={ModuleName},ModuleVersion={ModuleVersion})/ModuleContent", context =>
                 {
-                    string AgentId = (string)context.GetRouteValue("ModuleName");
-                    string AgentId = (string)context.GetRouteValue("ModuleVersion");
+                    var ModuleName = context.GetRouteData().Values["ModuleName"];
+                    var ModuleVersion = context.GetRouteData().Values["ModuleVersion"];
+                    var Body = context.Request.Body;
+                    var Headers = context.Request.Headers;
                     return context.Response.WriteAsync($"Module request for {ModuleName} version {ModuleVersion}");
                 }
             );
@@ -70,7 +78,9 @@ namespace tug
             // Sending a report
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/SendReport", context =>
                 {
-                    string AgentId = (string)context.GetRouteValue("AgentId");
+                    var AgentId = context.GetRouteData().Values["AgentId"];
+                    var Body = context.Request.Body;
+                    var Headers = context.Request.Headers;
                     return context.Response.WriteAsync($"Report from node {AgentId}");
                 }
             );
