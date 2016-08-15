@@ -41,7 +41,7 @@ namespace tug
                 RegistrationKey information is not present; querying MS on that.
 
                 Notice that the node can supply a list of all configuration names it is currently
-                configured with.
+                configured with. The pull server is expected to remember these.
 
                 Example URL: Nodes(AgentId='91E51A37-B59F-11E5-9C04-14109FD663AE')
                 Input example (JSON, in request body):
@@ -76,7 +76,8 @@ namespace tug
                 (1) Semicolon-delimited list of IP addresses, including IPv4 and IPv6, in a single string
                 (2) Will be "ReportServer" for a reporting server registration
             */ 
-            routeBuilder.MapPost("Nodes(AgentId={AgentId})", context =>
+            // TODO: This needs to be a PUT, not a POST
+            routeBuilder.MapPut("Nodes(AgentId={AgentId})", context =>
                 {
                     var AgentId = context.GetRouteData().Values["AgentId"];
                     var Body = context.Request.Body;
@@ -88,7 +89,9 @@ namespace tug
             // DSC Action
             /*
                 This is sent to the pull server on each node consistency check. The node is basically saying,
-                "for this configuration, here is my current checksum. Do I have the latest or not?"
+                "for this configuration, here is my current checksum. Do I have the latest or not?" Notice that this example
+                is for a node with only one configuration; the pull server is expected to know what that is, and simply
+                comapre the provided checksum to its own checksum of the MOF file.
 
                 Example URL: Nodes(AgentId='91E51A37-B59F-11E5-9C04-14109FD663AE')/GetDscAction
                 Input example (JSON, in request body):
@@ -122,6 +125,26 @@ namespace tug
                 upon the checksum. The checksum is simply a SHA-256 checksum of the MOF file containing the configuration
                 (e.g., New-DscChecksum command). Notice that GetConfiguration would appear in two locations in the above
                 example, should the node in fact need to re-get its configuration.
+
+                For nodes with partial configurations, the JSON request is somewhat different.
+                {
+                    "ClientStatus": [
+                        {
+                            "Checksum": "checksum",
+                            "ConfigurationName": "name",
+                            "ChecksumAlgorithm": "SHA-256"
+                        },
+                        {
+                            "Checksum": "checksum",
+                            "ConfigurationName": "name",
+                            "ChecksumAlgorithm": "SHA-256"
+                        }
+                    ]
+                }
+
+                The server response, however, can be for the entire configuration, and appear as the above. Do not
+                rely on the Details[] array being complete, however. If the overall NodeStatus is not Ok, you should
+                retrieve configurations.
             */
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/DscAction", context =>
                 {
