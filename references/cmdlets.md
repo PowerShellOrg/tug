@@ -90,3 +90,5 @@ Save-TugNodeReport -AgentId <string>
 ```
 
 Review Microsoft documentation regarding the structure of the ReportJSON. Tug will pass it as-is from the node, performing no interpretation or validation. You may choose to store the raw JSON, or you may choose to break it down and store it in some form of structured database for reporting purposes. It's entirely up to you. Consult the "troubleshooting and debugging" excerpt, in the References folder of the Tug project, for some details on what the reporting JSON object may contain.
+
+It's important to understand that the JSON passed to this cmdlet is not fully standardized. That is, it will differ a bit between nodes, due to the pecifics of their configurations. It can also include error information. The native pull server stores errors apart from report data, so you will need to decide how to handle that information. For example, you might choose to email someone about errors, or even to make that a configurable part of your module.

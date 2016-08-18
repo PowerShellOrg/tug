@@ -37,7 +37,6 @@ namespace tug
             // References folder.
 
             // Node registration
-            // TODO: This needs to be a PUT, not a POST
             routeBuilder.MapPut("Nodes(AgentId={AgentId})", context =>
                 {
                     var AgentId = context.GetRouteData().Values["AgentId"];
