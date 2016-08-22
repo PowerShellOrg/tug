@@ -1,12 +1,11 @@
 # Tug Cmdlets
 As outlined in the ReadMe, Tug only acts as a "web interface" between DSC nodes and your own PowerShell commands. Tug's functionality is therefore dependent on the commands you provide.
 
-## Authorize Nodes
+## Register Nodes
 Nodes register at the start of each consistency check to authorize themselves to the pull server.
 
 ```
-Test-TugNodeAuthorization -AgentId <string> 
-						  -SharedSecret <string> 
+Set-TugNodeRegistration -AgentId <string> 
 						  -ConfigurationNames <string[]>
 						  -CertFriendlyName <string>
 						  -CertIssuer <string>
@@ -18,21 +17,31 @@ Test-TugNodeAuthorization -AgentId <string>
 						  -CertVersion <string>
 ```
 
-The SharedSecret string will be the result of a SHA-256 cryptographic hash. This hash may have been created from:
-* A predefined RegistrationKey, in the event of a new node registration
-* A node's existing certificate, which you must maintain on file
+Tug will handle the actual authorization.
 
-You will therefore need to potentially check both sources. It is recommended that you first see if the AgentId is known to you, since that will be a quick lookup and a faster operation. If the AgentId is not known, then you will need to check any registration keys that you are configured to use.
+## Authorization Support
 
-This command must return either $True or $False. Note that:
-* CertNotAfter and CertNotBefore will be strings, but should be cast and treated as dates.
-* CertVersion will be a string, but should be cast and treated as an integer.
-* If the agent is authorized, your command must persist the configuration names and certificate information. Even if the agent already has certificate information on file, you should update it with any new information provided.
+```
+Get-TugRegistrationKeys [-AgentId <string>]
+```
 
-Nominally, nodes register independently for pulling configurations and for reporting; Tug provides both sets of functionality. So your command should do whatever provisioning is needed to also receive reports from the node. 
+This command must return a collection of strings, each of which should be a "shared secret" registration key for your server. The AgentId parameter is optional; if included, you have the ability to return only the registration key that you have somehow associated with that node. 
 
-Implementation notes:
-* You will need to provide a means for the server operator to maintain registration keys, including creating new ones and deleting old ones. This can be as simple as a configuration file on disk at a predetermined location.
+```
+Get-TugNodeRegistration -AgentId <string>
+``` 
+
+This command must return the registration information for the specified node, or return nothing if the node has not been registered. If the node has been registered, then the output must be a single object having the following properties:
+
+* ConfigurationNames <String[]>
+* CertFriendlyName <string>
+* CertIssuer <string>
+* CertNotAfter <string>
+* CertNotBefore <string>
+* CertSubject <string>
+* CertPublicKey <string>
+* CertThumbprint <string>
+* CertVersion <string>
 
 ## Node Check-In
 Nodes check-in at the start of each consistency check to see if they have the latest configuration (MOF) file. The nature of this check-in depends on whether the node is configured to use a single MOF, or to use multiple partial MOFs. In the case of a single-MOF check-in, you have the option to tell the node to retrieve an all-new configuration, and to then provide a configuration other than the one the node may have been expecting. This enables a server-based, centralized means of "feeding" a new MOF to a node, and the node will treat whatever it is given as authoritative.
