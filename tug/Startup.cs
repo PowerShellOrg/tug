@@ -24,7 +24,9 @@ namespace tug
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+            loggerFactory.AddConsole(LogLevel.Debug);
+            var logger = loggerFactory.CreateLogger(typeof(Program).FullName);
+            logger.LogInformation("Tug begins.");
 
             if (env.IsDevelopment())
             {
@@ -33,15 +35,14 @@ namespace tug
 
             var routeBuilder = new RouteBuilder(app);
 
-            // Node/server communications are documented in a chapter excerpt located in the
-            // References folder.
-
             // Node registration
             routeBuilder.MapPut("Nodes(AgentId={AgentId})", context =>
                 {
+                    logger.LogInformation("PUT: Node registration");
                     var AgentId = context.GetRouteData().Values["AgentId"];
                     var Body = context.Request.Body;
                     var Headers = context.Request.Headers;
+                    logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
                     return context.Response.WriteAsync($"Registering node {AgentId}");
                 }
             );
@@ -49,9 +50,11 @@ namespace tug
             // DSC Action
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/DscAction", context =>
                 {
+                    logger.LogInformation("POST: DSC action request");
                     var AgentId = context.GetRouteData().Values["AgentId"];
                     var Body = context.Request.Body;
                     var Headers = context.Request.Headers;
+                    logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
                     return context.Response.WriteAsync($"DSC action for node {AgentId}");
                 }
             );
@@ -59,10 +62,12 @@ namespace tug
             // Asking for a MOF
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/Configurations(ConfigurationName={ConfigurationName})/ConfigurationContent", context =>
                 {
+                    logger.LogInformation("POST: MOF request");
                     var AgentId = context.GetRouteData().Values["AgentId"];
                     var ConfigurationName = context.GetRouteData().Values["ConfigurationName"];
                     var Body = context.Request.Body;
                     var Headers = context.Request.Headers;
+                    logger.LogDebug("AgentId {AgentId}, Configuration {Config}, Request Body {Body}, Headers {Headers}",AgentId,ConfigurationName,Body,Headers);
                     return context.Response.WriteAsync($"Request from node {AgentId} for configuration {ConfigurationName}");
                 }
             );
@@ -70,10 +75,12 @@ namespace tug
             // Asking for a module
             routeBuilder.MapPost("Modules(ModuleName={ModuleName},ModuleVersion={ModuleVersion})/ModuleContent", context =>
                 {
+                    logger.LogInformation("POST: Module request");
                     var ModuleName = context.GetRouteData().Values["ModuleName"];
                     var ModuleVersion = context.GetRouteData().Values["ModuleVersion"];
                     var Body = context.Request.Body;
                     var Headers = context.Request.Headers;
+                    logger.LogDebug("Module name {ModuleName}, Version {Version}, Request Body {Body}, Headers {Headers}",ModuleName,ModuleVersion,Body,Headers);
                     return context.Response.WriteAsync($"Module request for {ModuleName} version {ModuleVersion}");
                 }
             );
@@ -81,9 +88,11 @@ namespace tug
             // Sending a report
             routeBuilder.MapPost("Nodes(AgentId={AgentId})/SendReport", context =>
                 {
+                    //logger.LogInformation("POST: Report delivery");
                     var AgentId = context.GetRouteData().Values["AgentId"];
                     var Body = context.Request.Body;
                     var Headers = context.Request.Headers;
+                    //logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
                     return context.Response.WriteAsync($"Report from node {AgentId}");
                 }
             );

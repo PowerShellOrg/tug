@@ -5,7 +5,7 @@ As outlined in the ReadMe, Tug only acts as a "web interface" between DSC nodes 
 Nodes register at the start of each consistency check to authorize themselves to the pull server.
 
 ```
-Set-TugNodeRegistration -AgentId <string> 
+Set-TugNodeRegistration   -AgentId <string> 
 						  -ConfigurationNames <string[]>
 						  -CertFriendlyName <string>
 						  -CertIssuer <string>
