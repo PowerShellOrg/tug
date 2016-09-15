@@ -22,7 +22,8 @@
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
-    "Microsoft.AspNetCore.Routing": "1.0.0"
+    "Microsoft.AspNetCore.Routing": "1.0.0",
+    "System.Security.Cryptography.Algorithms": "4.2.0"
   },
 
   "tools": {

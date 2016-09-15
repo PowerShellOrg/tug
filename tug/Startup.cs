@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
+using System.Security.Cryptography;
+using System.Text;
+using System.IO;
 
 namespace tug
 {
@@ -25,7 +28,7 @@ namespace tug
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(LogLevel.Debug);
-            var logger = loggerFactory.CreateLogger(typeof(Program).FullName);
+            var logger = loggerFactory.CreateLogger("Tug");
             logger.LogInformation("Tug begins.");
 
             if (env.IsDevelopment())
@@ -38,12 +41,82 @@ namespace tug
             // Node registration
             routeBuilder.MapPut("Nodes(AgentId={AgentId})", context =>
                 {
-                    logger.LogInformation("PUT: Node registration");
-                    var AgentId = context.GetRouteData().Values["AgentId"];
-                    var Body = context.Request.Body;
+                    /*
+
+                        Authorization HTTP header must match the HTTP body,
+                        passed through a SHA-256 digest hash, 
+                        encoded in Base64, and a newline added.
+                        That then gets a second newline, 
+                        the x-ms-date HTTP header from the request, 
+                        and is then run through a 
+                        SHA-256 digest hash that uses a known RegistrationKey as an HMAC, 
+                        with the result Base64 encoded and a newline added.
+
+                        This essentially is a digital signature and proof that the node knows a shared secret registration key.
+
+                        So it's Authorization: Shared xxxxxxx\r\n
+
+                    */
+                    logger.LogDebug("\n\n\n----------------------- PUT: Node registration");
+                    string AgentId = context.GetRouteData().Values["AgentId"].ToString();
+                    string Body = new StreamReader(context.Request.Body).ReadToEnd();
                     var Headers = context.Request.Headers;
                     logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
-                    return context.Response.WriteAsync($"Registering node {AgentId}");
+
+                    // get needed headers
+                    string xmsdate = context.Request.Headers["x-ms-date"];
+                    string authorization = context.Request.Headers["Authorization"];
+                    logger.LogDebug("x-ms-date {date}, Authorization {auth}",xmsdate,authorization);
+
+                    // create signature, part 1
+                    // this is the request body, hashed, then combined with the x-ms-date header
+                    string contentHash = "";
+                    using(var sha256 = SHA256.Create()) {
+                        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(Body));
+                        contentHash = Convert.ToBase64String(hashedBytes);
+                        //contentHash = BitConverter.ToString(hashedBytes).Replace("-","");
+                    }
+                    logger.LogDebug("Created content hash {hash}",contentHash);
+                    string stringToSign = String.Format("{0}\n{1}", contentHash, xmsdate);
+                    logger.LogDebug("String to sign is {sign}",stringToSign);
+
+                    // HACK - we need to run a command to get the allowed registration keys
+                    // and then compare each one
+                    string[] registrationKeys = {"91E51A37-B59F-11E5-9C04-14109FD663AE"};
+                    
+                    // go through valid registration keys
+                    bool Valid = false;
+                    foreach (string key in registrationKeys) {
+                        logger.LogDebug("Trying registration key {key}",key);
+
+                        // convert string key to Base64
+                        byte[] byt = Encoding.UTF8.GetBytes(key);
+                        string base64key = Convert.ToBase64String(byt);
+    
+                        // create HMAC signature using this registration key
+                        var secretKeyBase64ByteArray = Convert.FromBase64String(base64key);
+                        string signature = "";
+                        using ( HMACSHA256 hmac = new HMACSHA256(secretKeyBase64ByteArray)) {
+                            byte[] authenticationKeyBytes = Encoding.UTF8.GetBytes(stringToSign);
+                            byte[] authenticationHash = hmac.ComputeHash(authenticationKeyBytes);
+                            signature = Convert.ToBase64String(authenticationHash);
+                        }
+
+                        // compare what node sent to what we made
+                        string AuthToMatch = authorization.Replace("Shared ","");
+                        logger.LogDebug("Comparing keys:\nRcvd {0} \nMade {1}", AuthToMatch, signature );
+                        if (AuthToMatch == signature) {
+                            logger.LogDebug("Node is authorized");
+                            Valid = true;
+                            break;
+                        }
+                    }
+
+                    if (Valid) {
+                        return context.Response.WriteAsync($"Registering node {AgentId}");
+                    } else {
+                        return context.Response.WriteAsync($"Registering node {AgentId}");
+                    }
                 }
             );
 

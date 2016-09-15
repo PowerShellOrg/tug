@@ -2,7 +2,7 @@
 As outlined in the ReadMe, Tug only acts as a "web interface" between DSC nodes and your own PowerShell commands. Tug's functionality is therefore dependent on the commands you provide.
 
 ## Register Nodes
-Nodes register at the start of each consistency check to authorize themselves to the pull server.
+Nodes register at the start of each consistency check to authorize themselves to the pull server. The cmdket should:
 
 ```
 Set-TugNodeRegistration   -AgentId <string> 
@@ -17,7 +17,7 @@ Set-TugNodeRegistration   -AgentId <string>
 						  -CertVersion <string>
 ```
 
-Tug will handle the actual authorization.
+Tug will only call this command if the node passes a valid Authorization header. Notice that Tug itself does not use the certificate informartion passed by the node. You, however, may wish to do so. For example, after initial authorization, Azure Automation's Pull Server does rely on the client certificate information - this is handled by their Web server, not the pull server code per se.
 
 ## Authorization Support
 
