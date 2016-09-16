@@ -5,7 +5,7 @@
   "description": "The open-source, cross-platform PowerShell DSC Pull and Report Server",
   "copyright": "Copyright (c)2016 The DevOps Collective, Inc. Licnesed under GNU GPL v3.",
   "title": "Tug Server",
-  "authros": ["Don Jones"],
+  "authors": ["Don Jones"],
   "language": "en-US",
 
 
@@ -23,7 +23,8 @@
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
     "Microsoft.AspNetCore.Routing": "1.0.0",
-    "System.Security.Cryptography.Algorithms": "4.2.0"
+    "System.Security.Cryptography.Algorithms": "4.2.0",
+    "Microsoft.PowerShell.SDK": "1.0.0-*"
   },
 
   "tools": {
