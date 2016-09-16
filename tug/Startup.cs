@@ -14,6 +14,8 @@ using System.Text;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using System.Management.Automation;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace tug
 {
@@ -105,7 +107,9 @@ namespace tug
                     // HACK - we need to run a command to get the allowed registration keys
                     // and then compare each one
                     string[] registrationKeys = {"91E51A37-B59F-11E5-9C04-14109FD663AE"};
-                    
+                    string result = Runner.Run("Get-Process");
+                    logger.LogDebug(result);
+
                     // go through valid registration keys and create a final signature
                     // we do this because we might have multiple registration keys, so we
                     // have to try them all until we find one that matches
