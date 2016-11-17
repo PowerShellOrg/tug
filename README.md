@@ -3,7 +3,7 @@ Open-source, cross-platform Pull/Reporting Server for DSC
 
 ## Status
 * Currently at proof-of-concept; correctly calculates Authorization header given a hardcoded Registration Key
-* Preparing to perform load testing to see if the concept proves out in a sufficiently performant way
+* Unfortunately, load-testing suggests that spawning a new PowerShell process for each request is going to suck from a performance perspective. Because .NET Core is presently not capable of hosting the PowerShell Core engine, this presents some difficulties. Going to do some back-end testing just on Windows in normal ASP.NET to see if hosting the shell directly provides sufficient performance gain.
 
 ## Overview
 Tug is intended to be a drop-in replacement for the Pull Server feature included in WMF5. It is written in ASP.NET Core 1.0, is open source, and should be able to run on any machine or OS that can run ASP.NET Core. The machine must also be able to run PowerShell.
