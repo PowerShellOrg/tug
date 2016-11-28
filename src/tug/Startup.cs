@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using System.Management.Automation;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace tug
 {
@@ -60,6 +61,22 @@ namespace tug
 
             // begin registering routes for incoming requests
             var routeBuilder = new RouteBuilder(app);
+
+            // Default route welcome message
+            routeBuilder.MapGet("", context =>
+            {
+                return context.Response.WriteAsync(@"
+<h1>Welcome to Tug!</h1>
+<li><a href=""/version"">Version Info</a></li>
+");
+            });
+
+            // Server version info
+            routeBuilder.MapGet("version", context =>
+            {
+                var version = GetType().GetTypeInfo().Assembly.GetName().Version;
+                return context.Response.WriteAsync($"{{{version}}}");
+            });
 
             // Node registration
             routeBuilder.MapPut("Nodes(AgentId={AgentId})", context =>
