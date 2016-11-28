@@ -1,4 +1,6 @@
 {
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
     "version": "0.1.0",
     "command": "dotnet",
     "isShellCommand": true,
@@ -7,7 +9,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/project.json"
+              "${workspaceRoot}/src/tug/project.json"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
