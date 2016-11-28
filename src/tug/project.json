@@ -1,9 +1,9 @@
 {
 
   "name": "Tug",
-  "version": "1.0.0",
+  "version": "0.5.0",
   "description": "The open-source, cross-platform PowerShell DSC Pull and Report Server",
-  "copyright": "Copyright (c)2016 The DevOps Collective, Inc. Licnesed under GNU GPL v3.",
+  "copyright": "Copyright © 2016 The DevOps Collective, Inc. Licnesed under GNU GPL v3.  All rights reserved.",
   "title": "Tug Server",
   "authors": ["Don Jones"],
   "language": "en-US",
