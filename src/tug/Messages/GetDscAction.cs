@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace tug.Messages
 {
-    public class GetDscActionRequest : DscRequest
+    public class GetDscActionRequest : DscAgentRequest
     {
         [FromBody]
         [Required]
