@@ -23,6 +23,7 @@
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
     "Microsoft.AspNetCore.Routing": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.1",
     "System.Security.Cryptography.Algorithms": "4.2.0",
     "Microsoft.PowerShell.SDK": "1.0.0-*"
   },
