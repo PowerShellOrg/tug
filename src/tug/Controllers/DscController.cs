@@ -21,7 +21,7 @@ namespace tug.Controllers
         }
 
         [HttpPut]
-        [Route("Nodes(AgentId={AgentId})")]
+        [Route("Nodes(AgentId='{AgentId}')")]
         //TODO:  [Authorize]
         public IActionResult RegisterDscAgent(RegisterDscAgentRequest input)
         {
@@ -29,11 +29,14 @@ namespace tug.Controllers
             {
                 _dscHandler.RegisterDscAgent(input.AgentId, input);
 
-                return Json(new
-                {
-                    AgentId = input.AgentId,
-                    Message = "Woohoo!  You're in the 'in' crowd now!",
-                });
+                Response.Headers.Add(DscResponse.PROTOCOL_VERSION_HEADER,
+                        DscResponse.PROTOCOL_VERSION_VALUE);
+                return NoContent();
+                // return Json(new
+                // {
+                //     AgentId = input.AgentId,
+                //     Message = "Woohoo!  You're in the 'in' crowd now!",
+                // });
             }
 
             return base.BadRequest(ModelState);
@@ -55,7 +58,7 @@ namespace tug.Controllers
 
 
         [HttpGet]
-        [Route("Nodes(AgentId={AgentId})/Configurations(ConfigurationName={ConfigurationName})/ConfigurationContent")]
+        [Route("Nodes(AgentId='{AgentId'})/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent")]
         public IActionResult GetConfiguration(GetConfigurationRequest input)
         {
             if (ModelState.IsValid)
@@ -91,7 +94,7 @@ namespace tug.Controllers
         }
 
         [HttpGet]
-        [Route("Modules(ModuleName={ModuleName},ModuleVersion={ModuleVersion})/ModuleContent")]
+        [Route("Modules(ModuleName='{ModuleName}',ModuleVersion='{ModuleVersion}')/ModuleContent")]
         public IActionResult GetModule(GetModuleRequest input)
         {
             if (ModelState.IsValid)

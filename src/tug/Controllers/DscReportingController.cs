@@ -6,7 +6,7 @@ namespace tug.Controllers
     public class DscReportingController : Controller
     {
         [HttpPost]
-        [Route("Nodes(AgentID={AgentId})/SendReport")]
+        [Route("Nodes(AgentID='{AgentId}')/SendReport")]
         public IActionResult SendReport(SendReportRequest input)
         {
             if (ModelState.IsValid)
@@ -20,7 +20,7 @@ namespace tug.Controllers
         }
 
         [HttpGet]
-        [Route("Nodes(AgentId={AgentId})/Reports(JobId={JobId}))")]
+        [Route("Nodes(AgentId='{AgentId}')/Reports(JobId='{JobId}'))")]
         public IActionResult GetReports(GetReportsRequest input)
         {
             if (ModelState.IsValid)
