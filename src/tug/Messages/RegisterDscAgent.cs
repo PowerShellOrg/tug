@@ -16,14 +16,35 @@ namespace tug.Messages
     /// </summary>
     public class RegisterDscAgentRequestBody
     {
-        public string RegistrationMessageType
+        public AgentInformationBody AgentInformation
         { get; set; }
 
-        public CertificateInformationBody CertificateInformation
+        public string[] ConfigurationNames
         { get; set; }
 
-        public string ConfigurationNames
+        public RegistrationInformationBody RegistrationInformation
         { get; set; }
+
+        public class AgentInformationBody
+        {
+            public string LCMVersion
+            { get; set; }
+
+            public string NodeName
+            { get; set; }
+
+            public string IPAddress
+            { get; set; }
+        }
+
+        public class RegistrationInformationBody
+        {
+            public CertificateInformationBody CertificateInformation
+            { get; set; }
+
+            public string RegistrationMessageType
+            { get; set; }
+        }
 
         public class CertificateInformationBody
         {
