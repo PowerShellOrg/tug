@@ -22,6 +22,11 @@ namespace tug.Messages
         /// </summary>
         public string AuthorizationHeader
         { get; set; }
+
+        [Required]
+        [FromHeader(Name = "ProtocolVersion")]
+        public string ProtocolVersionHeader
+        { get; set; }
     }
 
     /// <summary>
