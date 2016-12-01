@@ -1,7 +1,8 @@
+using System;
 using System.IO;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using tug.Messages;
 
 namespace tug.Controllers
@@ -13,11 +14,13 @@ namespace tug.Controllers
     /// </summary>
     public class DscController : Controller
     {
-        private IDscHandler _dscHandler;
-
-        public DscController(IDscHandler handler)
+        private ILogger<DscController> _logger;
+        private IDscHandlerProvider _dscHandlerProvider;
+        public DscController(ILogger<DscController> logger,
+                IDscHandlerProvider handlerProvider)
         {
-            _dscHandler = handler;
+            _logger = logger;
+            _dscHandlerProvider = handlerProvider;
         }
 
         [HttpPut]
