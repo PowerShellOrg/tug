@@ -1,22 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Routing.Template;
-using System.Security.Cryptography;
-using System.Text;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using System.Management.Automation;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Newtonsoft.Json.Converters;
 
 namespace tug
 {
@@ -28,13 +21,25 @@ namespace tug
         {
             services
                 //.AddRouting()
-                .AddMvc();
+                .AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    // This enabled converting Enums to/from their string names instead
+                    // of their numerical value, based on:
+                    //    * https://www.exceptionnotfound.net/serializing-enumerations-in-asp-net-web-api/
+                    //    * https://siderite.blogspot.com/2016/10/controlling-json-serialization-in-net.html
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                });
+
+            // TODO:  This is temporary, we'll setup logic to optionally
+            // support multiple providers of checksum algorithms
+            services.AddSingleton<IChecksumAlgorithmProvider,
+                    Providers.Sha256ChecksumAlgorithmProvider>();
 
             // TODO:  This is where we'll put logic to resolve the
             // selected DSC Handler based on a configured provider
-            var dscHandler = new Providers.BasicDscHandler();
-            dscHandler.Init();
-            services.AddSingleton(typeof(IDscHandler), dscHandler);
+            services.AddSingleton<IDscHandlerProvider,
+                    Providers.BasicDscHandlerProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,7 +94,6 @@ namespace tug
                     return context.Response.WriteAsync($"{{{version}}}");
                 });
             });
-
 
             // // Node registration
             // routeBuilder.MapPut("Nodes(AgentId={AgentId})", context =>
