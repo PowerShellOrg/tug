@@ -23,6 +23,7 @@ namespace tug
                 .UseUrls("http://*:5000")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
+                .UseLoggerFactory(AppLog.Factory)
                 .UseStartup<Startup>()
                 .Build();
 
