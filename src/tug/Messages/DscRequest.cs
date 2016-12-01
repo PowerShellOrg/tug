@@ -20,7 +20,12 @@ namespace tug.Messages
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt590240.aspx
         /// </summary>
+        [FromHeader(Name = "Authorization")]
         public string AuthorizationHeader
+        { get; set; }
+
+        [FromHeader(Name = "x-ms-date")]
+        public string MsDateHeader
         { get; set; }
 
         [Required]
