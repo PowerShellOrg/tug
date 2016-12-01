@@ -30,30 +30,47 @@ namespace tug.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dscHandler.RegisterDscAgent(input.AgentId, input);
+                using (var h = _dscHandlerProvider.GetHandler(null))
+                {
+                    h.RegisterDscAgent(input.AgentId, input.Body);
+                }
 
-                Response.Headers.Add(DscResponse.PROTOCOL_VERSION_HEADER,
-                        DscResponse.PROTOCOL_VERSION_VALUE);
-                return NoContent();
-                // return Json(new
-                // {
-                //     AgentId = input.AgentId,
-                //     Message = "Woohoo!  You're in the 'in' crowd now!",
-                // });
+                return this.Model(RegisterDscAgentResponse.INSTANCE);
             }
 
             return base.BadRequest(ModelState);
         }
 
         [HttpPost]
+        [Route("Nodes(AgentId='{AgentId}')/GetDscAction")]
         public IActionResult GetDscAction(GetDscActionRequest input)
         {
             if (ModelState.IsValid)
             {
-                return Json(new GetDscActionResponseBody
+                Tuple<DscActionStatus, GetDscActionResponseBody.DetailsItem[]> actionInfo;
+                using (var h = _dscHandlerProvider.GetHandler(null))
                 {
-                    NodeStatus = DscActionStatus.OK,
-                });
+                    actionInfo = h.GetDscAction(input.AgentId, input.Body);
+                }
+
+                var response = new GetDscActionResponse
+                {
+                    Body = new GetDscActionResponseBody
+                    {
+                        NodeStatus = actionInfo.Item1,
+                        Details = actionInfo.Item2, 
+                        // new[]
+                        // {
+                        //     new GetDscActionResponseBody.DetailsItem
+                        //     {
+                        //         ConfigurationName = input.AgentId.ToString(),
+                        //         Status = DscActionStatus.OK,
+                        //     }
+                        // },
+                    }
+                };
+
+                return this.Model(response);
             }
 
             return base.BadRequest(ModelState);
@@ -66,31 +83,22 @@ namespace tug.Controllers
         {
             if (ModelState.IsValid)
             {
-                var s = _dscHandler.GetConfiguration(input.AgentId, input.ConfigurationName, input);
-                if (s == null)
+                Tuple<string, string, Stream> configInfo;
+                using (var h = _dscHandlerProvider.GetHandler(null))
+                {
+                    configInfo = h.GetConfiguration(input.AgentId, input.ConfigurationName);
+                }
+                if (configInfo == null)
                     return NotFound();
 
-                using (s)
-                using (var ms = new MemoryStream())
+                var response = new GetConfigurationResponse
                 {
-                    // TODO: refactor this so we don't have to keep the whole
-                    //       module content in memory and do more efficient streaming
-                    s.CopyTo(ms);
-                    var bytes = ms.ToArray();
+                    ChecksumAlgorithmHeader = configInfo.Item1,
+                    ChecksumHeader = configInfo.Item2,
+                    Configuration = configInfo.Item3,
+                };
 
-                    using (var hash = SHA256.Create())
-                    {
-                        var csum = hash.ComputeHash(bytes);
-                        var csumHex = System.BitConverter.ToString(csum).Replace("-", "");
-
-                        base.Response.Headers.Add(
-                                GetModuleResponse.ChecksumAlgorithmHeader, "SHA-256");
-                        base.Response.Headers.Add(
-                                GetModuleResponse.ChecksumHeader, csumHex);
-                    }
-
-                    return File(bytes, DscContentTypes.OCTET_STREAM);
-                }
+                return this.Model(response);
             }
 
             return BadRequest(ModelState);
@@ -102,31 +110,22 @@ namespace tug.Controllers
         {
             if (ModelState.IsValid)
             {
-                var s = _dscHandler.GetModule(input.ModuleName, input.ModuleVersion, input);
-                if (s == null)
+                Tuple<string, string, Stream> moduleInfo;
+                using (var h = _dscHandlerProvider.GetHandler(null))
+                {
+                    moduleInfo = h.GetModule(input.ModuleName, input.ModuleVersion);
+                }
+                if (moduleInfo == null)
                     return NotFound();
 
-                using (s)
-                using (var ms = new MemoryStream())
+                var response = new GetModuleResponse
                 {
-                    // TODO: refactor this so we don't have to keep the whole
-                    //       module content in memory and do more efficient streaming
-                    s.CopyTo(ms);
-                    var bytes = ms.ToArray();
+                    ChecksumAlgorithmHeader = moduleInfo.Item1,
+                    ChecksumHeader = moduleInfo.Item2,
+                    Module = moduleInfo.Item3,
+                };
 
-                    using (var hash = SHA256.Create())
-                    {
-                        var csum = hash.ComputeHash(bytes);
-                        var csumHex = System.BitConverter.ToString(csum).Replace("-", "");
-
-                        base.Response.Headers.Add(
-                                GetModuleResponse.ChecksumAlgorithmHeader, "SHA-256");
-                        base.Response.Headers.Add(
-                                GetModuleResponse.ChecksumHeader, csumHex);
-                    }
-
-                    return File(bytes, DscContentTypes.OCTET_STREAM);
-                }
+                return this.Model(response);
             }
 
             return BadRequest(ModelState);
