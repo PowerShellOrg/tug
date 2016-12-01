@@ -1,71 +1,208 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using tug;
 using tug.Messages;
 
 namespace tug.Providers
 {
+    public class BasicDscHandlerProvider : IDscHandlerProvider
+    {
+        private static readonly IEnumerable<string> PARAMS = new[]
+        {
+            nameof(BasicDscHandler.RegistrationKeyPath),
+            nameof(BasicDscHandler.RegistrationSavePath),
+            nameof(BasicDscHandler.ConfigurationPath),
+            nameof(BasicDscHandler.ModulePath),
+        };
+
+        private ILogger<BasicDscHandler> _logger;
+        private IChecksumAlgorithmProvider _checksumProvider;
+        private BasicDscHandler _handler;
+
+        public BasicDscHandlerProvider(ILogger<BasicDscHandler> logger,
+                IChecksumAlgorithmProvider checksumProvider)
+        {
+            _checksumProvider = checksumProvider;
+        }
+
+        public IEnumerable<string> GetParameters()
+        {
+            return PARAMS;
+        }
+
+        public IDscHandler GetHandler(IDictionary<string, object> initParams)
+        {
+            if (_handler == null)
+            {
+                lock (this)
+                {
+                    if (_handler == null)
+                    {
+                        _handler = new BasicDscHandler
+                        {
+                            Logger = _logger,
+                            ChecksumProvider = _checksumProvider,
+                        };
+
+                        if (initParams != null)
+                        {
+                            foreach (var p in PARAMS)
+                            {
+                                if (initParams.ContainsKey(p))
+                                {
+                                    typeof(BasicDscHandler).GetTypeInfo()
+                                            .GetProperty(p, BindingFlags.Public | BindingFlags.Instance)
+                                            .SetValue(_handler, initParams[p]);
+                                }
+                            }
+                        }
+
+                        _handler.Init();
+                    }
+                }
+            }
+
+            return _handler;
+        }
+
+    }
+
+    /// <summary>
+    /// Implements a very basic, file-base Pull Server Handler that
+    /// aligns closely with the default behavior of the xDscWebService.
+    /// </summary>
     public class BasicDscHandler : IDscHandler
     {
-        public const string DEFAULT_WORK_FOLDER = ".\\DscRepo";
+        public const string DEFAULT_WORK_FOLDER = "DscService";
 
-        private string _workPath;
-        private string _nodeRegsPath;
-        private string _nodeConfigsPath;
-        private string _modulesPath;
+        // These parameters, names and default values, are based on
+        // the corresponding appSettings defined for the xDscWebService
+        // Pull Server out of xPSDesiredStateConfiguration
 
-        public string WorkFolder
-        { get; set; } = DEFAULT_WORK_FOLDER; 
+        public ILogger<BasicDscHandler> Logger
+        { get; set; }
+
+        public IChecksumAlgorithmProvider ChecksumProvider
+        { get; set; }
+
+        public string RegistrationKeyPath
+        { get; set; } = $"{DEFAULT_WORK_FOLDER}";
+
+        public string RegistrationSavePath
+        { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Registrations";
+        
+        public string ConfigurationPath
+        { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Configuration";
+        
+        public string ModulePath
+        { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Modules";
+
 
         public bool IsDisposed
         { get; private set; }
 
         public void Init()
         {
-            _workPath = Path.Combine(Directory.GetCurrentDirectory(), WorkFolder);
-            _nodeRegsPath = Path.Combine(_workPath, "node_regs");
-            _nodeConfigsPath = Path.Combine(_workPath, "node_configs");
-            _modulesPath = Path.Combine(_workPath, "modules");
-
-            Directory.CreateDirectory(_nodeRegsPath);
-            Directory.CreateDirectory(_nodeConfigsPath);
-            Directory.CreateDirectory(_modulesPath);
+            Directory.CreateDirectory(RegistrationKeyPath);
+            Directory.CreateDirectory(RegistrationSavePath);
+            Directory.CreateDirectory(ConfigurationPath);
+            Directory.CreateDirectory(ModulePath);
         }
 
         public void RegisterDscAgent(Guid agentId,
-                RegisterDscAgentRequest reserved)
+                RegisterDscAgentRequestBody detail)
         {
-            var regPath = Path.Combine(_nodeRegsPath, $"{agentId}.json");
+            var regPath = Path.Combine(RegistrationSavePath, $"{agentId}.json");
             if (File.Exists(regPath))
-                throw new Exception("agent ID already registered");
+            {
+                // TODO:  Do nothing?  Does the protocol allow unlimited re-registrations?
+                //throw new Exception("agent ID already registered");
+            }
             
-            File.WriteAllText(regPath, JsonConvert.SerializeObject(reserved));
+            File.WriteAllText(regPath, JsonConvert.SerializeObject(detail));
         }
 
-        public Stream GetConfiguration(Guid agentId, string configName,
-                GetConfigurationRequest reserved)
+        public Tuple<DscActionStatus, GetDscActionResponseBody.DetailsItem[]> GetDscAction(Guid agentId,
+            GetDscActionRequestBody detail)
         {
-            var configPath = Path.Combine(_nodeConfigsPath, $"{agentId}.json");
+            DscActionStatus nodeStatus = DscActionStatus.OK;
+            var list = new List<GetDscActionResponseBody.DetailsItem>();
+            foreach (var cs in detail.ClientStatus)
+            {
+                if (string.IsNullOrEmpty(cs.ConfigurationName))
+                {
+                    var configPath = Path.Combine(ConfigurationPath, $"{agentId}.json");
+                    if (!File.Exists(configPath))
+                    {
+                        nodeStatus = DscActionStatus.RETRY;
+                        list.Add(new GetDscActionResponseBody.DetailsItem
+                        {
+                            Status = DscActionStatus.RETRY,
+                        });
+                    }
+                    else
+                    {
+                        using (var csum = ChecksumProvider.GetChecksumAlgorithm())
+                        {
+                            if (csum.AlgorithmName != cs.ChecksumAlgorithm)
+                            {
+                                Logger.LogError("Checksum Algorithm mismatch!");
+                            }
+                            else
+                            {
+                                using (var fs = File.OpenRead(configPath))
+                                {
+                                    if (csum.ComputeChecksum(fs) == cs.Checksum)
+                                        continue;
+                                }
+                            }
+                        }
+
+                        nodeStatus = DscActionStatus.GetConfiguration;
+                        list.Add(new GetDscActionResponseBody.DetailsItem
+                        {
+                            ConfigurationName = cs.ConfigurationName,
+                            Status = DscActionStatus.GetConfiguration,
+                        });
+                    }
+                }
+            }
+
+            return Tuple.Create(nodeStatus, list.ToArray());
+        }
+
+        public Tuple<string, string, Stream> GetConfiguration(Guid agentId, string configName)
+        {
+            var configPath = Path.Combine(ConfigurationPath, $"{agentId}.json");
             if (!File.Exists(configPath))
                 return null;
 
-            return File.OpenRead(configPath);
+            // TODO:  Clean this up for performance with caching and stuff
+            using (var cs = ChecksumProvider.GetChecksumAlgorithm())
+            using (var fs = File.OpenRead(configPath))
+            {
+                return Tuple.Create(cs.AlgorithmName, cs.ComputeChecksum(fs),
+                        (Stream)File.OpenRead(configPath));
+            }
         }
 
-        public Stream GetModule(string moduleName, string moduleVersion,
-                GetModuleRequest reserved)
+        public Tuple<string, string, Stream> GetModule(string moduleName, string moduleVersion)
         {
-            var modulePath = Path.Combine(_modulesPath, $"{moduleName}/{moduleVersion}");
+            var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}");
             if (!File.Exists(modulePath))
                 return null;
             
-            return File.OpenRead(modulePath);
-        }
-
-        public void GetDscAction(Guid agentId,
-            GetDscActionRequest reserved)
-        {
-            throw new NotImplementedException();
+            // TODO:  Clean this up for performance with caching and stuff
+            using (var cs = ChecksumProvider.GetChecksumAlgorithm())
+            using (var fs = File.OpenRead(modulePath))
+            {
+                return Tuple.Create(cs.AlgorithmName, cs.ComputeChecksum(fs),
+                        (Stream)File.OpenRead(modulePath));
+            }
         }
 
         public void SendReport(Guid agentId, Stream reportContent,
