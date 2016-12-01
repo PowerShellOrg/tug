@@ -24,7 +24,7 @@ namespace tug
                 .AddMvc()
                 .AddJsonOptions(options =>
                 {
-                    // This enabled converting Enums to/from their string names instead
+                    // This enables converting Enums to/from their string names instead
                     // of their numerical value, based on:
                     //    * https://www.exceptionnotfound.net/serializing-enumerations-in-asp-net-web-api/
                     //    * https://siderite.blogspot.com/2016/10/controlling-json-serialization-in-net.html
@@ -183,57 +183,6 @@ namespace tug
             //             // TODO return HTTP 404(? check spec)
             //             return context.Response.WriteAsync($"Registering node {AgentId}");
             //         }
-            //     }
-            // );
-
-            // // DSC Action
-            // routeBuilder.MapPost("Nodes(AgentId={AgentId})/DscAction", context =>
-            //     {
-            //         logger.LogInformation("\n\n\nPOST: DSC action request");
-            //         string AgentId = context.GetRouteData().Values["AgentId"].ToString();
-            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
-            //         var Headers = context.Request.Headers;
-            //         logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
-            //         return context.Response.WriteAsync($"DSC action for node {AgentId}");
-            //     }
-            // );
-
-            // // Asking for a MOF
-            // routeBuilder.MapPost("Nodes(AgentId={AgentId})/Configurations(ConfigurationName={ConfigurationName})/ConfigurationContent", context =>
-            //     {
-            //         logger.LogInformation("\n\n\nPOST: MOF request");
-            //         string AgentId = context.GetRouteData().Values["AgentId"].ToString();
-            //         string ConfigurationName = context.GetRouteData().Values["ConfigurationName"].ToString();
-            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
-            //         var Headers = context.Request.Headers;
-            //         logger.LogDebug("AgentId {AgentId}, Configuration {Config}, Request Body {Body}, Headers {Headers}",AgentId,ConfigurationName,Body,Headers);
-            //         return context.Response.WriteAsync($"Request from node {AgentId} for configuration {ConfigurationName}");
-            //     }
-            // );
-
-
-            // // Asking for a module
-            // routeBuilder.MapPost("Modules(ModuleName={ModuleName},ModuleVersion={ModuleVersion})/ModuleContent", context =>
-            //     {
-            //         logger.LogInformation("\n\n\nPOST: Module request");
-            //         string ModuleName = context.GetRouteData().Values["ModuleName"].ToString();
-            //         string ModuleVersion = context.GetRouteData().Values["ModuleVersion"].ToString();
-            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
-            //         var Headers = context.Request.Headers;
-            //         logger.LogDebug("Module name {ModuleName}, Version {Version}, Request Body {Body}, Headers {Headers}",ModuleName,ModuleVersion,Body,Headers);
-            //         return context.Response.WriteAsync($"Module request for {ModuleName} version {ModuleVersion}");
-            //     }
-            // );
-
-            // // Sending a report
-            // routeBuilder.MapPost("Nodes(AgentId={AgentId})/SendReport", context =>
-            //     {
-            //         logger.LogInformation("\n\n\nPOST: Report delivery");
-            //         string AgentId = context.GetRouteData().Values["AgentId"].ToString();
-            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
-            //         var Headers = context.Request.Headers;
-            //         logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
-            //         return context.Response.WriteAsync($"Report from node {AgentId}");
             //     }
             // );
 

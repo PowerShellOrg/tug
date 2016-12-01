@@ -1,16 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using tug.Messages;
 
 namespace tug.Controllers
 {
     public class DscReportingController : Controller
     {
+        private ILogger<DscController> _logger;
+        private IDscHandlerProvider _dscHandlerProvider;
+        public DscReportingController(ILogger<DscController> logger,
+                IDscHandlerProvider handlerProvider)
+        {
+            _logger = logger;
+            _dscHandlerProvider = handlerProvider;
+        }
+
         [HttpPost]
         [Route("Nodes(AgentID='{AgentId}')/SendReport")]
         public IActionResult SendReport(SendReportRequest input)
         {
+            _logger.LogInformation("\n\n\nPOST: Report delivery");
+
             if (ModelState.IsValid)
             {
+                _logger.LogDebug($"AgentId=[{input.AgentId}]");
+
                 // TODO:
                 // persist the report content indexed by the JobId
                 var jobId = input.Body.JobId;
