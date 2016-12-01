@@ -1,16 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using tug.Controllers;
 
 namespace tug.Messages
 {
     public class GetConfigurationRequest : DscAgentRequest
     {
         public string ConfigurationName
-        { get; set; }
-
-        [Required]
-        [FromHeader(Name = "ProtocolVersion")]
-        public string ProtocolVersionHeader
         { get; set; }
 
         /// <summary>
@@ -22,9 +19,18 @@ namespace tug.Messages
         { get; set; }
     }
 
-    public static class GetConfigurationResponse
+    public class GetConfigurationResponse : DscResponse
     {
-        public const string ChecksumHeader = "Checksum";
-        public const string ChecksumAlgorithmHeader = "ChecksumAlgorithm";
+        [ToHeader(Name = "Checksum")]
+        public string ChecksumHeader
+        { get; set; }
+
+        [ToHeader(Name = "ChecksumAlgorithm")]
+        public string ChecksumAlgorithmHeader
+        { get; set; }
+
+        [ToResult]
+        public Stream Configuration
+        { get; set; }
     }
 }

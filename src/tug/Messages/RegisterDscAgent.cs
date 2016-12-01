@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using tug.Controllers;
 
 namespace tug.Messages
 {
@@ -9,6 +10,20 @@ namespace tug.Messages
         [Required]
         public RegisterDscAgentRequestBody Body
         { get; set; }
+    }
+
+    public class RegisterDscAgentResponse : DscResponse
+    {
+        /// <summary>
+        /// We only need a single instance since there are
+        /// no mutable elements in the object graph.
+        /// </summary>
+        public static readonly RegisterDscAgentResponse INSTANCE =
+                new RegisterDscAgentResponse();
+
+        [ToResult]
+        public NoContentResult Body
+        { get; } = new NoContentResult();
     }
 
     /// <summary>

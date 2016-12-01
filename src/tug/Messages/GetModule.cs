@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using tug.Controllers;
 
 namespace tug.Messages
 {
@@ -15,9 +17,18 @@ namespace tug.Messages
         { get; set; }
     }
 
-    public static class GetModuleResponse
+    public class GetModuleResponse : DscResponse
     {
-        public const string ChecksumHeader = "Checksum";
-        public const string ChecksumAlgorithmHeader = "ChecksumAlgorithm";
+        [ToHeaderAttribute(Name = "Checksum")]
+        public string ChecksumHeader
+        { get; set; }
+
+        [ToHeader(Name = "ChecksumAlgorithm")]
+        public string ChecksumAlgorithmHeader
+        { get; set; }
+
+        [ToResult]
+        public Stream Module
+        { get; set; }
     }
 }
