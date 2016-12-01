@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using tug.Controllers;
 
 namespace tug.Messages
 {
@@ -11,44 +12,13 @@ namespace tug.Messages
         { get; set; } 
     }
 
-    /*
+    public class GetDscActionResponse : DscResponse
     {
-        "title": "GetDscAction request schema (AgentID)",
-        "type": "object",
-        "properties": {
-            "ClientStatus": {
-                "type": "array",
-                "minItems": 1,
-                "items": [
-                    {
-                        "type": "object",
-                        "properties": {
-                            "Checksum": {
-                                "type": [
-                                    "string",
-                                    "null"
-                                ]
-                            },
-                            "ConfigurationName": {
-                                "type": [
-                                    "string",
-                                    "null"
-                                ]
-                            },
-                            "ChecksumAlgorithm": {
-                                "enum": [
-                                    "SHA-256"
-                                ],
-                                "description": "Checksum algorithm used to generate checksum"
-                            }
-                        }
-                    }
-                ],
-                "uniqueItems": true
-            }
-        }
+        [ToResult]
+        public GetDscActionResponseBody Body
+        { get; set; }
     }
-    */
+
     public class GetDscActionRequestBody
     {
         [Required]
@@ -61,7 +31,7 @@ namespace tug.Messages
             public string ConfigurationName
             { get; set; }
 
-            [CustomValidation(typeof(GetDscActionRequestBody),
+            [CustomValidation(typeof(ClientStatusItem),
             nameof(ValidateChecksumAlgorithm))]
             public string ChecksumAlgorithm
             { get; set; } 
@@ -69,58 +39,19 @@ namespace tug.Messages
             public string Checksum
             { get; set; }
 
-            public static bool ValidateChecksumAlgorithm(string value)
+            public static ValidationResult ValidateChecksumAlgorithm(string value)
             {
-                return "SHA-256" == value;
+                return "SHA-256" == value
+                    ? ValidationResult.Success
+                    : new ValidationResult("unsupported or unknown checksum algorithm");
             }
         }
     }
 
-    /*
-    {
-        "title": "GetDscAction response",
-        "type": "object",
-        "properties": {
-            "NodeStatus": {
-                "enum": [
-                    "OK",
-                    "RETRY",
-                    "GetConfiguration",
-                    "UpdateMetaConfiguration"
-                ],
-                "required": "true"
-            },
-            "Details": {
-                "type": "array",
-                "required": false,
-                "items": [
-                    {
-                        "type": "object",
-                        "required": true,
-                        "properties": {
-                            "ConfigurationName": {
-                                "type": "string",
-                                "required": true
-                            },
-                            "Status": {
-                                "enum": [
-                                    "OK",
-                                    "RETRY",
-                                    "GetConfiguration",
-                                    "UpdateMetaConfiguration"
-                                ],
-                                "required": true
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    }
-    */
     public class GetDscActionResponseBody
     {
         [Required]
+        [EnumDataTypeAttribute(typeof(DscActionStatus))]
         public DscActionStatus NodeStatus
         { get; set; }
 
@@ -134,6 +65,7 @@ namespace tug.Messages
             { get; set; }
 
             [Required]
+            [EnumDataTypeAttribute(typeof(DscActionStatus))]
             public DscActionStatus Status
             { get; set; }
         }
