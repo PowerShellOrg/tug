@@ -14,17 +14,28 @@ Here are some useful site/doc references:
 
 ## Observations
 
-* When using ConfigurationNames:
+* When using Configuration Names:
   * you *must* use RegistrationKeys (since Config Names are guessable)
   * you *should* specify at least one `ConfigurationName` when configuring the LCM,
     otherwise the pull server always shows the node is update-to-date (i.e. `OK`)
   * if you use multiple `ConfigurationName`s then you *must* also specify
     `PartialConfiguration` blocks in the configs
+  * PullServer saves the list of configuration names from when node registered
+    via `RegisterDscAgent` so that subsequent `GetDscAction` will be able to
+    enumerate them all with their checksums
 
-* When using ConfigurationID:
+* When using Configuration Name with **only 1** config name:
+  * The node does *not* specify the config name in `GetDscAction` requests, and
+    leaves this element field empty, it does however populate the
+    `Checksum` and `ChecksumAlgorithm` with its single config checksum data
+
+* When using Configuration Names with **multiple** config names:
+  * ***TODO: Test/Observe this scenario's behavior***  
+
+* When using Configuration ID:
   * LCM will issue v1.x calls to the PullServer even though it will claim
     `ProtocolVersion` = 2.0 in the request headers
-  * There is no complement to the v2 `RegisterDscAcgent` in v1.x setup
+  * There is no complement to the v2 `RegisterDscAgent` in v1.x setup
     * When issuing `Set-DscLocalConfigurationManager` to enable local LCM config
       for a v1 (ConfigurationID) setup, there is no inial call from node to server
     * When issuing `Set-DscLocalConfigurationManager` to enable local LCM config
