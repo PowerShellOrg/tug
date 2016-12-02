@@ -62,7 +62,7 @@ namespace tug.Messages
         {
             [Required]
             public string ConfigurationName
-            { get; set; }
+            { get; set; } = string.Empty;
 
             [Required]
             [EnumDataTypeAttribute(typeof(DscActionStatus))]

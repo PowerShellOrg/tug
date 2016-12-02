@@ -149,13 +149,128 @@ namespace tug.Providers
         public Tuple<DscActionStatus, GetDscActionResponseBody.DetailsItem[]> GetDscAction(Guid agentId,
             GetDscActionRequestBody detail)
         {
+            var regPath = Path.Combine(RegistrationSavePath, $"{agentId}.json");
+            if (!File.Exists(regPath))
+                throw new InvalidOperationException("unknown agent ID");
+
+            var regDetail = JsonConvert.DeserializeObject<RegisterDscAgentRequestBody>(
+                    File.ReadAllText(regPath));
+            var configCount = (regDetail.ConfigurationNames?.Length).GetValueOrDefault();
+            Logger.LogDebug($"regDetail[{JsonConvert.SerializeObject(regDetail)}]");
+
             DscActionStatus nodeStatus = DscActionStatus.OK;
             var list = new List<GetDscActionResponseBody.DetailsItem>();
+
+            if (configCount == 0)
+            {
+                // Nothing to do since we don't know what config name to provide;
+                // the xDscWebService-compatible behavior is to just return an OK
+                nodeStatus = DscActionStatus.OK;
+                Logger.LogWarning($"No configuration names specified during registration for AgentId=[{agentId}]");
+            }
+            else if (configCount == 1)
+            {
+                var cn = regDetail.ConfigurationNames[0];
+
+                // This is the scenario of a single (default)
+                // named configuration tied to the node
+                if (detail.ClientStatus?.Length == 1
+                    && (string.IsNullOrEmpty(detail.ClientStatus[0].ConfigurationName)
+                        || detail.ClientStatus[0].ConfigurationName == cn)) 
+                {
+                    var cs = detail.ClientStatus[0];
+
+                    // Checksum is for the single default configuration of this node
+                    var configPath = Path.Combine(ConfigurationPath, $"SHARED/{cn}.mof");
+                    if (!File.Exists(configPath))
+                        // TODO:  move CN out of message string and into EX DATA
+                        throw new InvalidOperationException($"missing configuration by name [{cn}]");
+
+                    // Assume we have to pull
+                    nodeStatus = DscActionStatus.GetConfiguration;
+                    var dtlItem = new GetDscActionResponseBody.DetailsItem
+                    {
+                        ConfigurationName = cn,
+                        Status = nodeStatus,
+                    };
+                    list.Add(dtlItem);
+
+                    if (!string.IsNullOrEmpty(cs.Checksum)) // Empty Checksum on the first pull
+                    {
+                        using (var csum = ChecksumProvider.GetChecksumAlgorithm())
+                        {
+                            if (csum.AlgorithmName == cs.ChecksumAlgorithm
+                                && !string.IsNullOrEmpty(cs.Checksum)) // Make sure we're on the same algor
+                            {
+                                using (var fs = File.OpenRead(configPath))
+                                {
+                                    var csumCsum = csum.ComputeChecksum(fs);
+                                    if (csumCsum == cs.Checksum)
+                                    {
+                                        // We've successfully passed all the checks, nothing to do
+                                        nodeStatus = DscActionStatus.OK;
+                                        dtlItem.Status = nodeStatus;
+                                    }
+                                    else
+                                    {
+                                        Logger.LogDebug($"Checksum mismatch "
+                                                + "[{csumCsum}]!=[{cs.Checksum}]"
+                                                + "for AgentId=[{agentId}]");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Logger.LogWarning($"Checksum Algorithm mismatch "
+                                        + "[{csum.AlgorithmName}]!=[{cs.ChecksumAlgorithm}] "
+                                        + "for AgentId=[{agentId}]");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Logger.LogDebug($"First time pull check for AgentId=[{agentId}]");
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException("only single/default configuration names are implemented");
+                }
+            }
+            else
+            {
+                Logger.LogWarning($"Found [{regDetail.ConfigurationNames.Length}] config names:  {regDetail.ConfigurationNames}");
+                throw new NotImplementedException("multiple configuration names are not implemented");
+
+                // foreach (var cn in regDetail.ConfigurationNames)
+                // {
+                //     var configPath = Path.Combine(ConfigurationPath, $"SHARED/{cn}.mof");
+                //     if (!File.Exists(configPath))
+                //         throw new InvalidOperationException($"missing configuration by name [{cn}]");
+                    
+                //     using (var csum = ChecksumProvider.GetChecksumAlgorithm())
+                //     {
+                //         if (csum.AlgorithmName != cs.ChecksumAlgorithm)
+                //         {
+                //             Logger.LogError("Checksum Algorithm mismatch!");
+                //         }
+                //         else
+                //         {
+                //             using (var fs = File.OpenRead(configPath))
+                //             {
+                //                 if (csum.ComputeChecksum(fs) == cs.Checksum)
+                //                     continue;
+                //             }
+                //         }
+                //     }
+                // }
+            }
+            /*
             foreach (var cs in detail.ClientStatus)
             {
                 if (string.IsNullOrEmpty(cs.ConfigurationName))
                 {
-                    var configPath = Path.Combine(ConfigurationPath, $"{agentId}.json");
+                    var configPath = Path.Combine(ConfigurationPath, $"{agentId}/{agentId}.mof");
                     if (!File.Exists(configPath))
                     {
                         nodeStatus = DscActionStatus.RETRY;
@@ -185,12 +300,12 @@ namespace tug.Providers
                         nodeStatus = DscActionStatus.GetConfiguration;
                         list.Add(new GetDscActionResponseBody.DetailsItem
                         {
-                            ConfigurationName = cs.ConfigurationName,
                             Status = DscActionStatus.GetConfiguration,
                         });
                     }
                 }
             }
+            */
 
             return Tuple.Create(nodeStatus, list.ToArray());
         }
