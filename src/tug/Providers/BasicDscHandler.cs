@@ -312,9 +312,12 @@ namespace tug.Providers
 
         public Tuple<string, string, Stream> GetConfiguration(Guid agentId, string configName)
         {
-            var configPath = Path.Combine(ConfigurationPath, $"{agentId}.json");
+            var configPath = Path.Combine(ConfigurationPath, $"SHARED/{configName}.mof");
             if (!File.Exists(configPath))
+            {
+                Logger.LogWarning($"unable to find ConfigurationName=[{configName}] for AgentId=[{agentId}]");
                 return null;
+            }
 
             // TODO:  Clean this up for performance with caching and stuff
             using (var cs = ChecksumProvider.GetChecksumAlgorithm())

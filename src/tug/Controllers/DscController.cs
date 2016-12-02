@@ -86,7 +86,7 @@ namespace tug.Controllers
 
 
         [HttpGet]
-        [Route("Nodes(AgentId='{AgentId'})/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent")]
+        [Route("Nodes(AgentId='{AgentId}')/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent")]
         public IActionResult GetConfiguration(GetConfigurationRequest input)
         {
             _logger.LogInformation("\n\n\nPOST: MOF request");
