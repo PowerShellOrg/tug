@@ -26,6 +26,7 @@ namespace tug.Providers
         public BasicDscHandlerProvider(ILogger<BasicDscHandler> logger,
                 IChecksumAlgorithmProvider checksumProvider)
         {
+            _logger = logger;
             _checksumProvider = checksumProvider;
         }
 
@@ -101,16 +102,35 @@ namespace tug.Providers
         public string ModulePath
         { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Modules";
 
-
         public bool IsDisposed
         { get; private set; }
 
         public void Init()
         {
+            Assert(Logger != null, "missing logger");
+            Assert(ChecksumProvider != null, "missing checksum provider");
+            Assert(!string.IsNullOrWhiteSpace(RegistrationKeyPath),
+                    "registration key path not set");
+            Assert(!string.IsNullOrWhiteSpace(RegistrationSavePath),
+                    "registration save path not set");
+            Assert(!string.IsNullOrWhiteSpace(ConfigurationPath),
+                    "configuration path not set");
+            Assert(!string.IsNullOrWhiteSpace(ModulePath),
+                    "module path not set");
+
             Directory.CreateDirectory(RegistrationKeyPath);
             Directory.CreateDirectory(RegistrationSavePath);
             Directory.CreateDirectory(ConfigurationPath);
             Directory.CreateDirectory(ModulePath);
+        }
+
+        private void Assert(bool value, string failMessage = null)
+        {
+            if (!value)
+                if (string.IsNullOrEmpty(failMessage))
+                    throw new Exception("failed assertion");
+                else
+                    throw new Exception(); // ($"failed assertion: {message}");
         }
 
         public void RegisterDscAgent(Guid agentId,
