@@ -330,7 +330,7 @@ namespace tug.Providers
 
         public Tuple<string, string, Stream> GetModule(string moduleName, string moduleVersion)
         {
-            var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}");
+            var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}.zip");
             if (!File.Exists(modulePath))
                 return null;
             
