@@ -164,10 +164,10 @@ namespace tug.Messages
         public DscTrueFalse RebootRequested
         { get; set; }
 
-        public string Errors
+        public string[] Errors
         { get; set; }
 
-        public string StatusData
+        public string[] StatusData
         { get; set; }
 
         public AdditionalDataItem[] AdditionalData
