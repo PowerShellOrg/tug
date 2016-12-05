@@ -1,0 +1,22 @@
+{
+  "version": "0.5.0-*",
+  "buildOptions": {
+    "debugType": "portable"
+  },
+  "dependencies": {},
+  "frameworks": {
+    "net452": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "Microsoft.Extensions.Logging": "1.0.0",
+        "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+        
+        "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+        "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+        "Microsoft.Extensions.Configuration.Json": "1.0.0",
+        "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
+        "System.Management.Automation": "6.1.7601.17515"
+      }
+    }
+  }
+}
