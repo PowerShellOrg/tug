@@ -6,11 +6,38 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/bin/Debug/netcoreapp1.0/tug.dll",
+            "program": "${workspaceRoot}/src/tug/bin/Debug/netcoreapp1.0/tug.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "externalConsole": false,
             "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/tug/bin/Debug/netcoreapp1.0/tug.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/tug",
+            "stopAtEntry": false,
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
         },
         {
             "name": ".NET Core Attach",
