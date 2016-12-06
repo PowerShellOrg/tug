@@ -33,13 +33,15 @@ Here are some useful site/doc references:
   * ***TODO: Test/Observe this scenario's behavior***  
 
 * When using Configuration ID:
+  * Tug does not have a design goal to support this (e.g., does not support v1 protocol)
   * LCM will issue v1.x calls to the PullServer even though it will claim
-    `ProtocolVersion` = 2.0 in the request headers
+    `ProtocolVersion` = 2.0 in the request headers (this is a logged bug)
   * There is no complement to the v2 `RegisterDscAgent` in v1.x setup
     * When issuing `Set-DscLocalConfigurationManager` to enable local LCM config
-      for a v1 (ConfigurationID) setup, there is no inial call from node to server
+      for a v1 (ConfigurationID) setup, there is no initial call from node to server
     * When issuing `Set-DscLocalConfigurationManager` to enable local LCM config
       for a v2 (ConfigurationNames) setup, the node issues a `RegisterDscAgent`
       call to the server and provides the list of config names as well as a bunch
       of node meta data (IP Addresses (all), hostname, and node certificate)
 
+* Authorization is more or less up to the Pull server, regardless what the node sends. For example, the native Windows pull server, in v2 protocol mode, uses RegistrationKey for initial node authorization, but does not rely on it past that point. Instead, it only accepts non-registration requests from "known" nodes. The Azure Automation pull server grabs the client certificate information and _at the Web server level_ demands client authentication after the initial registration. An on-prem pull server could opt to ignore all of that and authenticate against (for example) a table of known node MAC addresses (a la 802.1X). So authorization is a funtion of the pull server.
