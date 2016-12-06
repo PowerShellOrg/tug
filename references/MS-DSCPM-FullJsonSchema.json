@@ -1,0 +1,338 @@
+[
+    {
+        "title": "GetAction request schema",
+        "type": "object",
+        "properties": {
+            "Checksum": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "ConfigurationName": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "NodeCompliant": {
+                "type": "boolean"
+            },
+            "ChecksumAlgorithm": {
+                "enum": [
+                    "SHA-256"
+                ],
+                "description": "Checksum algorithm used to generate checksum"
+            },
+            "StatusCode": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "Checksum",
+            "NodeCompliant",
+            "ChecksumAlgorithm"
+        ]
+    },
+    {
+        "title": "GetAction response",
+        "type": "object",
+        "properties": {
+            "value": {
+                "enum": [
+                    "OK",
+                    "GetConfiguration",
+                    "Retry",
+                    "UpdateMetaConfiguration"
+                ],
+                "required": "true"
+            }
+        }
+    },
+    {
+        "title": "GetDscAction request schema (AgentID)",
+        "type": "object",
+        "properties": {
+            "ClientStatus": {
+                "type": "array",
+                "minItems": 1,
+                "items": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "Checksum": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "ConfigurationName": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "ChecksumAlgorithm": {
+                                "enum": [
+                                    "SHA-256"
+                                ],
+                                "description": "Checksum algorithm used to generate checksum"
+                            }
+                        }
+                    }
+                ],
+                "uniqueItems": true
+            }
+        }
+    },
+    {
+        "title": "GetDscAction response",
+        "type": "object",
+        "properties": {
+            "NodeStatus": {
+                "enum": [
+                    "OK",
+                    "RETRY",
+                    "GetConfiguration",
+                    "UpdateMetaConfiguration"
+                ],
+                "required": "true"
+            },
+            "Details": {
+                "type": "array",
+                "required": false,
+                "items": [
+                    {
+                        "type": "object",
+                        "required": true,
+                        "properties": {
+                            "ConfigurationName": {
+                                "type": "string",
+                                "required": true
+                            },
+                            "Status": {
+                                "enum": [
+                                    "OK",
+                                    "RETRY",
+                                    "GetConfiguration",
+                                    "UpdateMetaConfiguration"
+                                ],
+                                "required": true
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "title": "SendReport request schema",
+        "type": "object",
+        "properties": {
+            "JobId": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "required": "true"
+            },
+            "OperationType": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "RefreshMode": {
+                "enum": [
+                    "Push",
+                    "Pull"
+                ]
+            },
+            "Status": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "LCMVersion": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "ReportFormatVersion": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "ConfigurationVersion": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "NodeName": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "IpAddress": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "StartTime": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "EndTime": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "RebootRequested": {
+                "enum": [
+                    "True",
+                    "False"
+                ]
+            },
+            "Errors": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "StatusData": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "AdditionalData": {
+                "type": "array",
+                "required": false,
+                "items": [
+                    {
+                        "type": "object",
+                        "required": true,
+                        "properties": {
+                            "Key": {
+                                "type": "string",
+                                "required": true
+                            },
+                            "Value": {
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "title": "RegisterDscAgent request",
+        "type": "object",
+        "properties": {
+            "AgentInformation": {
+                "type": "object",
+                "properties": {
+                    "LCMVersion": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "NodeName": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "IPAddress": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "RegistrationInformation": {
+                "type": "object",
+                "properties": {
+                    "RegistrationMessageType": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "CertificateInformation": {
+                        "type": "object",
+                        "properties": {
+                            "FriendlyName": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "Issuer": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "NotAfter": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "NotBefore": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "Subject": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "PublicKey": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "Thumbprint": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "Version": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "ConfigurationNames": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            }
+        }
+    }
+]
