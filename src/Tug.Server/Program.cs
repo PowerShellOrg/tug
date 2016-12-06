@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace tug
+namespace Tug.Server
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Tug.Server starting up...");
+
            var config = new ConfigurationBuilder()
                 .AddCommandLine(args)
                 .AddEnvironmentVariables(prefix: "ASPNETCORE_")

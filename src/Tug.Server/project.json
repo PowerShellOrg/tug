@@ -1,0 +1,88 @@
+{
+  "name": "Tug.Server",
+  "version": "0.5.1-*",
+  "copyright": "Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.",
+  "title": "Tug Server Implementation",
+  "authors": ["Don Jones"],
+  "language": "en-US",
+
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true
+
+    // TODO:  Temporarily disabled because it causes an error at build "The given key
+    // was not present in the dictionary." when we added a project dependency to
+    // Tug.Core; this may not be needed if we don't adding Razor views to
+    // our project (needed for runtime compilation)
+    //,
+    //"preserveCompilationContext": true
+  },
+
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "web.config"
+    ]
+  },
+
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  },
+
+  "tooling": {
+    "defaultNamespace": "Tug.Server"
+  },
+
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
+  },
+
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  },
+
+  "commands": {
+    "web": "Microsoft.AspNet.Server.Kestrel"
+  },
+
+  "dependencies": {
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0",
+
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
+    "Microsoft.AspNetCore.Routing": "1.1.0",
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+
+    "Tug.Base": {
+      "target": "project"
+    },
+    "Tug.Server.Base": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        },
+        "System.Security.Cryptography.Algorithms": "4.3.0"
+      },
+      "imports": "dnxcore50"
+    },
+    "net452": {
+      "dependencies": {
+      }
+    }
+  }
+}

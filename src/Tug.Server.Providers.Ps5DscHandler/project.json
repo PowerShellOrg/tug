@@ -1,0 +1,22 @@
+{
+  "version": "0.5.1-*",
+
+  "buildOptions": {
+    "debugType": "portable"
+  },
+
+  "dependencies": {
+    "System.Management.Automation": "6.1.7601.17515",
+
+    "Tug.Server.Base": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "net452": {
+      "dependencies": {
+      }
+    }
+  }
+}

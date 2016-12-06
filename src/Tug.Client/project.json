@@ -1,0 +1,35 @@
+{
+  "name": "Tug.Client",
+  "version": "0.5.1-*",
+  "copyright": "Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.",
+  "title": "Tug Client",
+  "language": "en-US",
+
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
+
+  "dependencies": {
+    "Tug.Base": {
+      "target": "project"
+    }
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      },
+      "imports": "dnxcore50"
+    },
+    "net452": {
+      "dependencies": {
+        
+      }
+    }
+  }
+}
