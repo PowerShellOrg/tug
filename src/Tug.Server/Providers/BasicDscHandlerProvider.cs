@@ -15,7 +15,7 @@ namespace Tug.Server.Providers
         };
 
         private ILogger<BasicDscHandler> _logger;
-        private Tug.IChecksumAlgorithmProvider _checksumProvider;
+        private IChecksumAlgorithmProvider _checksumProvider;
         private BasicDscHandler _handler;
 
         public BasicDscHandlerProvider(ILogger<BasicDscHandler> logger,
