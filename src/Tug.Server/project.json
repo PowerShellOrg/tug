@@ -21,6 +21,7 @@
   "publishOptions": {
     "include": [
       "wwwroot",
+      "nlog.config",
       "web.config"
     ]
   },
@@ -49,6 +50,8 @@
 
   "dependencies": {
     "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "NLog.Extensions.Logging": "1.0.0-rtm-alpha5",
+
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
