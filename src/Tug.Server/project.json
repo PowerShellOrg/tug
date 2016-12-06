@@ -71,6 +71,11 @@
 
   "frameworks": {
     "netcoreapp1.1": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_CORE"
+        ]
+      },
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
@@ -81,6 +86,11 @@
       "imports": "dnxcore50"
     },
     "net452": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_FRAMEWORK"
+        ]
+      },
       "dependencies": {
       }
     }
