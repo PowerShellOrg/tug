@@ -8,11 +8,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Converters;
+using NLog.Extensions.Logging;
 
 namespace Tug.Server
 {
     public class Startup
     {
+        private ILoggerFactory _preLoggerFactory;
+        private ILogger _logger;
+
+        public Startup()
+        {
+            // We set this up to log any events that take place before the
+            // ultimate logging configuration is finalized and realized
+            _preLoggerFactory = new LoggerFactory()
+                .AddConsole();
+            _logger = _preLoggerFactory.CreateLogger<Startup>();
+            _logger.LogInformation("Commencing PRE-logging on startup");
+        }
 
         // This method gets called by the runtime. Use this
         // method to add services to the container.  For more
@@ -20,6 +33,7 @@ namespace Tug.Server
         // visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogInformation("Adding MVC services");
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -32,11 +46,13 @@ namespace Tug.Server
 
             // TODO:  This is temporary, we'll setup logic to optionally
             // support multiple providers of checksum algorithms
+            _logger.LogInformation("Registering SHA-256 checksum provider");
             services.AddSingleton<IChecksumAlgorithmProvider,
                     Tug.Providers.Sha256ChecksumAlgorithmProvider>();
 
             // TODO:  This is where we'll put logic to resolve the
             // selected DSC Handler based on a configured provider
+            _logger.LogInformation("Registering BASIC DSC Handler");
             services.AddSingleton<IDscHandlerProvider,
                     Providers.BasicDscHandlerProvider>();
         }
@@ -46,6 +62,8 @@ namespace Tug.Server
         public void Configure(IApplicationBuilder app,
             IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            _logger.LogInformation("Preparing to resolve final runtime configuration");
+
             // get configuration
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(Directory.GetCurrentDirectory());
@@ -54,17 +72,26 @@ namespace Tug.Server
 
             // set up console logging
             // TODO it would be nice to also have a text file logger
+            _logger.LogInformation("Resolving logging configuration");
             if (config["LogType"] == "console" | config["LogType"] == "both") {
+                _logger.LogInformation("  * enabling Console Logging");
                 if (config["DebugLog"] == "true") {
                     loggerFactory.AddConsole(LogLevel.Debug);
                 } else {
                     loggerFactory.AddConsole(LogLevel.Information);
                 }
             }
+            if (config["LogType"] == "nlog" | config["LogType"] == "both") {
+                var configPath = Path.Combine(Directory.GetCurrentDirectory(), "nlog.config");
+                _logger.LogInformation($"  * enabling NLog with config=[{configPath}]");
+                loggerFactory.AddNLog();
+                env.ConfigureNLog(configPath);
+            }
 
-            // initiate logging
-            var logger = loggerFactory.CreateLogger("Tug");
-            logger.LogInformation("Tug begins.");
+            // Initiate and switch to runtime logging
+            _logger.LogInformation("Instantiating runtime logging (PRE-logging will cease)");
+            _logger = loggerFactory.CreateLogger<Startup>();
+            _logger.LogInformation("Commencing runtime logging");
 
             // set development option
             if (env.IsDevelopment())

@@ -21,6 +21,7 @@
   "publishOptions": {
     "include": [
       "wwwroot",
+      "nlog.config",
       "web.config"
     ]
   },
@@ -49,6 +50,8 @@
 
   "dependencies": {
     "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "NLog.Extensions.Logging": "1.0.0-rtm-alpha5",
+
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
@@ -70,17 +73,27 @@
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
+    "netcoreapp1.1": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_CORE"
+        ]
+      },
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "System.Security.Cryptography.Algorithms": "4.3.0"
       },
       "imports": "dnxcore50"
     },
     "net452": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_FRAMEWORK"
+        ]
+      },
       "dependencies": {
       }
     }
