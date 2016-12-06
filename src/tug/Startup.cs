@@ -163,7 +163,7 @@ namespace tug
             //                 byte[] authenticationHash = hmac.ComputeHash(authenticationKeyBytes);
             //                 signature = Convert.ToBase64String(authenticationHash);
             //             }
-
+            // 
             //             // compare what node sent to what we made
             //             string AuthToMatch = authorization.Replace("Shared ","");
             //             logger.LogDebug("Comparing keys:\nRcvd {0} \nMade {1}", AuthToMatch, signature );
@@ -173,7 +173,7 @@ namespace tug
             //                 break;
             //             }
             //         }
-
+            // 
             //         // Because this is a PUT, we're only expected to return an HTTP status code
             //         // TODO we also need to call Set-TugNodeRegistration if the node was valid
             //         if (Valid) {
@@ -183,9 +183,91 @@ namespace tug
             //             // TODO return HTTP 404(? check spec)
             //             return context.Response.WriteAsync($"Registering node {AgentId}");
             //         }
+            // 
+            //         /*
+            //            TODO: Run Register-TugNode to register this node, padding node details
+            //                  as paramaters. Note that the command must deal with duplicate
+            //                  registrations (e.g., update data or ignore or whatever)
+            //         */
             //     }
             // );
-
+            // 
+            // // DSC Action
+            // routeBuilder.MapPost("Nodes(AgentId={AgentId})/DscAction", context =>
+            //     {
+            //         logger.LogInformation("\n\n\nPOST: DSC action request");
+            //         string AgentId = context.GetRouteData().Values["AgentId"].ToString();
+            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
+            //         var Headers = context.Request.Headers;
+            //         logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
+            // 
+            //         /*
+            //             TODO: Run Get-TugDscAction, passing node information. Command is expected
+            //                   to return an action, which will be returned to the node.
+            //         */
+            // 
+            //         return context.Response.WriteAsync($"DSC action for node {AgentId}");
+            //     }
+            // );
+            // 
+            // // Asking for a MOF
+            // routeBuilder.MapPost("Nodes(AgentId={AgentId})/Configurations(ConfigurationName={ConfigurationName})/ConfigurationContent", context =>
+            //     {
+            //         logger.LogInformation("\n\n\nPOST: MOF request");
+            //         string AgentId = context.GetRouteData().Values["AgentId"].ToString();
+            //         string ConfigurationName = context.GetRouteData().Values["ConfigurationName"].ToString();
+            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
+            //         var Headers = context.Request.Headers;
+            //         logger.LogDebug("AgentId {AgentId}, Configuration {Config}, Request Body {Body}, Headers {Headers}",AgentId,ConfigurationName,Body,Headers);
+            // 
+            //         /*
+            //             TODO: Call Get-TugDscMOF, passing agent information. Command is expected to
+            //                   return the MOF, encoded for transmission to the node.
+            //         */
+            // 
+            //         return context.Response.WriteAsync($"Request from node {AgentId} for configuration {ConfigurationName}");
+            //     }
+            // );
+            // 
+            // 
+            // // Asking for a module
+            // routeBuilder.MapPost("Modules(ModuleName={ModuleName},ModuleVersion={ModuleVersion})/ModuleContent", context =>
+            //     {
+            //         logger.LogInformation("\n\n\nPOST: Module request");
+            //         string ModuleName = context.GetRouteData().Values["ModuleName"].ToString();
+            //         string ModuleVersion = context.GetRouteData().Values["ModuleVersion"].ToString();
+            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
+            //         var Headers = context.Request.Headers;
+            //         logger.LogDebug("Module name {ModuleName}, Version {Version}, Request Body {Body}, Headers {Headers}",ModuleName,ModuleVersion,Body,Headers);
+            // 
+            //         /*
+            //             TODO: Call Get-TugDscModule, passing agent information. Command is expected to
+            //                   return the module ZIP file, encoded for transmission to the node.
+            //         */
+            //         
+            //         return context.Response.WriteAsync($"Module request for {ModuleName} version {ModuleVersion}");
+            //     }
+            // );
+            // 
+            // // Sending a report
+            // routeBuilder.MapPost("Nodes(AgentId={AgentId})/SendReport", context =>
+            //     {
+            //         logger.LogInformation("\n\n\nPOST: Report delivery");
+            //         string AgentId = context.GetRouteData().Values["AgentId"].ToString();
+            //         string Body = new StreamReader(context.Request.Body).ReadToEnd();
+            //         var Headers = context.Request.Headers;
+            //         logger.LogDebug("AgentId {AgentId}, Request Body {Body}, Headers {Headers}",AgentId,Body,Headers);
+            // 
+            //         /*
+            //             TODO: Call Save-TugReport, passing report info. Command is expected to
+            //                   save the report info in whatever way it wants to.
+            //         */
+            // 
+            // 
+            //         return context.Response.WriteAsync($"Report from node {AgentId}");
+            //     }
+            // );
+            // 
             // // with everything defined, kick it off
             // var routes = routeBuilder.Build();
             // app.UseRouter(routes);
