@@ -1,16 +1,19 @@
-﻿using System;
+﻿/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Tug.Model;
 
 namespace Tug.Server.Providers
 {
-    public class Ps5DscHandler : IDisposable // IDscHandlerProvider
+    public class Ps5DscHandler : IDscHandler
     {
         public static readonly IEnumerable EMPTY_INPUT = new object[0];
 
@@ -45,22 +48,21 @@ namespace Tug.Server.Providers
             LOG.LogInformation("Relocated PWD for current execution context");
         }
 
-        public void RegisterDscAgent(Guid agentId,
-                /*RegisterDscAgentRequestBody*/ object detail)
+        public void RegisterDscAgent(Guid agentId, RegisterDscAgentRequestBody detail)
         {
             // Return value is ignored, if no exceptions are thrown up, we assume success
             ThreadSafeInvoke<object>("Register-TugNode", agentId, detail);
+
+            throw new NotImplementedException();
         }
 
-        public /*Tuple<DscActionStatus, GetDscActionResponseBody.DetailsItem[]>*/
-        Tuple<object, object> GetDscAction(Guid agentId,
-                /*GetDscActionRequestBody*/ object detail)
+        public ActionStatus GetDscAction(Guid agentId, GetDscActionRequestBody detail)
         {
             var result = ThreadSafeInvoke<object>("Get-TugNodeAction", agentId, detail);
-            var resultArr = result.ToArray();
-            return Tuple.Create(resultArr[0], resultArr[1]);
+
+            throw new NotImplementedException();
         }
-        public Tuple<string, string, Stream> GetConfiguration(Guid agentId, string configName)
+        public FileContent GetConfiguration(Guid agentId, string configName)
         {
             // 
             // ThreadSafeInvoke<object>("Get-TugNodeConfiguration", agentId, configName);
@@ -68,7 +70,7 @@ namespace Tug.Server.Providers
             throw new NotImplementedException();
         }
 
-        public Tuple<string, string, Stream> GetModule(string moduleName, string moduleVersion)
+        public FileContent GetModule(string moduleName, string moduleVersion)
         {
             // 
             // ThreadSafeInvoke<object>("Get-TugModule", moduleName, moduleVersion);
@@ -76,8 +78,7 @@ namespace Tug.Server.Providers
             throw new NotImplementedException();
         }
 
-        public void SendReport(Guid agentId, Stream reportContent,
-                /*SendReportRequest*/ object reserved)
+        public void SendReport(Guid agentId, SendReportRequestBody detail)
         {
             // 
             // ThreadSafeInvoke<object>("New-TugNodeReport", agentId, reportContent, reserved);
@@ -85,8 +86,7 @@ namespace Tug.Server.Providers
             throw new NotImplementedException();
         }
 
-        public Stream GetReports(Guid agentId,
-                /*GetReportsRequest*/ object reserved)
+        public Stream GetReports(Guid agentId)
         {
             // 
             // ThreadSafeInvoke<object>("Get-TugNodeReports", agentId, reserved);
