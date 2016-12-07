@@ -59,10 +59,12 @@ namespace Tug.Server.Providers
             Assert(!string.IsNullOrWhiteSpace(ModulePath),
                     "module path not set");
 
+            Logger.LogInformation("All Assertions Passed!");
             Directory.CreateDirectory(RegistrationKeyPath);
             Directory.CreateDirectory(RegistrationSavePath);
             Directory.CreateDirectory(ConfigurationPath);
             Directory.CreateDirectory(ModulePath);
+            Logger.LogInformation("All Directories Created/Confirmed");
         }
 
         private void Assert(bool value, string failMessage = null)

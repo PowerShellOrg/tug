@@ -17,17 +17,22 @@ namespace Tug.Server.Providers
             nameof(Ps5DscHandler.BootstrapScript),
         };
 
-        private ILogger<Ps5DscHandlerProvider> _factoryLogger;
-        private ILogger<Ps5DscHandler> _handlerLogger;
+        private ILogger<Ps5DscHandlerProvider> _pLogger;
+        private ILogger<Ps5DscHandler> _hLogger;
+        private DscHandlerConfig _config;
         private IChecksumAlgorithmProvider _checksumProvider;
+
+        private Ps5DscHandler _handler;
                
         public Ps5DscHandlerProvider(
-                ILogger<Ps5DscHandlerProvider> factoryLogger,
+                ILogger<Ps5DscHandlerProvider> providerLogger,
                 ILogger<Ps5DscHandler> handlerlogger,
+                DscHandlerConfig config,
                 IChecksumAlgorithmProvider checksumProvider)
         {
-            _factoryLogger = factoryLogger;
-            _handlerLogger = handlerlogger;
+            _pLogger = providerLogger;
+            _hLogger = handlerlogger;
+            _config = config;
             _checksumProvider = checksumProvider;
         }
 
@@ -38,25 +43,41 @@ namespace Tug.Server.Providers
 
         public IDscHandler GetHandler(IDictionary<string, object> initParams)
         {
-            var h = new Ps5DscHandler();
-            h.LOG = _handlerLogger;
-
-            if (initParams != null)
+            _pLogger.LogDebug("Resolving handler");
+            if (_handler == null)
             {
-                foreach (var p in PARAMS)
+                lock (this)
                 {
-                    if (initParams.ContainsKey(p))
+                    if (_handler == null)
                     {
-                        typeof(Ps5DscHandler).GetTypeInfo()
-                                .GetProperty(p, BindingFlags.Public | BindingFlags.Instance)
-                                .SetValue(h, initParams[p]);
+                        var h = new Ps5DscHandler();
+                        h.Logger = _hLogger;
+
+                        _pLogger.LogInformation("Handler Constructed");
+
+                        if (initParams == null)
+                            initParams = _config?.InitParams;
+
+                        if (initParams != null)
+                        {
+                            foreach (var p in PARAMS)
+                            {
+                                if (initParams.ContainsKey(p))
+                                {
+                                    _pLogger.LogDebug("Setting parameter {initParamName}", p);
+                                    typeof(Ps5DscHandler).GetTypeInfo()
+                                            .GetProperty(p, BindingFlags.Public | BindingFlags.Instance)
+                                            .SetValue(h, initParams[p]);
+                                }
+                            }
+                        }
+
+                        h.Init();
+                        _handler = h;
                     }
                 }
             }
-
-            h.Init();
-
-            return h;
+            return _handler;
         }
     }
 }
