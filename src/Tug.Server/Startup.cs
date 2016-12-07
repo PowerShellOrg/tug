@@ -19,17 +19,13 @@ namespace Tug.Server
 {
     public class Startup
     {
-        private ILoggerFactory _preLoggerFactory;
         private ILogger _logger;
 
         public Startup()
         {
-            // We set this up to log any events that take place before the
-            // ultimate logging configuration is finalized and realized
-            _preLoggerFactory = new LoggerFactory()
-                .AddConsole();
-            _logger = _preLoggerFactory.CreateLogger<Startup>();
-            _logger.LogInformation("Commencing PRE-logging on startup");
+            // Start with a pre-logger till the final
+            // logging config is finalized down below
+            _logger = AppLog.CreatePreLogger<Startup>();
         }
 
         // This method gets called by the runtime. Use this

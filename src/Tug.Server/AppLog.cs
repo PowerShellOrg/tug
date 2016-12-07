@@ -20,9 +20,24 @@ namespace Tug.Server
     /// </remarks>
     public static class AppLog
     {
+        private static LoggerFactory _preLoggerFactory;
+
         static AppLog()
         {
+            // We set this up to log any events that take place before the
+            // ultimate logging configuration is finalized and realized
+            _preLoggerFactory = new LoggerFactory();
+            // Here we configure the hard-coded settings of the pre-logger with
+            // anything we want before the runtime logging config is resolved
+            _preLoggerFactory.AddConsole();
+
+            // This will be the final runtime logger factory
             Factory = new LoggerFactory();
+        }
+
+        public static ILogger<T> CreatePreLogger<T>()
+        {
+            return _preLoggerFactory.CreateLogger<T>();
         }
 
         public static ILoggerFactory Factory

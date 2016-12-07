@@ -8,17 +8,25 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Tug.Server
 {
     public class Program
     {
         public static bool _dumpEnvironment = true;
+        // Always points to the current logger for this class.
+        // Upon construction, we initialize this to a temporary <i>pre-logger</i>
+        // that is hard-coded to simply write to the console but eventually we replace
+        // this with a logger that is manufactored according to configuration specs.
+        protected static ILogger _logger;
 
         public static void Main(string[] args)
         {
             // Print some startup diagnostic information
             Console.WriteLine($"Tug.Server START-UP:");
+            _logger = AppLog.CreatePreLogger<Program>();
+            _logger.LogInformation("Commencing PRE-logging on startup");
 #if DOTNET_FRAMEWORK
             Console.WriteLine($"  .NET Platform = [.NET Framework]");
 #else
