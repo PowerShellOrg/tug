@@ -23,29 +23,43 @@ namespace Tug.Server.Providers
         public bool IsDisposed
         { get; private set; }
 
-        public ILogger<Ps5DscHandler> LOG
+        public ILogger<Ps5DscHandler> Logger
         { get; set; }
 
         public string BootstrapPath
-        { get; set; }
+        { get; set; } = ".";
 
         public string BootstrapScript
         { get; set; }
 
         public void Init()
         {
-            LOG.LogInformation($"Resolving Boostrap Full Path from Path=[{BootstrapPath}]");
+            Logger.LogInformation($"Resolving Boostrap Full Path from Path=[{BootstrapPath}]");
             _bootstrapFullpath = Path.Combine(Directory.GetCurrentDirectory(), BootstrapPath);
-            LOG.LogInformation($"Resolved Bootstrap Full Path as [{_bootstrapFullpath}]");
+            Logger.LogInformation($"Resolved Bootstrap Full Path as [{_bootstrapFullpath}]");
 
             _posh = PowerShell.Create();
-            LOG.LogInformation("Constructed PowerShell execution context");
+            Logger.LogInformation("Constructed PowerShell execution context");
             
             _posh.AddCommand("Microsoft.PowerShell.Management\\Set-Location");
             _posh.AddArgument(BootstrapPath);
-            _posh.Invoke();
+            var result = _posh.Invoke();
             _posh.Commands.Clear();
-            LOG.LogInformation("Relocated PWD for current execution context");
+            Logger.LogInformation("Relocated PWD for current execution context >>>>>>>>>>>>>>");
+            foreach (var r in result)
+                Logger.LogWarning(">> " + r.ToString());
+            
+
+            if (!string.IsNullOrEmpty(BootstrapScript))
+            {
+                Logger.LogInformation("Bootstrap Script found");
+                _posh.AddScript(BootstrapScript);
+                result = _posh.Invoke();
+                _posh.Commands.Clear();
+                Logger.LogInformation("Bootstrap Script executed >>>>>>>>>>>>");
+                foreach (var r in result)
+                    Logger.LogWarning(">> " + r.ToString());
+            }
         }
 
         public void RegisterDscAgent(Guid agentId, RegisterDscAgentRequestBody detail)
@@ -53,14 +67,19 @@ namespace Tug.Server.Providers
             // Return value is ignored, if no exceptions are thrown up, we assume success
             ThreadSafeInvoke<object>("Register-TugNode", agentId, detail);
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public ActionStatus GetDscAction(Guid agentId, GetDscActionRequestBody detail)
         {
             var result = ThreadSafeInvoke<object>("Get-TugNodeAction", agentId, detail);
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            return new ActionStatus
+            {
+                NodeStatus = DscActionStatus.OK,
+            };
         }
         public FileContent GetConfiguration(Guid agentId, string configName)
         {
@@ -109,7 +128,12 @@ namespace Tug.Server.Providers
                 foreach (var a in args)
                     _posh.AddArgument(a);
                 
-                return _posh.Invoke<T>(EMPTY_INPUT);
+                var result = _posh.Invoke<T>(EMPTY_INPUT);
+                Logger.LogInformation($"ThreadSafeInvoke({cmd}) >>>>>>>>>>>>");
+                foreach (var r in result)
+                    Logger.LogWarning(">> " + r.ToString());
+
+                return result;
             }
         }
 
@@ -121,9 +145,11 @@ namespace Tug.Server.Providers
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    if (_posh != null)
-                        _posh.Dispose();
-                    _posh = null;
+
+                    // TODO:  THIS NEEDS TO BE REFACTORED AFTER FIGURING OUT LIFECYLCE OF HANDLERS
+                    // if (_posh != null)
+                    //     _posh.Dispose();
+                    // _posh = null;
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
