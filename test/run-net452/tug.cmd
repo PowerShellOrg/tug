@@ -1,1 +1,13 @@
-dotnet run -p ..\..\src\Tug.Server -f net452 
+@SETLOCAL
+@SET THIS=%0
+@SET THIS_DIR=%~dp0
+
+@ECHO THIS=%THIS%
+@ECHO THIS_DIR=%THIS_DIR%
+
+@SET PROJ_ROOT=%THIS_DIR%..\..\src\Tug.Server
+@SET DOTNET_MONIK=net452
+
+dotnet run -p %PROJ_ROOT% -f %DOTNET_MONIK% -- %* 
+
+@ENDLOCAL
