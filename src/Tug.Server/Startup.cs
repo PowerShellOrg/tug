@@ -13,8 +13,10 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
+using Tug.Server.Configuration;
 
 namespace Tug.Server
 {
@@ -65,6 +67,12 @@ namespace Tug.Server
         // visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogInformation("Configuring services registry");
+
+            // Enable and bind to strongly-typed configuration
+            services.AddOptions();
+            services.Configure<AppSettings>(_config.GetSection(nameof(AppSettings)));
+
             _logger.LogInformation("Adding MVC services");
             services.AddMvc()
                 .AddJsonOptions(options =>
@@ -91,33 +99,9 @@ namespace Tug.Server
 
         // This method gets called by the runtime. Use this
         // method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-            IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                IOptions<AppSettings> settings)
         {
-
-            // set up console logging
-            // TODO it would be nice to also have a text file logger
-            _logger.LogInformation("Resolving logging configuration");
-            if (config["LogType"] == "console" | config["LogType"] == "both") {
-                _logger.LogInformation("  * enabling Console Logging");
-                if (config["DebugLog"] == "true") {
-                    loggerFactory.AddConsole(LogLevel.Debug);
-                } else {
-                    loggerFactory.AddConsole(LogLevel.Information);
-                }
-            }
-            if (config["LogType"] == "nlog" | config["LogType"] == "both") {
-                var configPath = Path.Combine(Directory.GetCurrentDirectory(), "nlog.config");
-                _logger.LogInformation($"  * enabling NLog with config=[{configPath}]");
-                loggerFactory.AddNLog();
-                env.ConfigureNLog(configPath);
-            }
-
-            // Initiate and switch to runtime logging
-            _logger.LogInformation("Instantiating runtime logging (PRE-logging will cease)");
-            _logger = loggerFactory.CreateLogger<Startup>();
-            _logger.LogInformation("Commencing runtime logging");
-
             // set development option
             if (env.IsDevelopment())
             {
