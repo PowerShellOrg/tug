@@ -1,4 +1,10 @@
+/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,24 +13,52 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
+using Tug.Server.Configuration;
 
 namespace Tug.Server
 {
     public class Startup
     {
-        private ILoggerFactory _preLoggerFactory;
-        private ILogger _logger;
+        #region -- Constants --
 
-        public Startup()
+        /// <summary>
+        /// File name of a required JSON file used to configure the server app.
+        /// </summary>
+        public const string APP_CONFIG_FILENAME = "appsettings.json";
+
+        /// <summary>
+        /// File name of an optional JSON file used to override server app configuration.
+        /// </summary>
+        public const string APP_USER_CONFIG_FILENAME = "appsettings.user.json";
+
+        /// <summary>
+        /// Prefix used to identify environment variables that can override server app
+        /// configuration.
+        /// </summary>
+        public const string APP_CONFIG_ENV_PREFIX = "TUG_CFG_";
+
+        #endregion -- Constants --
+
+        ILogger<Startup> _logger;
+
+        protected IConfiguration _config;
+
+        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            // We set this up to log any events that take place before the
-            // ultimate logging configuration is finalized and realized
-            _preLoggerFactory = new LoggerFactory()
-                .AddConsole();
-            _logger = _preLoggerFactory.CreateLogger<Startup>();
-            _logger.LogInformation("Commencing PRE-logging on startup");
+            // Start with a pre-logger till the final
+            // logging config is finalized down below
+            _logger = AppLog.CreatePreLogger<Startup>();
+
+            // This is ugly as hell but unfortunately, we could not find another
+            // way to pass this along from Program to other parts of the app via DI
+            var args = Program.CommandLineArgs.ToArray();
+
+            _logger.LogInformation("Resolving final runtime configuration");
+            _config = ResolveAppConfig(args);
+            ConfigureLogging(env, loggerFactory);
         }
 
         // This method gets called by the runtime. Use this
@@ -33,6 +67,12 @@ namespace Tug.Server
         // visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogInformation("Configuring services registry");
+
+            // Enable and bind to strongly-typed configuration
+            services.AddOptions();
+            services.Configure<AppSettings>(_config.GetSection(nameof(AppSettings)));
+
             _logger.LogInformation("Adding MVC services");
             services.AddMvc()
                 .AddJsonOptions(options =>
@@ -59,40 +99,9 @@ namespace Tug.Server
 
         // This method gets called by the runtime. Use this
         // method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-            IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                IOptions<AppSettings> settings)
         {
-            _logger.LogInformation("Preparing to resolve final runtime configuration");
-
-            // get configuration
-            var builder = new ConfigurationBuilder();
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-            builder.AddJsonFile("appsettings.json");
-            var config = builder.Build();
-
-            // set up console logging
-            // TODO it would be nice to also have a text file logger
-            _logger.LogInformation("Resolving logging configuration");
-            if (config["LogType"] == "console" | config["LogType"] == "both") {
-                _logger.LogInformation("  * enabling Console Logging");
-                if (config["DebugLog"] == "true") {
-                    loggerFactory.AddConsole(LogLevel.Debug);
-                } else {
-                    loggerFactory.AddConsole(LogLevel.Information);
-                }
-            }
-            if (config["LogType"] == "nlog" | config["LogType"] == "both") {
-                var configPath = Path.Combine(Directory.GetCurrentDirectory(), "nlog.config");
-                _logger.LogInformation($"  * enabling NLog with config=[{configPath}]");
-                loggerFactory.AddNLog();
-                env.ConfigureNLog(configPath);
-            }
-
-            // Initiate and switch to runtime logging
-            _logger.LogInformation("Instantiating runtime logging (PRE-logging will cease)");
-            _logger = loggerFactory.CreateLogger<Startup>();
-            _logger.LogInformation("Commencing runtime logging");
-
             // set development option
             if (env.IsDevelopment())
             {
@@ -121,7 +130,61 @@ namespace Tug.Server
                     return context.Response.WriteAsync($"{{{version}}}");
                 });
             });
+        }
 
+        protected IConfiguration ResolveAppConfig(string[] args = null)
+        {
+            // Resolve the runtime configuration settings
+            var appConfigBuilder = new ConfigurationBuilder();
+            // Base path for any file-based config sources
+            appConfigBuilder.SetBasePath(Directory.GetCurrentDirectory());
+            // Default location for all configuration settings
+            appConfigBuilder.AddJsonFile(APP_CONFIG_FILENAME, optional: false);
+            // Optional location for user-specific local overrides
+            appConfigBuilder.AddJsonFile(APP_USER_CONFIG_FILENAME, optional: true);
+            // Allows overriding any setting using envVars that being with TUG_CFG_
+            appConfigBuilder.AddEnvironmentVariables(prefix: APP_CONFIG_ENV_PREFIX);
+            // A good place to store secrets for dev/test
+            appConfigBuilder.AddUserSecrets();
+
+            if (args != null)
+            {
+                // Last but not least, allow overriding with CLI arguments
+                appConfigBuilder.AddCommandLine(args);
+            }
+
+            return appConfigBuilder.Build();
+        }
+
+        protected void ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            var logSettings = _config
+                .GetSection(nameof(LogSettings))
+                .Get<LogSettings>();
+
+            _logger.LogInformation("Applying logging configuration");
+
+            if (logSettings.LogType.HasFlag(LogType.Console)) {
+                _logger.LogInformation("  * enabling Console Logging");
+                if (logSettings.DebugLog) {
+                    loggerFactory.AddConsole(LogLevel.Debug);
+                } else {
+                    loggerFactory.AddConsole(LogLevel.Information);
+                }
+            }
+
+            if (logSettings.LogType.HasFlag(LogType.NLog)) {
+                var configPath = Path.Combine(Directory.GetCurrentDirectory(), "nlog.config");
+                _logger.LogInformation($"  * enabling NLog with config=[{configPath}]");
+                loggerFactory.AddNLog();
+                env.ConfigureNLog(configPath);
+            }
+
+            // Initiate and switch to runtime logging
+            _logger.LogInformation("Instantiating runtime logging");
+            _logger.LogInformation("***** PRE-logging will cease *****");
+            _logger = loggerFactory.CreateLogger<Startup>();
+            _logger.LogInformation("Commencing runtime logging");
         }
     }
 }
