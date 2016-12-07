@@ -3,6 +3,7 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -46,6 +47,8 @@ namespace Tug.Server
 
         protected IConfiguration _config;
 
+        protected AppSettings _settings;
+
         public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             // Start with a pre-logger till the final
@@ -58,6 +61,8 @@ namespace Tug.Server
 
             _logger.LogInformation("Resolving final runtime configuration");
             _config = ResolveAppConfig(args);
+            _settings = _config.GetSection(nameof(AppSettings))?.Get<AppSettings>(); 
+
             ConfigureLogging(env, loggerFactory);
         }
 
@@ -90,18 +95,23 @@ namespace Tug.Server
             services.AddSingleton<IChecksumAlgorithmProvider,
                     Tug.Providers.Sha256ChecksumAlgorithmProvider>();
 
-            // TODO:  This is where we'll put logic to resolve the
-            // selected DSC Handler based on a configured provider
-            _logger.LogInformation("Registering BASIC DSC Handler");
-            services.AddSingleton<IDscHandlerProvider,
-                    Providers.BasicDscHandlerProvider>();
+            // // TODO:  This is where we'll put logic to resolve the
+            // // selected DSC Handler based on a configured provider
+            // _logger.LogInformation("Registering BASIC DSC Handler");
+            // services.AddSingleton<IDscHandlerProvider,
+            //         Providers.BasicDscHandlerProvider>();
+
+            // TODO:  This is still kinda ugly, need to revamp this
+            ResolveDscHandler(services, _settings?.Handler);
         }
 
         // This method gets called by the runtime. Use this
         // method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-                IOptions<AppSettings> settings)
+                IOptions<AppSettings> options)
         {
+            var settings = options.Value;
+
             // set development option
             if (env.IsDevelopment())
             {
@@ -110,7 +120,6 @@ namespace Tug.Server
 
             // // begin registering routes for incoming requests
             // var routeBuilder = new RouteBuilder(app);
-
             app.UseMvc(routeBuilder =>
             {
 
@@ -130,6 +139,22 @@ namespace Tug.Server
                     return context.Response.WriteAsync($"{{{version}}}");
                 });
             });
+        }
+
+        protected void ResolveDscHandler(IServiceCollection services, HandlerSettings settings)
+        {
+            _logger.LogInformation($"Resolving DSC Handler Provider for [{settings?.Provider}]");
+            var handlerProviderType = Type.GetType(settings?.Provider);
+            if (handlerProviderType == null)
+                throw new Exception("Unable to resolve DSC Handler Provider type (is the type specifiied fully?)");
+
+            services.AddSingleton<DscHandlerConfig>(new DscHandlerConfig
+            {
+                InitParams = settings?.Params,   
+            });
+
+            services.AddSingleton(
+                    typeof(IDscHandlerProvider), handlerProviderType);
         }
 
         protected IConfiguration ResolveAppConfig(string[] args = null)

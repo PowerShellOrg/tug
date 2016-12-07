@@ -19,15 +19,21 @@ namespace Tug.Server.Providers
 
         private ILogger<Ps5DscHandlerProvider> _factoryLogger;
         private ILogger<Ps5DscHandler> _handlerLogger;
+        private ILogger<Ps5DscHandlerProvider> _pLogger;
+        private ILogger<Ps5DscHandler> _hLogger;
+        private DscHandlerConfig _config;
         private IChecksumAlgorithmProvider _checksumProvider;
+
+        private Ps5DscHandler _handler;
                
         public Ps5DscHandlerProvider(
-                ILogger<Ps5DscHandlerProvider> factoryLogger,
+                ILogger<Ps5DscHandlerProvider> providerLogger,
                 ILogger<Ps5DscHandler> handlerlogger,
                 IChecksumAlgorithmProvider checksumProvider)
         {
-            _factoryLogger = factoryLogger;
-            _handlerLogger = handlerlogger;
+            _pLogger = providerLogger;
+            _hLogger = handlerlogger;
+            _config = config;
             _checksumProvider = checksumProvider;
         }
 
