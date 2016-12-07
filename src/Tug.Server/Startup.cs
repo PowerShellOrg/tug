@@ -160,6 +160,8 @@ namespace Tug.Server
             appConfigBuilder.AddJsonFile(APP_USER_CONFIG_FILENAME, optional: true);
             // Allows overriding any setting using envVars that being with TUG_CFG_
             appConfigBuilder.AddEnvironmentVariables(prefix: APP_CONFIG_ENV_PREFIX);
+            // A good place to store secrets for dev/test
+            appConfigBuilder.AddUserSecrets();
 
             if (args != null)
             {
