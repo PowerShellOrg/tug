@@ -20,13 +20,16 @@
 
   "frameworks": {
     "netstandard1.6": {
+      "imports": [
+        "portable-net45+win8" // Needed to include MEF2
+      ],
       "dependencies": {
         "NETStandard.Library": "1.6.1",
         "System.ComponentModel.Annotations": "4.3.0"
       }
     }
     ,
-    "net452": {
+    "net462": {
       "frameworkAssemblies": {
         // These are needed here as per:
         //    https://github.com/dotnet/cli/issues/3817

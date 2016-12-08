@@ -81,16 +81,19 @@
           "DOTNET_CORE"
         ]
       },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8" // Needed to include MEF2
+      ],
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.1.0"
         },
         "System.Security.Cryptography.Algorithms": "4.3.0"
-      },
-      "imports": "dnxcore50"
+      }
     },
-    "net452": {
+    "net462": {
       "buildOptions": {
         "define": [
           "DOTNET_FRAMEWORK"
