@@ -39,7 +39,7 @@
       }
     }
     ,
-    "net462": {
+    "net452": {
       "buildOptions": {
         "define": [
           "DOTNET_FRAMEWORK"

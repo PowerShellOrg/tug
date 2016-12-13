@@ -33,7 +33,7 @@
       }
     }
     ,
-    "net462": {
+    "net452": {
       "frameworkAssemblies": {
         // These are needed here as per:
         //    https://github.com/dotnet/cli/issues/3817

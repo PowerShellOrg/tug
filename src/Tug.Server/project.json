@@ -93,7 +93,7 @@
         "System.Security.Cryptography.Algorithms": "4.3.0"
       }
     },
-    "net462": {
+    "net452": {
       "buildOptions": {
         "define": [
           "DOTNET_FRAMEWORK"
