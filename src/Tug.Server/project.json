@@ -100,10 +100,10 @@
         ]
       },
       "dependencies": {
-        // This one is specific to .NET Framework only
-        "Tug.Server.Providers.Ps5DscHandler": {
-          "target": "project"
-        }
+        // // This one is specific to .NET Framework only
+        // "Tug.Server.Providers.Ps5DscHandler": {
+        //   "target": "project"
+        // }
       }
     }
   }
