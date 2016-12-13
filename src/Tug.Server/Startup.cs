@@ -104,22 +104,6 @@ namespace Tug.Server
             // Register the Helpers
             services.AddSingleton<ChecksumHelper>();
             services.AddSingleton<DscHandlerHelper>();
-
-            // // TODO:  This is temporary, we'll setup logic to optionally
-            // // support multiple providers of checksum algorithms
-            // _logger.LogInformation("Registering SHA-256 checksum provider");
-            // services.AddSingleton<IChecksumAlgorithmProvider,
-            //         Tug.Providers.Sha256ChecksumAlgorithmProvider>();
-            //ResolveChecksumHandlers(services, _settings?.Checksum);
-
-            // // TODO:  This is where we'll put logic to resolve the
-            // // selected DSC Handler based on a configured provider
-            // _logger.LogInformation("Registering BASIC DSC Handler");
-            // services.AddSingleton<IDscHandlerProvider,
-            //         Providers.BasicDscHandlerProvider>();
-
-            // TODO:  This is still kinda ugly, need to revamp this
-            //ResolveDscHandler(services, _settings?.Handler);
         }
 
         // This method gets called by the runtime. Use this
