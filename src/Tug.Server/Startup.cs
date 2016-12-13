@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
 using Tug.Server.Configuration;
+using Tug.Server.Util;
 
 namespace Tug.Server
 {
@@ -75,9 +76,15 @@ namespace Tug.Server
             _logger.LogInformation("Configuring services registry");
 
             // Enable and bind to strongly-typed configuration
+            var appSettings = _config.GetSection(nameof(AppSettings));
             services.AddOptions();
-            services.Configure<AppSettings>(_config.GetSection(nameof(AppSettings)));
+            services.Configure<AppSettings>(appSettings);
+            services.Configure<ChecksumSettings>(
+                    appSettings.GetSection(nameof(AppSettings.Checksum)));
+            services.Configure<HandlerSettings>(
+                    appSettings.GetSection(nameof(AppSettings.Handler)));
 
+            // Add MVC-supporting services
             _logger.LogInformation("Adding MVC services");
             services.AddMvc()
                 .AddJsonOptions(options =>
@@ -89,11 +96,21 @@ namespace Tug.Server
                     options.SerializerSettings.Converters.Add(new StringEnumConverter());
                 });
 
-            // TODO:  This is temporary, we'll setup logic to optionally
-            // support multiple providers of checksum algorithms
-            _logger.LogInformation("Registering SHA-256 checksum provider");
-            services.AddSingleton<IChecksumAlgorithmProvider,
-                    Tug.Providers.Sha256ChecksumAlgorithmProvider>();
+            
+            // Register the Provider Managers 
+            services.AddSingleton<ChecksumAlgorithmManager>();
+            services.AddSingleton<DscHandlerManager>();
+
+            // Register the Helpers
+            services.AddSingleton<ChecksumHelper>();
+            services.AddSingleton<DscHandlerHelper>();
+
+            // // TODO:  This is temporary, we'll setup logic to optionally
+            // // support multiple providers of checksum algorithms
+            // _logger.LogInformation("Registering SHA-256 checksum provider");
+            // services.AddSingleton<IChecksumAlgorithmProvider,
+            //         Tug.Providers.Sha256ChecksumAlgorithmProvider>();
+            //ResolveChecksumHandlers(services, _settings?.Checksum);
 
             // // TODO:  This is where we'll put logic to resolve the
             // // selected DSC Handler based on a configured provider
@@ -102,16 +119,14 @@ namespace Tug.Server
             //         Providers.BasicDscHandlerProvider>();
 
             // TODO:  This is still kinda ugly, need to revamp this
-            ResolveDscHandler(services, _settings?.Handler);
+            //ResolveDscHandler(services, _settings?.Handler);
         }
 
         // This method gets called by the runtime. Use this
         // method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-                IOptions<AppSettings> options)
+        public void Configure(IServiceProvider serviceProvider,
+                IApplicationBuilder app, IHostingEnvironment env)
         {
-            var settings = options.Value;
-
             // set development option
             if (env.IsDevelopment())
             {
@@ -139,22 +154,10 @@ namespace Tug.Server
                     return context.Response.WriteAsync($"{{{version}}}");
                 });
             });
-        }
 
-        protected void ResolveDscHandler(IServiceCollection services, HandlerSettings settings)
-        {
-            _logger.LogInformation($"Resolving DSC Handler Provider for [{settings?.Provider}]");
-            var handlerProviderType = Type.GetType(settings?.Provider);
-            if (handlerProviderType == null)
-                throw new Exception("Unable to resolve DSC Handler Provider type (is the type specifiied fully?)");
-
-            services.AddSingleton<DscHandlerConfig>(new DscHandlerConfig
-            {
-                InitParams = settings?.Params,   
-            });
-
-            services.AddSingleton(
-                    typeof(IDscHandlerProvider), handlerProviderType);
+            // Resolve some DI classes to make sure they're ready to go when needed
+            serviceProvider.GetRequiredService<ChecksumHelper>();
+            serviceProvider.GetRequiredService<DscHandlerHelper>();
         }
 
         protected IConfiguration ResolveAppConfig(string[] args = null)
