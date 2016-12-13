@@ -1,39 +1,37 @@
 {
-  "name": "Tug.Server.Base",
+  "name": "Tug.Ext", // WORK-IN-PROGRES for Extension/Provider model
   "version": "0.5.1-*",
   "copyright": "Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.",
-  "title": "Tug Server Abstractions",
-  "authors": ["Don Jones"],
+  "title": "Tug Client",
   "language": "en-US",
 
   "buildOptions": {
-    "debugType": "portable"
+    "debugType": "portable",
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
   },
 
   "dependencies": {
-    "Microsoft.Extensions.Logging": "1.1.0",
-    "Microsoft.Extensions.Configuration": "1.1.0",
+    "System.Runtime.Loader": "4.3.0",
+    "Microsoft.Composition": "1.0.30",
 
-    "Microsoft.AspNetCore.Mvc": "1.1.0",
-
-    "Tug.Base": {
-      "target": "project"
-    }
-
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Configuration": "1.0.0"
   },
-
   "frameworks": {
-    "netstandard1.6": {
+    "netcoreapp1.1": {
       "imports": [
+        "dnxcore50",
         "portable-net45+win8" // Needed to include MEF2
       ],
       "dependencies": {
-        "NETStandard.Library": "1.6.1",
-        "System.ComponentModel.Annotations": "4.3.0"
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
       }
-    }
-    ,
-    "net452": {
+    },
+    "net462": {
       "frameworkAssemblies": {
         // These are needed here as per:
         //    https://github.com/dotnet/cli/issues/3817
@@ -41,6 +39,7 @@
         "System.ComponentModel.DataAnnotations": "4.0.0.0"
       },
       "dependencies": {
+        
       }
     }
   }

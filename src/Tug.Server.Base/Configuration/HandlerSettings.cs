@@ -5,9 +5,12 @@ namespace Tug.Server.Configuration
 {
     public class HandlerSettings
     {
+        public ExtSettings Ext
+        { get; set; }
+        
         [Required]
         public string Provider
-        { get; set; } = typeof(Providers.BasicDscHandlerProvider).FullName;
+        { get; set; } = "basic";
 
         // This has to be concrete class, not interface to
         // be able to construct during deserialization

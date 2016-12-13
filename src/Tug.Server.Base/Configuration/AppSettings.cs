@@ -7,6 +7,9 @@ namespace Tug.Server.Configuration
 {
     public class AppSettings
     {
+        public ChecksumSettings Checksum
+        { get; set; }
+        
         public HandlerSettings Handler
         { get; set; }
     }

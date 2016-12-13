@@ -4,26 +4,28 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tug.Ext;
 using Tug.Ext.Util;
 using Tug.Server.Configuration;
 
-namespace Tug.Server
+namespace Tug
 {
-    public interface IDscHandlerProvider : IProvider<IDscHandler>
+    public interface IChecksumAlgorithmProvider : IProvider<IChecksumAlgorithm>
     { }
 
-    public class DscHandlerManager
-        : ProviderManagerBase<IDscHandlerProvider, IDscHandler>
+    public class ChecksumAlgorithmManager
+        : ProviderManagerBase<IChecksumAlgorithmProvider, IChecksumAlgorithm>
     {
-        public DscHandlerManager(
-                ILogger<DscHandlerManager> logger,
+        public ChecksumAlgorithmManager(
+                ILogger<ChecksumAlgorithmManager> logger,
                 ILogger<ServiceProviderExportDescriptorProvider> spLogger,
-                IOptions<HandlerSettings> settings,
+                IOptions<ChecksumSettings> settings,
                 IServiceProvider sp)
             : base(logger, new ServiceProviderExportDescriptorProvider(spLogger, sp))
         {
@@ -71,6 +73,23 @@ namespace Tug.Server
                 }));
             }
 
+        }
+
+        protected override IEnumerable<IChecksumAlgorithmProvider> FindProviders()
+        {
+            try
+            {
+                return base.FindProviders();
+            }
+            catch (System.Reflection.ReflectionTypeLoadException ex)
+            {
+                Console.Error.WriteLine(">>>>>> Load Exceptions:");
+                foreach (var lex in ex.LoaderExceptions)
+                {
+                    Console.Error.WriteLine(">>>>>> >>>>" + lex);
+                }
+                throw ex;
+            }
         }
     }
 }

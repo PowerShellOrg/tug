@@ -6,18 +6,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tug.Messages;
+using Tug.Server.Util;
 
 namespace Tug.Server.Controllers
 {
     public class DscReportingController : Controller
     {
         private ILogger<DscController> _logger;
-        private IDscHandlerProvider _dscHandlerProvider;
+        private DscHandlerHelper _dscHelper;
+
         public DscReportingController(ILogger<DscController> logger,
-                IDscHandlerProvider handlerProvider)
+                DscHandlerHelper dscHelper)
         {
             _logger = logger;
-            _dscHandlerProvider = handlerProvider;
+            _dscHelper = dscHelper;
         }
 
         [HttpPost]

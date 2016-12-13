@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tug.Messages;
 using Tug.Model;
+using Tug.Server.Util;
 
 namespace Tug.Server.Controllers
 {
@@ -20,12 +21,16 @@ namespace Tug.Server.Controllers
     public class DscController : Controller
     {
         private ILogger<DscController> _logger;
-        private IDscHandlerProvider _dscHandlerProvider;
+        //private DscHandlerManager _dscHandlerManager;
+        private DscHandlerHelper _dscHelper;
+        private IDscHandler _dscHandler;
+
         public DscController(ILogger<DscController> logger,
-                IDscHandlerProvider handlerProvider)
+                DscHandlerHelper dscHelper)
         {
             _logger = logger;
-            _dscHandlerProvider = handlerProvider;
+            _dscHelper = dscHelper;
+            _dscHandler = _dscHelper.DefaultHandler;
         }
 
         [HttpPut]
@@ -38,11 +43,7 @@ namespace Tug.Server.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
-
-                using (var h = _dscHandlerProvider.GetHandler(null))
-                {
-                    h.RegisterDscAgent(input.AgentId, input.Body);
-                }
+                _dscHandler.RegisterDscAgent(input.AgentId, input.Body);
 
                 return this.Model(RegisterDscAgentResponse.INSTANCE);
             }
@@ -60,12 +61,7 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
 
-                ActionStatus actionInfo;
-                using (var h = _dscHandlerProvider.GetHandler(null))
-                {
-                    actionInfo = h.GetDscAction(input.AgentId, input.Body);
-                }
-
+                var actionInfo = _dscHandler.GetDscAction(input.AgentId, input.Body);
                 var response = new GetDscActionResponse
                 {
                     Body = new GetDscActionResponseBody
@@ -92,11 +88,7 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}] Configuration=[{input.ConfigurationName}]");
                 
-                FileContent configContent;
-                using (var h = _dscHandlerProvider.GetHandler(null))
-                {
-                    configContent = h.GetConfiguration(input.AgentId, input.ConfigurationName);
-                }
+                var configContent = _dscHandler.GetConfiguration(input.AgentId, input.ConfigurationName);
                 if (configContent == null)
                     return NotFound();
 
@@ -123,11 +115,7 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"Module name=[{input.ModuleName}] Version=[{input.ModuleVersion}]");
 
-                FileContent moduleContent;
-                using (var h = _dscHandlerProvider.GetHandler(null))
-                {
-                    moduleContent = h.GetModule(input.ModuleName, input.ModuleVersion);
-                }
+                var moduleContent = _dscHandler.GetModule(input.ModuleName, input.ModuleVersion);
                 if (moduleContent == null)
                     return NotFound();
 

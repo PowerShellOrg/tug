@@ -81,14 +81,17 @@
           "DOTNET_CORE"
         ]
       },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8" // Needed to include MEF2
+      ],
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.1.0"
         },
         "System.Security.Cryptography.Algorithms": "4.3.0"
-      },
-      "imports": "dnxcore50"
+      }
     },
     "net452": {
       "buildOptions": {
@@ -97,10 +100,10 @@
         ]
       },
       "dependencies": {
-        // This one is specific to .NET Framework only
-        "Tug.Server.Providers.Ps5DscHandler": {
-          "target": "project"
-        }
+        // // This one is specific to .NET Framework only
+        // "Tug.Server.Providers.Ps5DscHandler": {
+        //   "target": "project"
+        // }
       }
     }
   }

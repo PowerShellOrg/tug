@@ -1,45 +1,54 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using Tug.Ext;
+using Tug.Server.Util;
 
 namespace Tug.Server.Providers
 {
     public class BasicDscHandlerProvider : IDscHandlerProvider
     {
-        private static readonly IEnumerable<string> PARAMS = new[]
+        private static readonly ProviderInfo INFO = new ProviderInfo("basic");
+
+        private static readonly IEnumerable<ProviderParameterInfo> PARAMS = new[]
         {
-            nameof(BasicDscHandler.RegistrationKeyPath),
-            nameof(BasicDscHandler.RegistrationSavePath),
-            nameof(BasicDscHandler.ConfigurationPath),
-            nameof(BasicDscHandler.ModulePath),
+            new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationKeyPath)),
+            new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationSavePath)),
+            new ProviderParameterInfo(nameof(BasicDscHandler.ConfigurationPath)),
+            new ProviderParameterInfo(nameof(BasicDscHandler.ModulePath)),
         };
 
         private ILogger<BasicDscHandlerProvider> _pLogger;
         private ILogger<BasicDscHandler> _hLogger;
-        private IChecksumAlgorithmProvider _checksumProvider;
-        private DscHandlerConfig _config;
+        private ChecksumHelper _checksumHelper;
+
+        private IDictionary<string, object> _productParams;
+
         private BasicDscHandler _handler;
 
         public BasicDscHandlerProvider(
                 ILogger<BasicDscHandlerProvider> pLogger,
                 ILogger<BasicDscHandler> hLogger,
-                DscHandlerConfig config,
-                IChecksumAlgorithmProvider checksumProvider)
+                ChecksumAlgorithmManager checksumManager,
+                ChecksumHelper checksumHelper)
         {
             _pLogger = pLogger;
             _hLogger = hLogger;
-            _config = config;
-            _checksumProvider = checksumProvider;
+            _checksumHelper = checksumHelper;
 
             _pLogger.LogInformation("Provider Created");
         }
 
-        public IEnumerable<string> GetParameters()
+        public ProviderInfo Describe() => INFO;
+
+        public IEnumerable<ProviderParameterInfo> DescribeParameters() => PARAMS;
+
+        public void SetParameters(IDictionary<string, object> productParams)
         {
-            return PARAMS;
+            _productParams = productParams;
         }
 
-        public IDscHandler GetHandler(IDictionary<string, object> initParams)
+        public IDscHandler Produce()
         {
             _pLogger.LogDebug("Resolving Handler");
             if (_handler == null)
@@ -53,22 +62,20 @@ namespace Tug.Server.Providers
                         _handler = new BasicDscHandler
                         {
                             Logger = _hLogger,
-                            ChecksumProvider = _checksumProvider,
+                            ChecksumHelper = _checksumHelper,
                         };
 
-                        if (initParams == null)
-                            initParams = _config?.InitParams;
-
-                        if (initParams != null)
+                        if (_productParams != null)
                         {
                             foreach (var p in PARAMS)
                             {
-                                if (initParams.ContainsKey(p))
+                                if (_productParams.ContainsKey(p.Name))
                                 {
-                                    _pLogger.LogInformation("  * Setting init param: " + p);
+                                    _pLogger.LogInformation($"  * Setting init param:  [{p.Name}]");
                                     typeof(BasicDscHandler).GetTypeInfo()
-                                            .GetProperty(p, BindingFlags.Public | BindingFlags.Instance)
-                                            .SetValue(_handler, initParams[p]);
+                                            .GetProperty(p.Name, BindingFlags.Public
+                                                    | BindingFlags.Instance)
+                                            .SetValue(_handler, _productParams[p.Name]);
                                 }
                             }
                         }

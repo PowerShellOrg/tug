@@ -12,21 +12,39 @@
   },
 
   "dependencies": {
-    "Microsoft.Extensions.Logging": "1.0.0",
-    "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.Composition": "1.0.30",
+    "Microsoft.Extensions.PlatformAbstractions": "1.1.0",
+    "Microsoft.Extensions.DependencyModel": "1.1.0",
+
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Configuration": "1.1.0",
 
     "Microsoft.AspNetCore.Mvc": "1.1.0"
   },
 
   "frameworks": {
     "netstandard1.6": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_CORE"
+        ]
+      },
+      "imports": [
+        "portable-net45+win8" // Needed to include MEF2
+      ],
       "dependencies": {
         "NETStandard.Library": "1.6.1",
+        "System.Runtime.Loader": "4.3.0",
         "System.ComponentModel.Annotations": "4.3.0"
       }
     }
     ,
     "net452": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_FRAMEWORK"
+        ]
+      },
       "frameworkAssemblies": {
         // These are needed here as per:
         //    https://github.com/dotnet/cli/issues/3817
