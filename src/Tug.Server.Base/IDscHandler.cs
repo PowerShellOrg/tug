@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using Tug.Ext;
 using Tug.Model;
 
 namespace Tug.Server
@@ -18,11 +19,8 @@ namespace Tug.Server
     /// protocol specification as found
     /// <see href="https://msdn.microsoft.com/en-us/library/dn366007.aspx">here</see>.
     /// </remarks>
-    public interface IDscHandler : IDisposable
+    public interface IDscHandler : IProviderProduct
     {
-        bool IsDisposed
-        { get; }
-
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt590247.aspx
         /// </summary>
