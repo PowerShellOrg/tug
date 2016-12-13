@@ -18,15 +18,18 @@
   },
   "frameworks": {
     "netcoreapp1.1": {
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8" // Needed to include MEF2
+      ],
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.1.0"
         }
-      },
-      "imports": "dnxcore50"
+      }
     },
-    "net462": {
+    "net452": {
       "dependencies": {
         
       }
