@@ -2,17 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using Tug.Ext;
 
 namespace Tug.Providers
 {
-    public class Sha256ChecksumAlgorithmProvider : IChecksumAlgorithmProvider
-    {
-        public IChecksumAlgorithm GetChecksumAlgorithm(IDictionary<string, object> initParams = null)
-        {
-            return new Sha256ChecksumAlgorithm();
-        }
-    }
-
     public class Sha256ChecksumAlgorithm : IChecksumAlgorithm
     {
         private SHA256 _sha256;
@@ -23,7 +16,7 @@ namespace Tug.Providers
         }
 
         public string AlgorithmName
-        { get; } = "SHA-256";
+        { get; } = Sha256ChecksumAlgorithmProvider.PROVIDER_NAME;
 
         public bool IsDisposed
         { get; private set; }

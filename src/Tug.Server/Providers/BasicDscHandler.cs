@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Tug.Messages;
 using Tug.Model;
+using Tug.Server.Util;
 
 namespace Tug.Server.Providers
 {
@@ -28,7 +28,7 @@ namespace Tug.Server.Providers
         public ILogger<BasicDscHandler> Logger
         { get; set; }
 
-        public IChecksumAlgorithmProvider ChecksumProvider
+        public ChecksumHelper ChecksumHelper
         { get; set; }
 
         public string RegistrationKeyPath
@@ -49,7 +49,7 @@ namespace Tug.Server.Providers
         public void Init()
         {
             Assert(Logger != null, "missing logger");
-            Assert(ChecksumProvider != null, "missing checksum provider");
+            Assert(ChecksumHelper != null, "missing checksum helper");
             Assert(!string.IsNullOrWhiteSpace(RegistrationKeyPath),
                     "registration key path not set");
             Assert(!string.IsNullOrWhiteSpace(RegistrationSavePath),
@@ -140,7 +140,7 @@ namespace Tug.Server.Providers
 
                     if (!string.IsNullOrEmpty(cs.Checksum)) // Empty Checksum on the first pull
                     {
-                        using (var csum = ChecksumProvider.GetChecksumAlgorithm())
+                        using (var csum = ChecksumHelper.GetAlgorithm())
                         {
                             if (csum.AlgorithmName == cs.ChecksumAlgorithm
                                 && !string.IsNullOrEmpty(cs.Checksum)) // Make sure we're on the same algor
@@ -191,7 +191,7 @@ namespace Tug.Server.Providers
                 //     if (!File.Exists(configPath))
                 //         throw new InvalidOperationException($"missing configuration by name [{cn}]");
                     
-                //     using (var csum = ChecksumProvider.GetChecksumAlgorithm())
+                //     using (var csum = ChecksumHelper.GetAlgorithm())
                 //     {
                 //         if (csum.AlgorithmName != cs.ChecksumAlgorithm)
                 //         {
@@ -224,7 +224,7 @@ namespace Tug.Server.Providers
                     }
                     else
                     {
-                        using (var csum = ChecksumProvider.GetChecksumAlgorithm())
+                        using (var csum = ChecksumHelper.GetAlgorithm())
                         {
                             if (csum.AlgorithmName != cs.ChecksumAlgorithm)
                             {
@@ -266,7 +266,7 @@ namespace Tug.Server.Providers
             }
 
             // TODO:  Clean this up for performance with caching and stuff
-            using (var cs = ChecksumProvider.GetChecksumAlgorithm())
+            using (var cs = ChecksumHelper.GetAlgorithm())
             using (var fs = File.OpenRead(configPath))
             {
                 return new FileContent
@@ -285,7 +285,7 @@ namespace Tug.Server.Providers
                 return null;
 
             // TODO:  Clean this up for performance with caching and stuff
-            using (var cs = ChecksumProvider.GetChecksumAlgorithm())
+            using (var cs = ChecksumHelper.GetAlgorithm())
             using (var fs = File.OpenRead(modulePath))
             {
                 return new FileContent
