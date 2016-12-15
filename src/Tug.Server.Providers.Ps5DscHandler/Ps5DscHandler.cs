@@ -5,8 +5,10 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using Microsoft.Extensions.Logging;
 using Tug.Model;
@@ -29,7 +31,7 @@ namespace Tug.Server.Providers
         public string BootstrapPath
         { get; set; } = ".";
 
-        public string BootstrapScript
+        public IEnumerable<string> BootstrapScript
         { get; set; }
 
         public void Init()
@@ -50,15 +52,25 @@ namespace Tug.Server.Providers
                 Logger.LogWarning(">> " + r.ToString());
             
 
-            if (!string.IsNullOrEmpty(BootstrapScript))
+            if (BootstrapScript != null && BootstrapScript.Count() > 0)
             {
                 Logger.LogInformation("Bootstrap Script found");
-                _posh.AddScript(BootstrapScript);
+                Logger.LogDebug("--8<---------------------------------");
+                foreach (var s in BootstrapScript)
+                {
+                    Logger.LogDebug(s);
+                    _posh.AddScript(s);
+                }
+                Logger.LogDebug("--------------------------------->8--");
                 result = _posh.Invoke();
+
                 _posh.Commands.Clear();
-                Logger.LogInformation("Bootstrap Script executed >>>>>>>>>>>>");
+
+                Logger.LogInformation("Bootstrap Script executed");
+                Logger.LogDebug("--8<---------------------------------");
                 foreach (var r in result)
-                    Logger.LogWarning(">> " + r.ToString());
+                    Logger.LogDebug(">> " + r.ToString());
+                Logger.LogDebug("--------------------------------->8--");
             }
         }
 

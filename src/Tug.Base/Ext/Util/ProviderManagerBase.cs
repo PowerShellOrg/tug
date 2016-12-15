@@ -1,3 +1,8 @@
+/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Composition.Convention;
@@ -54,6 +59,11 @@ namespace Tug.Ext.Util
             _logger = managerLogger;
             _adapter = adapter;
 
+            Init();
+        }
+
+        protected virtual void Init()
+        {
             // By default we include the assemblies containing the
             // principles a part of the built-ins and every other
             // assembly in context a part of the search scope
@@ -86,7 +96,7 @@ namespace Tug.Ext.Util
 
                     asms.Add(rtasm.Name);
                     if (_logger.IsEnabled(LogLevel.Debug))
-                        _logger.LogDebug("    Adding newly found Runtime Assembly:  {rtAsm}", rtasm.Name);
+                        _logger.LogDebug("    Adding newly found Runtime Assembly:  {rtAsm}", rtasm.Name.FullName);
 
                     //AssemblyLoadContext.Default.LoadFromAssemblyName(rtasm.Name);
                     AddSearchAssemblies(Assembly.Load(rtasm.Name));

@@ -34,7 +34,11 @@ namespace Tug
 
             // Add assemblies to search context
             if ((settings.Value?.Ext?.ReplaceExtAssemblies).GetValueOrDefault())
+            {
+                logger.LogInformation("Resetting default Search Assemblies");
                 ClearSearchAssemblies();
+            }
+
             if (extAssms?.Length > 0)
             {
                 logger.LogInformation("Adding Search Assemblies");
@@ -60,7 +64,11 @@ namespace Tug
 
             // Add dir paths to search context
             if ((settings.Value?.Ext?.ReplaceExtPaths).GetValueOrDefault())
+            {
+                logger.LogInformation("Resetting default search paths");
                 ClearSearchPaths();
+            }
+
             if (extPaths?.Length > 0)
             {
                 logger.LogInformation("Adding Search Paths");
@@ -73,6 +81,13 @@ namespace Tug
                 }));
             }
 
+            base.Init();
+        }
+
+        protected override void Init()
+        {
+            // Skipping the initialization till
+            // after constructor parameters are applied
         }
 
         protected override IEnumerable<IChecksumAlgorithmProvider> FindProviders()
