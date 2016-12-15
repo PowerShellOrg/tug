@@ -71,6 +71,13 @@ namespace Tug.Server
                 }));
             }
 
+            base.Init();
+        }
+
+        protected override void Init()
+        {
+            // Skipping the initialization till
+            // after constructor parameters are applied
         }
     }
 }
