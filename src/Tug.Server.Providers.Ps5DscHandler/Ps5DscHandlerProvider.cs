@@ -3,10 +3,12 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Tug.Ext;
+using Tug.Ext.Util;
 using Tug.Server.Util;
 
 namespace Tug.Server.Providers
@@ -64,16 +66,14 @@ namespace Tug.Server.Providers
 
                         if (_productParams != null)
                         {
-                            foreach (var p in PARAMS)
-                            {
-                                if (_productParams.ContainsKey(p.Name))
-                                {
-                                    _pLogger.LogDebug("Setting parameter {initParamName}", p);
-                                    typeof(Ps5DscHandler).GetTypeInfo()
-                                            .GetProperty(p.Name, BindingFlags.Public | BindingFlags.Instance)
-                                            .SetValue(h, _productParams[p.Name]);
-                                }
-                            }
+                            _pLogger.LogInformation("Applying parameters:");
+                            h.ApplyParameters(PARAMS, _productParams,
+                                    // Include a filter just to log the params applied
+                                    filter: (pInfo, pValue) =>
+                                    {
+                                        _pLogger.LogInformation("  * Setting parameter:  [{initParamName}]", pInfo.Name);
+                                        return Tuple.Create(true, pValue);
+                                    });
                         }
 
                         h.Init();
