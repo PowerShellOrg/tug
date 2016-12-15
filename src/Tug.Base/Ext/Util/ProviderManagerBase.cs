@@ -203,7 +203,7 @@ namespace Tug.Ext.Util
         protected ProviderManagerBase<TProv, TProd> AddSearchAssemblies(IEnumerable<Assembly> assemblies)
         {
             foreach (var a in assemblies)
-                if (!_SearchAssemblies.Contains(a))
+                if (!_BuiltInAssemblies.Contains(a) && !_SearchAssemblies.Contains(a))
                     _SearchAssemblies.Add(a);
 
             return this;
