@@ -75,7 +75,7 @@
   },
 
   "frameworks": {
-    "netcoreapp1.1": {
+    "netcoreapp1.0": {
       "buildOptions": {
         "define": [
           "DOTNET_CORE"
@@ -88,7 +88,7 @@
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.1.0"
+          "version": "1.0.1"
         },
         "System.Security.Cryptography.Algorithms": "4.3.0"
       }
