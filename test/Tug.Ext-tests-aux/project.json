@@ -1,0 +1,33 @@
+{
+  "name": "Tug.Ext-tests-aux",
+  "version": "0.5.0-*",
+
+  "buildOptions": {
+    "debugType": "portable"
+  },
+
+  "dependencies": {
+    "Tug.Ext-tests": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.4",
+        "portable-net451+win8"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      }
+    },
+    "net452": {
+      "buildOptions": {},
+      "dependencies": {}
+    }
+  }
+}

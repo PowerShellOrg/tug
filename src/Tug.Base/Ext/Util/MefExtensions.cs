@@ -47,15 +47,8 @@ namespace Tug.Ext.Util
                 {
                     var assemblies = Directory
                         .GetFiles(p, r, searchOption)
-#if DOTNET_FRAMEWORK
-                        .Select(Assembly.LoadFile)
-#else
-                        .Select(System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath)
-#endif
-                        // TODO:  This didn't seem to work, LoadFromAsmName kept throwing
-                        // FileNotFoundException even though the AsmName was legit
-                        // .Select(AssemblyLoadContext.GetAssemblyName)
-                        // .Select(AssemblyLoadContext.Default.LoadFromAssemblyName)
+                        .Select(LoadFromAssembly)
+                        .Where(x => x != null)
                         .ToList();
 
                     configuration.WithAssemblies(assemblies, conventions);
@@ -63,6 +56,36 @@ namespace Tug.Ext.Util
             }
 
             return configuration;
+        }
+
+        public static Assembly LoadFromAssembly(string path)
+        {
+#if DOTNET_FRAMEWORK
+            return Assembly.LoadFile(path);
+#else
+            // TODO:  This didn't seem to work, LoadFromAsmName kept throwing
+            // FileNotFoundException even though the AsmName was legit
+            // .Select(AssemblyLoadContext.GetAssemblyName)
+            // .Select(AssemblyLoadContext.Default.LoadFromAssemblyName)
+
+            try
+            {
+                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+            }
+            catch (FileLoadException ex)
+                // TODO: This is UUUUUUUGLY!  We need to make it BEEEEEAUTIFUL!
+                // In .NET Core if you try to load the same assembly (same AsmName) it
+                // will throw this exception and the only way to detect it is to catch
+                // this Exception and test for this exact err message -- super fragile!
+                // I suspect in .NET Framework up above, this doesn't happen because it's
+                // loading into a new contextual contruct (like AppDomain?) but no equivalent
+                // in .NET Core -- perhaps we need to construct a new `AssemblymLoadContext`?
+                when (ex.Message.Equals("Assembly with same name is already loaded",
+                        StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+#endif
         }
 
         // Stolen from the guts of MEF ConventionBuilder code,
