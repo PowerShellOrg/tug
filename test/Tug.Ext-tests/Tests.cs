@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
