@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
 using Tug.Server.Configuration;
@@ -44,11 +43,15 @@ namespace Tug.Server
 
         #endregion -- Constants --
 
-        ILogger<Startup> _logger;
+        #region -- Fields --
+
+        protected ILogger<Startup> _logger;
 
         protected IConfiguration _config;
 
-        protected AppSettings _settings;
+        #endregion -- Fields --
+
+        #region -- Methods --
 
         public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -62,7 +65,6 @@ namespace Tug.Server
 
             _logger.LogInformation("Resolving final runtime configuration");
             _config = ResolveAppConfig(args);
-            _settings = _config.GetSection(nameof(AppSettings))?.Get<AppSettings>(); 
 
             ConfigureLogging(env, loggerFactory);
         }
@@ -139,7 +141,8 @@ namespace Tug.Server
                 });
             });
 
-            // Resolve some DI classes to make sure they're ready to go when needed
+            // Resolve some DI classes to make sure they're ready to go when needed and
+            // forces any possible resolution errors to invoke earlier rather than later
             serviceProvider.GetRequiredService<ChecksumHelper>();
             serviceProvider.GetRequiredService<DscHandlerHelper>();
         }
@@ -198,5 +201,7 @@ namespace Tug.Server
             _logger = loggerFactory.CreateLogger<Startup>();
             _logger.LogInformation("Commencing runtime logging");
         }
+
+        #endregion -- Methods --
     }
 }
