@@ -9,8 +9,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Tug.Server
@@ -37,11 +35,12 @@ namespace Tug.Server
         // Always points to the current logger for this class.
         // Upon construction, we initialize this to a temporary <i>pre-logger</i>
         // that is hard-coded to simply write to the console but eventually we replace
-        // this with a logger that is manufactored according to configuration specs.
+        // this with a logger that is manufactered according to configuration specs.
         protected static ILogger _logger;
 
         protected static IConfiguration _hostingConfig;
 
+        // Defines the hard-coded default configuration settings for the WebHostBuilder
         private static IDictionary<string, string> _hostingDefaultSettings =
             new Dictionary<string, string>
             {
@@ -57,6 +56,13 @@ namespace Tug.Server
 
         #region -- Properties --
 
+        /// <summary>
+        /// Provides app-wide access to the runtime CLI args.
+        /// </summary>
+        /// <remarks>
+        /// This is an unfortunate kludge because we could not find a clean way to
+        /// make this accessible to app components using the DI mechanism.
+        /// </remarks>
         public static IEnumerable<string> CommandLineArgs
         { get; private set; }
 
@@ -70,6 +76,18 @@ namespace Tug.Server
 
         #endregion -- Properties --
 
+        #region -- Constructors --
+
+        static Program()
+        {
+            // Setup a pre-logger to have a place to write out diagnostics and errors until
+            // we have a chance to properly setup the final runtime logging configuration
+            _logger = AppLog.CreatePreLogger<Program>();
+            _logger.LogInformation("Commencing PRE-logging on startup");
+        }
+
+        #endregion -- Constructors --
+
         #region -- Methods --
 
         public static void Main(string[] args)
@@ -79,9 +97,6 @@ namespace Tug.Server
             // This is ugly as hell but unfortunately, we could not find another
             // way to pass this along from here to other parts of the app via DI
             CommandLineArgs = args;
-
-            _logger = AppLog.CreatePreLogger<Program>();
-            _logger.LogInformation("Commencing PRE-logging on startup");
 
             DumpDiagnotics();
 
@@ -120,6 +135,7 @@ namespace Tug.Server
                     .AddEnvironmentVariables(prefix: HOST_CONFIG_ENV_PREFIX)
                     // Allow to optionally override with CLI args
                     .AddCommandLine(args);
+
             _hostingConfig = hostingConfigBuilder.Build();
 
             return _hostingConfig;
