@@ -4,6 +4,7 @@
  */
 
 using System.IO;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tug.Messages.ModelBinding;
 
@@ -11,6 +12,10 @@ namespace Tug.Messages
 {
     public class GetConfigurationRequest : DscAgentRequest
     {
+        public static readonly HttpMethod VERB = HttpMethod.Get;
+
+        public const string ROUTE = "Nodes(AgentId='{AgentId}')/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent";
+
         public string ConfigurationName
         { get; set; }
 

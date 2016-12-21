@@ -5,11 +5,16 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 
 namespace Tug.Messages
 {
     public class GetReportsRequest : DscAgentRequest
     {
+        public static readonly HttpMethod VERB = HttpMethod.Get;
+
+        public const string ROUTE = "Nodes(AgentId='{AgentId}')/Reports(JobId='{JobId}'))";
+
         [Required]
         public Guid JobId
         { get; set; }
