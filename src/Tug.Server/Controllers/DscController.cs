@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Tug.Messages;
 using Tug.Model;
@@ -34,11 +35,12 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPut]
-        [Route("Nodes(AgentId='{AgentId}')")]
+        [Route(RegisterDscAgentRequest.ROUTE)]
         //TODO:  [Authorize]
         public IActionResult RegisterDscAgent(RegisterDscAgentRequest input)
         {
-            _logger.LogInformation("\n\n\nPUT: Node registration");
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace($"{nameof(RegisterDscAgent)}:  {RegisterDscAgentRequest.VERB}");
 
             if (ModelState.IsValid)
             {
@@ -52,10 +54,11 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPost]
-        [Route("Nodes(AgentId='{AgentId}')/GetDscAction")]
+        [Route(GetDscActionRequest.ROUTE)]
         public IActionResult GetDscAction(GetDscActionRequest input)
         {
-            _logger.LogInformation("\n\n\nPOST: DSC action request");
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace($"{nameof(GetDscAction)}:  {GetDscActionRequest.VERB}");
 
             if (ModelState.IsValid)
             {
@@ -79,10 +82,11 @@ namespace Tug.Server.Controllers
 
 
         [HttpGet]
-        [Route("Nodes(AgentId='{AgentId}')/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent")]
+        [Route(GetConfigurationRequest.ROUTE)]
         public IActionResult GetConfiguration(GetConfigurationRequest input)
         {
-            _logger.LogInformation("\n\n\nPOST: MOF request");
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace($"{nameof(GetConfiguration)}:  {GetConfigurationRequest.VERB}");
 
             if (ModelState.IsValid)
             {
@@ -106,10 +110,11 @@ namespace Tug.Server.Controllers
         }
 
         [HttpGet]
-        [Route("Modules(ModuleName='{ModuleName}',ModuleVersion='{ModuleVersion}')/ModuleContent")]
+        [Route(GetModuleRequest.ROUTE)]
         public IActionResult GetModule(GetModuleRequest input)
         {
-            _logger.LogInformation("\n\n\nPOST: Module request");
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace($"{nameof(GetModule)}:  {GetModuleRequest.VERB}");
 
             if (ModelState.IsValid)
             {
