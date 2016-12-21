@@ -43,8 +43,7 @@ namespace Tug.Server.Controllers
         [NonAction] // Not really necessary on an ext method, but in case we ever move it to a Controller or Controll base class
         public static IActionResult Model(this ControllerBase c, object model)
         {
-            ToResultAttribute toResult = null;
-            PropertyInfo toResultProperty = null;
+            PropertyInfo toResultProperty = null; // Used to detect more than one result property
             IActionResult result = null;
 
             var props = model.GetType().GetTypeInfo().GetProperties();
@@ -56,12 +55,12 @@ namespace Tug.Server.Controllers
                 if (toHeader != null)
                 {
                     var headerName = toHeader.Name;
+                    if (string.IsNullOrEmpty(headerName))
+                        headerName = p.Name;
 
                     if (LOG.IsEnabled(LogLevel.Debug))
                         LOG.LogDebug($"Adding Header[{headerName}] replace=[{toHeader.Replace}]");
 
-                    if (string.IsNullOrEmpty(headerName))
-                        headerName = p.Name;
                     // TODO:  Add support for string[]???
                     var headerValue = ConvertTo<string>(p.GetValue(model, null));
                     if (toHeader.Replace)
@@ -72,8 +71,9 @@ namespace Tug.Server.Controllers
                     continue;
                 }
 
-                toResult = p.GetCustomAttribute(typeof(ToResultAttribute))
+                var toResult = p.GetCustomAttribute(typeof(ToResultAttribute))
                         as ToResultAttribute;
+
                 if (toResult != null)
                 {
                     if (toResultProperty != null)
