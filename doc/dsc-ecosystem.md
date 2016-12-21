@@ -2,6 +2,10 @@
 
 # DSC is composed of...
 
+  * Pre-reqs:
+    * PowerShell
+    * WMI/OMI
+
   * DSC Framework
     * Define Resources
       * In C# + Folder Structure
