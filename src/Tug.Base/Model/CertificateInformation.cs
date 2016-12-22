@@ -28,7 +28,10 @@ namespace Tug.Model
         public string Thumbprint
         { get; set; }
 
-        public string Version
+        // This *MUST* be an int or RegisterDscAction will fail with a
+        // 401 Unauthorized error and eroneously report an invalid
+        // Registration Key -- as HOURS of debugging has proven!
+        public int Version
         { get; set; }
     }
 }
