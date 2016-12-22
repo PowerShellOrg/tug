@@ -16,6 +16,7 @@ namespace Tug.Messages
 
         public const string ROUTE = "Nodes(AgentId='{AgentId}')/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent";
 
+        [FromRoute]
         public string ConfigurationName
         { get; set; }
 
