@@ -8,8 +8,16 @@ One of the tugboats as extracted and edited as per the Vecteezy ToCs using Visio
 
 We use Paint.NET to do final clean up and saving with a transparent background.
 
-![tug logo][tug-logo-trans-75.png]
-
 ## Attribution
 
 Vectors by [Vecteezy.com](http://www.Vecteezy.com/)
+
+## Embed Example
+
+` 75` - ![tug logo](tug-logo-trans-75.png)
+
+`150` - ![tug logo](tug-logo-trans-150.png)
+
+`300` - ![tug logo](tug-logo-trans-300.png)
+
+`600` - ![tug logo](tug-logo-trans-600.png)
