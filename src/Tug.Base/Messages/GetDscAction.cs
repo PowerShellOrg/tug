@@ -4,6 +4,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tug.Messages.ModelBinding;
 using Tug.Model;
@@ -12,6 +13,10 @@ namespace Tug.Messages
 {
     public class GetDscActionRequest : DscAgentRequest
     {
+        public static readonly HttpMethod VERB = HttpMethod.Post;
+
+        public const string ROUTE = "Nodes(AgentId='{AgentId}')/GetDscAction";
+
         [FromBody]
         [Required]
         public GetDscActionRequestBody Body

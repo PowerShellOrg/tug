@@ -23,10 +23,11 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPost]
-        [Route("Nodes(AgentID='{AgentId}')/SendReport")]
+        [Route(SendReportRequest.ROUTE)]
         public IActionResult SendReport(SendReportRequest input)
         {
-            _logger.LogInformation("\n\n\nPOST: Report delivery");
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace($"{nameof(SendReport)}:  {SendReportRequest.VERB}");
 
             if (ModelState.IsValid)
             {
@@ -41,9 +42,12 @@ namespace Tug.Server.Controllers
         }
 
         [HttpGet]
-        [Route("Nodes(AgentId='{AgentId}')/Reports(JobId='{JobId}'))")]
+        [Route(GetReportsRequest.ROUTE)]
         public IActionResult GetReports(GetReportsRequest input)
         {
+            if (_logger.IsEnabled(LogLevel.Trace))
+                _logger.LogTrace($"{nameof(GetReports)}:  {GetReportsRequest.VERB}");
+
             if (ModelState.IsValid)
             {
                 return Json(new

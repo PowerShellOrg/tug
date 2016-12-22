@@ -12,12 +12,23 @@
   },
 
   "dependencies": {
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "NLog.Extensions.Logging": "1.0.0-rtm-alpha5",
+    "Microsoft.Extensions.CommandLineUtils": "1.1.0",
+    
+    "Newtonsoft.Json": "9.0.1",
+
     "Tug.Base": {
       "target": "project"
     }
   },
   "frameworks": {
-    "netcoreapp1.1": {
+    "netcoreapp1.0": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_CORE"
+        ]
+      },
       "imports": [
         "dnxcore50",
         "portable-net45+win8" // Needed to include MEF2
@@ -25,11 +36,21 @@
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.1.0"
-        }
+          "version": "1.0.1"
+        },
+
+        // For System.Net.WebProxy and others
+        "System.Net.Primitives": "4.3.0",
+        "System.Net.NameResolution": "4.3.0",
+        "System.Net.NetworkInformation": "4.3.0"
       }
     },
     "net452": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_FRAMEWORK"
+        ]
+      },
       "dependencies": {
         
       }
