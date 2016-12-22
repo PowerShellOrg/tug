@@ -17,6 +17,15 @@ namespace Tug.Messages
 
     public abstract class DscRequest
     {
+        public const string PROTOCOL_VERSION_HEADER = "ProtocolVersion";
+
+        public const string X_MS_DATE_HEADER = "x-ms-date";
+
+        // e.g. x-ms-date: 2016-08-15T21:25:51.8654321Z
+        // Should be applied to a UTC time, based on the "Round-trip date/time pattern"
+        // format specifier ("O") as defined here:
+        //    https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Roundtrip
+        public const string X_MS_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff'Z'";
 
         [FromHeader(Name = "Content-type")]
         public string ContentTypeHeader
@@ -29,12 +38,12 @@ namespace Tug.Messages
         public string AuthorizationHeader
         { get; set; }
 
-        [FromHeader(Name = "x-ms-date")]
+        [FromHeader(Name = X_MS_DATE_HEADER)]
         public string MsDateHeader
         { get; set; }
 
         [Required]
-        [FromHeader(Name = "ProtocolVersion")]
+        [FromHeader(Name = PROTOCOL_VERSION_HEADER)]
         public string ProtocolVersionHeader
         { get; set; }
     }
