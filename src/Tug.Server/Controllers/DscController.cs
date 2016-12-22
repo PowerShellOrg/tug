@@ -92,7 +92,11 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}] Configuration=[{input.ConfigurationName}]");
                 
-                var configContent = _dscHandler.GetConfiguration(input.AgentId, input.ConfigurationName);
+                var configContent = _dscHandler.GetConfiguration(input.AgentId,
+                        // TODO:
+                        // Strictly speaking, this may not be how the DSCPM
+                        // protocol is supposed to resolve the config name
+                        input.ConfigurationName ?? input.ConfigurationNameHeader);
                 if (configContent == null)
                     return NotFound();
 

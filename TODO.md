@@ -4,7 +4,7 @@ This is a place to capture random thoughts and ideas.  If/when these start to ge
 they should be moved to a [ticket](https://github.com/PowerShellOrg/tug/issues) where they
 can be discussed, defined and designed.
 
-* Tug Server CLI - make use of a combination of
+* [ ] Tug Server CLI - make use of a combination of
   [`CommandLineUtils`](https://www.nuget.org/packages/Microsoft.Extensions.CommandLineUtils/)
   and/or [`Configuration.CommandLine`](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.CommandLine/)
   to support a few different modes of operation and altering operational behavior:
@@ -21,7 +21,7 @@ can be discussed, defined and designed.
     * e.g. `Tug.Server show-handler <handler-name>` -> print out details (labels, description,
       platforms, etc) and parameter details (names, optionality, data types, value enums)
 
-* Continuous Integration (CI)
+* [ ] Continuous Integration (CI)
   * We should setup one or more CI services to build continuously:
     * Windows:
       * AppVeyor
@@ -38,16 +38,9 @@ can be discussed, defined and designed.
   * Auto deployments to some hosting service for simple testing?
     * Heroku - .NET Core support appears to be limited right now
 
-* Tug Client - develop a compatible client library to address a couple immediate needs
-  * Useful to interact with existing standard DSC Pull Server (xDscWebService) to explore protocol
-    and behavior corner cases that might be difficult or inconvenient to setup *naturally* - for
-    example, to answer questions like what happens if parameter X is too large, or Y is an unknown
-    value; this would be useful for establishing 100% compatibility between Tug Server and standard
-  * Useful to support automated unit testing, particularly of the protocol layer of the server;
-    could also be useful in other types of testing, such as integration and performance (e.g.
-    bombarding Tug Server with 1000's of simultaneous *simulated* clients)
+* [x] Tug Client - Moved to https://github.com/PowerShellOrg/tug/issues/25
 
-* MOF Parser - this is more of a "nice to have" idea:
+* [ ] MOF Parser - this is more of a "nice to have" idea:
   * if we were able to parse MOF files, we could extract all the referenced DSC Resource
     modules which could be used by the client to support better test automation, i.e.
     fetch a Configuration, parse it and fetch all the modules referenced within

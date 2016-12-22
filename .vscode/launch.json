@@ -2,11 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Tug.Client - .NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/tug/bin/Debug/netcoreapp1.0/tug.dll",
+            "program": "${workspaceRoot}/src/Tug.Client/bin/Debug/netcoreapp1.0/Tug.Client.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/src/Tug.Client",
+            "externalConsole": false,
+            "stopAtEntry": false
+        },
+        {
+            "name": "Tug.Server - .NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/Tug.Server/bin/Debug/netcoreapp1.0/Tug.Server.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "externalConsole": false,

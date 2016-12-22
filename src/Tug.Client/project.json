@@ -42,7 +42,8 @@
         // For System.Net.WebProxy and others
         "System.Net.Primitives": "4.3.0",
         "System.Net.NameResolution": "4.3.0",
-        "System.Net.NetworkInformation": "4.3.0"
+        "System.Net.NetworkInformation": "4.3.0",
+        "System.Security.Cryptography.Algorithms": "4.3.0"
       }
     },
     "net452": {

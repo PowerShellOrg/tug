@@ -31,6 +31,10 @@ namespace Tug.Messages
         public string ContentTypeHeader
         { get; set; }
 
+        [FromHeader(Name = "Accept")]
+        public string AcceptHeader
+        { get; set; }
+
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt590240.aspx
         /// </summary>

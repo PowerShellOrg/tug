@@ -11,6 +11,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -126,7 +128,7 @@ namespace Tug.Client
                     RegisterDscAgentRequest.ROUTE, dscRequ);
         }
 
-        public async Task GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
+        public async Task<IEnumerable<string>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetDscActionAsync));
@@ -159,15 +161,34 @@ namespace Tug.Client
 
             var dscResp = new GetDscActionResponse();
             
-            var disposable = await SendDscAsync(serverConfig, GetDscActionRequest.VERB,
-                    GetDscActionRequest.ROUTE, dscRequ, dscResp);
+            using (var disposable = await SendDscAsync(serverConfig, GetDscActionRequest.VERB,
+                    GetDscActionRequest.ROUTE, dscRequ, dscResp))
+            {
+                Console.WriteLine("*********************************************************");
+                Console.WriteLine("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
+                        _jsonSerSettings));
 
-            Console.WriteLine("*********************************************************");
-            Console.WriteLine("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
-                    _jsonSerSettings));
+                // TODO:  Figure these out later on
+                if (dscResp.Body.NodeStatus == DscActionStatus.RETRY)
+                    throw new NotImplementedException(
+                            /*SR*/"the node status of RETRY is not supported");
+                if (dscResp.Body?.NodeStatus == DscActionStatus.UpdateMetaConfiguration)
+                    throw new NotImplementedException(
+                            /*SR*/"the node status of UpdateMetaConfiguration is not supported");
+
+                if (dscResp.Body?.NodeStatus == DscActionStatus.OK)
+                    return new string[0];
+
+                // Else -- GetConfiguration, so return all the config names we have to get
+                return dscResp.Body.Details
+                        .Where(x => x.Status == DscActionStatus.GetConfiguration)
+                        .Select(x => x.ConfigurationName);
+            }
         }
 
-        public async Task<byte[]> GetConfiguration(string configNames)
+        // TODO:  I think returning a Stream would be better here, but coordinating that
+        // with the disposable resources that are contained within could be tricky
+        public async Task<byte[]> GetConfiguration(string configName)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetConfiguration));
@@ -180,6 +201,8 @@ namespace Tug.Client
             var dscRequ = new GetConfigurationRequest
             {
                 AgentId = Configuration.AgentId,
+                ConfigurationName = configName,
+                AcceptHeader = DscContentTypes.OCTET_STREAM,
             };
 
             var dscResp = new GetConfigurationResponse();
@@ -189,6 +212,37 @@ namespace Tug.Client
                     GetConfigurationRequest.ROUTE, dscRequ, dscResp))
             {
                 dscResp.Configuration.CopyTo(bs);
+
+                return bs.ToArray();
+            }
+        }
+
+        // TODO:  I think returning a Stream would be better here, but coordinating that
+        // with the disposable resources that are contained within could be tricky
+        public async Task<byte[]> GetModule(string moduleName, string moduleVersion)
+        {
+            if (LOG.IsEnabled(LogLevel.Trace))
+                LOG.LogTrace(nameof(GetConfiguration));
+            
+            AssertInit();
+
+            var serverConfig = Configuration.ResourceRepositoryServer;
+            AssertServerConfig(serverConfig);
+
+            var dscRequ = new GetModuleRequest
+            {
+                ModuleName = moduleName,
+                ModuleVersion = moduleVersion,
+                AcceptHeader = DscContentTypes.OCTET_STREAM,
+            };
+
+            var dscResp = new GetModuleResponse();
+
+            using (var bs = new MemoryStream())
+            using (var disposable = await SendDscAsync(serverConfig, GetConfigurationRequest.VERB,
+                    GetConfigurationRequest.ROUTE, dscRequ, dscResp))
+            {
+                dscResp.Module.CopyTo(bs);
 
                 return bs.ToArray();
             }
@@ -231,19 +285,60 @@ namespace Tug.Client
                 httpHandler.Proxy = server.Proxy;
             }
 
+            var requMessage = new HttpRequestMessage
+            {
+                Method = verb,
+                RequestUri = requUrl,
+            };
+
+            // By default, we only send JSON unless something else was specified
+            var contentType = dscRequ.ContentTypeHeader;
+            if (string.IsNullOrEmpty(contentType))
+                contentType = DscContentTypes.JSON;
+            requMessage.Headers.Accept.Clear();
+            requMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+
+            ExtractFromRequestModel(dscRequ, requMessage);
+
+            // See if we need to add RegKey authorization data
+            if (!string.IsNullOrEmpty(server.RegistrationKey) && requMessage.Content != null)
+            {
+                // Shhh!  This is the super-secret formula for computing an
+                // Authorization challenge when using Reg Key Authentication
+                // Details can be found at /references/regkey-authorization.md
+                var msDate = DateTime.UtcNow.ToString(DscRequest.X_MS_DATE_FORMAT);
+                requMessage.Headers.Add(DscRequest.X_MS_DATE_HEADER, msDate);
+
+                var macKey = Encoding.UTF8.GetBytes(server.RegistrationKey);
+
+                using (var sha = SHA256.Create())
+                using (var mac = new HMACSHA256(macKey))
+                using (var ms = new MemoryStream())
+                {
+                    await requMessage.Content.CopyToAsync(ms);
+
+                    var body = ms.ToArray();
+                    Console.WriteLine("BODY:-----------------------------");
+                    Console.WriteLine($"<{Encoding.UTF8.GetString(body)}>");
+                    Console.WriteLine("-----------------------------:BODY");
+
+                    var digest = sha.ComputeHash(body);
+                    var digB64 = Convert.ToBase64String(digest);
+                    Console.WriteLine("digB64=" + digB64);
+                    var concat = $"{digB64}\n{msDate}";
+                    Console.WriteLine("concat=" + concat);
+                    var macSig = mac.ComputeHash(Encoding.UTF8.GetBytes(concat));
+                    var sigB64 = Convert.ToBase64String(macSig);
+
+                    requMessage.Headers.Authorization = new AuthenticationHeaderValue("Shared", sigB64);
+                }
+            }
+
             // TODO:  Eventually we'll address this improper usage pattern as described here:
             //    https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
             HttpResponseMessage respMessage = null;
             using (var http = new HttpClient(httpHandler))
             {
-                var requMessage = new HttpRequestMessage
-                {
-                    Method = verb,
-                    RequestUri = requUrl,
-                };
-
-                ExtractFromRequestModel(dscRequ, requMessage);
-
                 respMessage = await http.SendAsync(requMessage);
             }
 
@@ -264,6 +359,10 @@ namespace Tug.Client
                 requMessage.Content = ExtractBodyFromRequestModel(dscRequ);
             }
 
+            // This will be resolved and populated on-demand
+            // if there are any "FromRoute" model properties
+            StringBuilder route = null;
+
             foreach (var pi in dscRequ.GetType().GetProperties())
             {
                 var fromHeader = pi.GetCustomAttribute(typeof(FromHeaderAttribute))
@@ -273,11 +372,12 @@ namespace Tug.Client
                     var name = fromHeader.Name;
                     if (string.IsNullOrEmpty(name))
                         name = pi.Name;
+                    
                     var value = pi.GetValue(dscRequ);
                     if (value == null)
                         continue;
 
-                    if (!pi.PropertyType.IsAssignableFrom(value.GetType()))
+                    if (!typeof(string).IsAssignableFrom(value.GetType()))
                         value = ConvertTo<string>(value);
 
                     if (LOG.IsEnabled(LogLevel.Debug))
@@ -294,8 +394,40 @@ namespace Tug.Client
                     continue;
                 }
 
-                // TODO:  Also need to do FromQuery and FromRoute
+                var fromRoute = pi.GetCustomAttribute(typeof(FromRouteAttribute))
+                        as FromRouteAttribute;
+                if (fromRoute != null)
+                {
+                    if (route == null)
+                        // This must be the first property that updates the route
+                        route = new StringBuilder(requMessage.RequestUri.ToString());
+
+                    var name = fromRoute.Name;
+                    if (string.IsNullOrEmpty(name))
+                        name = pi.Name;
+                    
+                    var value = pi.GetValue(dscRequ);
+                    if (value == null)
+                        // TODO: is this the right assumption???
+                        value = string.Empty;
+                    
+                    if (!typeof(string).IsAssignableFrom(value.GetType()))
+                        value = ConvertTo<string>(value);
+
+                    if (LOG.IsEnabled(LogLevel.Debug))
+                        LOG.LogDebug("Extracting route element [{name}] from property [{property}]", name, pi.Name);
+                    
+                    // Replace all occurrences of the route element
+                    // name wrapped in curlys with this value
+                    route.Replace($"{{{name}}}", (string)value);
+                }
+
+                // TODO:  Also need to do FromQuery
             }
+
+            // If the route was modified, update the request's URL
+            if (route != null)
+                requMessage.RequestUri = new Uri(route.ToString());
         }
 
         protected bool TryAddHeader(HttpHeaders headers, string name, string value, bool replace = false)
@@ -473,7 +605,10 @@ namespace Tug.Client
         public static object ConvertTo(Type type, object value)
         {
             var tc = TypeDescriptor.GetConverter(type);
-            return tc.ConvertFrom(value);
+            if (value != null && !tc.CanConvertFrom(value.GetType()))
+                return tc.ConvertFromString(value.ToString());
+            else
+                return tc.ConvertFrom(value);
         }
 
         #region -- IDisposable Support --

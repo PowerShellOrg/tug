@@ -10,6 +10,9 @@ using Tug.Model;
 
 namespace Tug.Client
 {
+    /// <summary>
+    /// Defines configuration settings to control the behavior of a DSC Pull Client.
+    /// </summary>
     public class DscPullConfig
     {
         public Guid AgentId
@@ -33,6 +36,13 @@ namespace Tug.Client
         public ServerConfig ReportServer
         { get; set; }
 
+        /// <summary>
+        /// Defines connection settings for a DSC server endpoint.
+        /// </summary>
+        /// <remarks>
+        /// These settings can be used for defining the endpoint connection settings
+        /// for a Configuration Respository, a Module Repository or a Reporting server.
+        /// </remarks>
         public class ServerConfig
         {
             public Uri ServerUrl
