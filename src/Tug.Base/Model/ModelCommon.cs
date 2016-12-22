@@ -7,7 +7,7 @@ namespace Tug.Model
 {
     /// <summary>
     /// Defines a collection of constants representing MIME content types
-    /// that are in use by the DSCPS protocol specification.
+    /// that are in use by the DSCPM protocol specification.
     /// </summary>
     public static class DscContentTypes
     {
@@ -19,7 +19,7 @@ namespace Tug.Model
     /// An enumeration that is commensurate with a boolean type.
     /// </summary>
     /// <remarks>
-    /// In a few places in the DSCPS message specifications, an element
+    /// In a few places in the DSCPM message specifications, an element
     /// takes on semantics of a boolean value, but instead of using a
     /// JSON boolean, the specification uses a string enumeration.
     /// </remarks>
