@@ -23,7 +23,13 @@ namespace Tug.Client.Util
     {
         private static readonly ILogger LOG = AppLog.Create<BasicWebProxy>();
 
+        private IEnumerable<string> _BypassList;
         private Regex[] _bypassRegex;
+
+        private bool _isInit = false;
+
+        public BasicWebProxy()
+        { }
 
         public BasicWebProxy(string address, bool bypass = false,
                 IEnumerable<string> bypassList = null, ICredentials credentials = null)
@@ -37,11 +43,21 @@ namespace Tug.Client.Util
             BypassOnLocal = bypass;
             BypassList = bypassList;
             Credentials = credentials;
+        }
 
-            if (BypassList != null)
-            {
-                _bypassRegex = BypassList.Select(x => new Regex(x)).ToArray();
-            }
+        public Uri ProxyAddress
+        { get; set; }
+
+
+        public bool BypassOnLocal
+        { get; set; }
+
+        protected void AssertInit()
+        {
+            if (_isInit)
+                return;
+
+            _isInit = true;
 
             if (LOG.IsEnabled(LogLevel.Debug))
                 LOG.LogDebug("Constructed Basic Web Proxy:"
@@ -49,17 +65,20 @@ namespace Tug.Client.Util
                         ProxyAddress, BypassOnLocal, _bypassRegex?.Length, Credentials != null);
         }
 
-        public Uri ProxyAddress
-        { get; private set; }
-
-        public bool BypassOnLocal
-        { get; private set; }
-
         /// <summary>
         /// Collection of regular expressions that contain URIs to bypass.
         /// </summary>
         public IEnumerable<string> BypassList
-        { get; private set; }
+        { 
+            get { return _BypassList; }
+            set
+            {
+                if (value != null)
+                    _bypassRegex = _BypassList.Select(x => new Regex(x)).ToArray();
+                else
+                    _bypassRegex = null;
+            }
+        }
 
         /// <summary>
         /// Credentials to submit to the proxy server.
@@ -69,6 +88,8 @@ namespace Tug.Client.Util
 
         public bool IsBypassed(Uri host)
         {
+            AssertInit();
+
             if (LOG.IsEnabled(LogLevel.Debug))
                 LOG.LogDebug("{method}: [{host}]", nameof(IsBypassed), host);
 
@@ -82,6 +103,8 @@ namespace Tug.Client.Util
 
         public Uri GetProxy(Uri destination)
         {
+            AssertInit();
+
             if (LOG.IsEnabled(LogLevel.Debug))
                 LOG.LogDebug("{method}: [{host}]", nameof(GetProxy), destination);
 
@@ -92,6 +115,8 @@ namespace Tug.Client.Util
 
         public override string ToString()
         {
+            AssertInit();
+
             return $"ProxyAddress=[{ProxyAddress}] BypassOnLocal=[{BypassOnLocal}] Credentials=[{Credentials != null}]";
         }
     }
