@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -282,7 +283,7 @@ namespace Tug.Client
                     LOG.LogDebug("Enabling Proxy:  [{proxy}] supported=[{supported}]",
                             server.Proxy, httpHandler.SupportsProxy);
                 httpHandler.UseProxy = true;
-                httpHandler.Proxy = server.Proxy;
+                httpHandler.Proxy = (IWebProxy)server;
             }
 
             var requMessage = new HttpRequestMessage

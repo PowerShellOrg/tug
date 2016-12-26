@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Tug.Client.Configuration;
 using Tug.Model;
 
 namespace Tug.Client
@@ -50,8 +51,8 @@ namespace Tug.Client
 
             public string RegistrationKey
             { get; set; }
-            
-            public IWebProxy Proxy
+
+            public OfType<IWebProxy> Proxy
             { get; set; }
         }
     }
