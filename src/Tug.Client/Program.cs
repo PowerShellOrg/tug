@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Tug.Client.Configuration;
 
 namespace Tug.Client
 {
@@ -41,6 +42,7 @@ namespace Tug.Client
                     //client.RegisterDscAgentAsync().Wait();
 
                     var configNames = client.GetDscActionAsync().Result?.ToArray();
+
                     if (configNames?.Length > 0)
                     {
                         Console.WriteLine("We have configs to get:");

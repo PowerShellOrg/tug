@@ -6,10 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Tug.Client.Configuration;
 using Tug.Model;
 
-namespace Tug.Client
+namespace Tug.Client.Configuration
 {
     /// <summary>
     /// Defines configuration settings to control the behavior of a DSC Pull Client.
