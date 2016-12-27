@@ -13,10 +13,10 @@ namespace Tug.Model
         public string Issuer
         { get; set; }
 
-        public string NotAfter
+        public string NotBefore
         { get; set; }
 
-        public string NotBefore
+        public string NotAfter
         { get; set; }
 
         public string Subject
