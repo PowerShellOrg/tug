@@ -4,49 +4,35 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Tug.Client
 {
     public class Program
     {
+        public const string DEFAULT_AGENT_VERSION = "2.0";
+
+        /// <summary>
+        /// File name of an optional JSON file used to configure the Web Host.
+        /// </summary>
+        public const string APP_CONFIG_FILENAME = "appsettings.json";
+
+        /// <summary>
+        /// Prefix used to identify environment variables that can override Web Host
+        /// configuration.
+        /// </summary>
+        public const string APP_CONFIG_ENV_PREFIX = "TUG_CLIENT_";
+
         public static void Main(string[] args)
         {
             AppLog.Factory.AddConsole(LogLevel.Debug);
 
-            var clientConfig = new DscPullConfig
-            {
-                AgentId = Guid.Parse("67217804-cc0b-4836-a396-5cc67eb9672e"),
-                AgentInformation = ComputeAgentInformation(),
-
-                ConfigurationNames = new[] { "TestConfig1" },
-
-                ConfigurationRepositoryServer = new DscPullConfig.ServerConfig
-                {
-                    // We have to use this URL because of the hard-coded "bypass-local"
-                    // behavior of HttpClient when using a Proxy, more details here:
-                    //    http://stackoverflow.com/questions/12378638/how-to-make-system-net-webproxy-to-not-bypass-local-urls
-                    ServerUrl = new Uri($"http://{Dns.GetHostName()}:5000"),
-                    Proxy = new Util.BasicWebProxy("http://localhost:8888/"),
-                    RegistrationKey = "f65e1a0c-46b0-424c-a6a5-c3701aef32e5",
-                },
-
-                // Cert Info is a *MUST* when using RegKey authorization
-                CertificateInformation = new CertificateInformation
-                {
-                    FriendlyName = "DSC-OaaS Client Authentication",
-                    Issuer = "CN=DSC-OaaS",
-                    NotAfter = DateTime.Now.AddYears(1).ToString("O"),
-                    NotBefore = DateTime.Now.AddMinutes(-10).ToString("O"),
-                    Subject = "CN=DSC-OaaS",
-                    PublicKey = "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
-                    Thumbprint = "8351F16C2B06634279F2C0287B5430452DA1CD94",
-                    Version = 3,
-                }
-            };
+            var clientConfig = ResolveClientConfiguration(args);
 
             try
             {
@@ -77,10 +63,55 @@ namespace Tug.Client
             }
         }
 
+        public static DscPullConfig ResolveClientConfiguration(params string[] args)
+        {
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(APP_CONFIG_FILENAME, optional: true)
+                .AddEnvironmentVariables(APP_CONFIG_ENV_PREFIX)
+                .AddCommandLine(args);
+
+            var config = configBuilder.Build();
+
+            // Optionally load additionally config files
+            var addJsonFile = nameof(JsonConfigurationExtensions.AddJsonFile);
+            var addJsonSingle = config[addJsonFile];
+            var addJsonMultiple = config.GetSection(addJsonFile);
+            if (!string.IsNullOrEmpty(config[addJsonFile]))
+                configBuilder.AddJsonFile(config[addJsonFile], optional: true);
+            else if (addJsonMultiple != null)
+                foreach (var s in addJsonMultiple.GetChildren())
+                    configBuilder.AddJsonFile(s.Value, optional: true);
+
+            // Optionally load User Secrets if specified in the config so far
+            // **************************************************************
+            // NOTE:  cannot use nameof(ConfigurationExtension.AddUserSecrets)
+            // because we have duplicate extension class names across different
+            // assemblies and current .NET Core does not allow use to hone in to
+            // a specific class within a specific assembly using the extern alias
+            // feature as you can with the /r switch of the  .NET Framework CSC CLI
+            var addUserSecrets = "AddUserSecrets";
+            if (!string.IsNullOrEmpty(config[addUserSecrets]))
+                configBuilder.AddUserSecrets(config[addUserSecrets]);
+
+            // Rebuild config with possible additions
+            config = configBuilder.Build();
+
+            // Resolve the strongly-typed configuration model
+            var clientConfig = config.Get<DscPullConfig>();
+
+            // If AgentInformation is not explicitly configured
+            // resolve a default instance based on context
+            if (clientConfig.AgentInformation == null)
+                clientConfig.AgentInformation = ComputeAgentInformation();
+
+            return clientConfig;
+        }
+
         public static Model.AgentInformation ComputeAgentInformation(
                 string nodeName = null,
                 string ipAddress = null,
-                string agentVersion = "2.0")
+                string agentVersion = DEFAULT_AGENT_VERSION)
         {
             if (nodeName == null)
             {
