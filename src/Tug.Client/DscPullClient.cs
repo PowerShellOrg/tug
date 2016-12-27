@@ -22,6 +22,7 @@ using Newtonsoft.Json.Converters;
 using Tug.Messages;
 using Tug.Messages.ModelBinding;
 using Tug.Model;
+using Tug.Client.Configuration;
 
 namespace Tug.Client
 {
@@ -277,13 +278,13 @@ namespace Tug.Client
                 LOG.LogDebug("Computed request URL:  [{url}]", requUrl);
 
             var httpHandler = new HttpClientHandler();
-            if (server.Proxy != null)
+            if (server.Proxy?.Instance != null)
             {
                 if (LOG.IsEnabled(LogLevel.Debug))
                     LOG.LogDebug("Enabling Proxy:  [{proxy}] supported=[{supported}]",
                             server.Proxy, httpHandler.SupportsProxy);
                 httpHandler.UseProxy = true;
-                httpHandler.Proxy = (IWebProxy)server;
+                httpHandler.Proxy = server.Proxy.Instance;
             }
 
             var requMessage = new HttpRequestMessage

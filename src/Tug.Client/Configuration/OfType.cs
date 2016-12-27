@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Tug.Client.Configuration
 {
@@ -31,8 +32,18 @@ namespace Tug.Client.Configuration
     /// <see cref="OfType(T).Instance"><c>Instance</c></see>.
     /// </para>
     /// </remarks>
-    public class OfType<T>
+    public class OfType<T> where T : class
     {
+
+        // TODO:  NOT CRAZY ABOUT THIS APPROACH
+        //        especially because of the restrictions with
+        //        interface types (T) and the explicit operator
+        //
+        // Look into changing/extending the ConfigurationBinder
+        // to support type meta data annotations, like $type and
+        // $params to resolve types dynamically
+
+
         private string _TypeName;
 
         private Type _Type;
@@ -54,6 +65,7 @@ namespace Tug.Client.Configuration
             }
         }
 
+        [JsonIgnore]
         public T Instance
         {
             get
@@ -70,11 +82,13 @@ namespace Tug.Client.Configuration
             }
         }
 
+        [JsonIgnore]
         public bool IsCreated
         {
             get { return _InstanceCreated; }
         }
 
+        [JsonIgnore]
         public bool IsNull
         {
             get { return !_InstanceCreated || _Instance == null; }
@@ -118,16 +132,22 @@ namespace Tug.Client.Configuration
             return !object.Equals(o, tot);
         }
 
-        public static implicit operator T(OfType<T> tot)
+        /// <remarks>
+        /// This does not work when T is an interface, as spelled out
+        /// by the <see cref="https://msdn.microsoft.com/en-us/library/aa664464(v=vs.71).aspx"
+        /// >C# specification</see>.
+        /// </remarks>
+        public static explicit operator T(OfType<T> tot)
         {
-            return tot.Instance;
+            return tot?.Instance;
         }
 
         public static implicit operator OfType<T>(T o)
         {
             OfType<T> tot = new OfType<T>();
-            tot._TypeName = o.GetType().AssemblyQualifiedName;
+            tot.TypeName = o.GetType().AssemblyQualifiedName;
             tot._Instance = o;
+            tot._InstanceCreated = true;
             return tot;
         }
     }
