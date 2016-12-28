@@ -56,3 +56,12 @@ can be discussed, defined and designed.
   * Looks like the most [recent](https://github.com/antlr/antlr4/issues/1142), or
     perhaps [prerelease](https://github.com/antlr/antlrcs/issues/42) versions of
     [ANTLR](http://antlr.org) already have support for .NET Standard
+
+* [ ] Alerting - another possible "nice to have" idea:
+  Could be some opportunity for generating alerts on server-side such as when an unexpected
+  exception is encountered (discovered a few 500 errors in the default xDscWebService under
+  some test scenarios using the Tug.Client) or when a node has fallen out of compliance for
+  some length of time, or some other conditions.  The natural approach would be to define a
+  new extension point (i.e. Provider interface) and throw in a few provider impls like SMTP
+  ([MailKit](https://github.com/jstedfast/MailKit) of course ;-)), chatops (Slack, HipChat,
+  etc.) or just plain old [WebHooks](https://github.com/aspnet/WebHooks).

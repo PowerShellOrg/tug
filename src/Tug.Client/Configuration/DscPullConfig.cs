@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Net;
 using Tug.Model;
 
-namespace Tug.Client
+namespace Tug.Client.Configuration
 {
     /// <summary>
     /// Defines configuration settings to control the behavior of a DSC Pull Client.
@@ -50,8 +50,8 @@ namespace Tug.Client
 
             public string RegistrationKey
             { get; set; }
-            
-            public IWebProxy Proxy
+
+            public OfType<IWebProxy> Proxy
             { get; set; }
         }
     }

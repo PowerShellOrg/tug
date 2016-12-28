@@ -4,67 +4,58 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using Microsoft.Extensions.CommandLineUtils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Tug.Client.Configuration;
 
 namespace Tug.Client
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public const string DEFAULT_AGENT_VERSION = "2.0";
+
+        /// <summary>
+        /// File name of an optional JSON file used to configure the Web Host.
+        /// </summary>
+        public const string APP_CONFIG_FILENAME = "appsettings.json";
+
+        /// <summary>
+        /// Prefix used to identify environment variables that can override Web Host
+        /// configuration.
+        /// </summary>
+        public const string APP_CONFIG_ENV_PREFIX = "TUG_CLIENT_";
+
+        private CommandLine _commandLine;
+        private DscPullConfig _config;
+        private DscPullClient _client;
+
+        public void Execute(string[] args)
         {
-            AppLog.Factory.AddConsole(LogLevel.Debug);
+            var run = new List<Action>();
 
-            var clientConfig = new DscPullConfig
-            {
-                AgentId = Guid.Parse("67217804-cc0b-4836-a396-5cc67eb9672e"),
-                AgentInformation = ComputeAgentInformation(),
+            _commandLine = new CommandLine();
+            _commandLine.OnRegisterAgent = () => run.Add(DoRegisterAgent);
+            _commandLine.OnGetAction = () => run.Add(DoGetAction);
+            _commandLine.OnGetConfiguration = () => run.Add(DoGetConfiguration);
+            _commandLine.OnGetActionAndConfiguration = () => run.Add(DoGetActionAndConfiguration);
+            _commandLine.OnGetModule = () => run.Add(DoGetModule);
+            
+            _commandLine.Init().Execute(args);
 
-                ConfigurationNames = new[] { "TestConfig1" },
-
-                ConfigurationRepositoryServer = new DscPullConfig.ServerConfig
-                {
-                    // We have to use this URL because of the hard-coded "bypass-local"
-                    // behavior of HttpClient when using a Proxy, more details here:
-                    //    http://stackoverflow.com/questions/12378638/how-to-make-system-net-webproxy-to-not-bypass-local-urls
-                    ServerUrl = new Uri($"http://{Dns.GetHostName()}:5000"),
-                    Proxy = new Util.BasicWebProxy("http://localhost:8888/"),
-                    RegistrationKey = "f65e1a0c-46b0-424c-a6a5-c3701aef32e5",
-                },
-
-                // Cert Info is a *MUST* when using RegKey authorization
-                CertificateInformation = new CertificateInformation
-                {
-                    FriendlyName = "DSC-OaaS Client Authentication",
-                    Issuer = "CN=DSC-OaaS",
-                    NotAfter = DateTime.Now.AddYears(1).ToString("O"),
-                    NotBefore = DateTime.Now.AddMinutes(-10).ToString("O"),
-                    Subject = "CN=DSC-OaaS",
-                    PublicKey = "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
-                    Thumbprint = "8351F16C2B06634279F2C0287B5430452DA1CD94",
-                    Version = 3,
-                }
-            };
+            _config = ResolveClientConfiguration();
 
             try
             {
-                using (var client = new DscPullClient(clientConfig))
+                using (_client = new DscPullClient(_config))
                 {
-                    //client.RegisterDscAgentAsync().Wait();
-
-                    var configNames = client.GetDscActionAsync().Result?.ToArray();
-                    if (configNames?.Length > 0)
-                    {
-                        Console.WriteLine("We have configs to get:");
-                        foreach(var cn in configNames)
-                        {
-                            Console.WriteLine($"  * Config [{cn}]");
-                            var bytes = client.GetConfiguration(cn).Result;
-                            Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
-                        }
-                    }
+                    foreach (var r in run)
+                        r();
                 }
             }
             catch (AggregateException ex)
@@ -77,10 +68,119 @@ namespace Tug.Client
             }
         }
 
+        public void DoRegisterAgent()
+        {
+            Console.WriteLine("REGISTER-AGENT");
+            _client.RegisterDscAgentAsync().Wait();
+        }
+
+        public void DoGetAction()
+        {
+            Console.WriteLine("GET-ACTION");
+            _client.GetDscActionAsync().Result?.ToArray();
+        }
+
+        public void DoGetConfiguration()
+        {
+            Console.WriteLine("GET-CONFIGURATION");
+            
+            Console.WriteLine("Getting configs:");
+            foreach (var cn in _config.ConfigurationNames)
+            {
+                Console.WriteLine($"  * Config [{cn}]");
+                var bytes = _client.GetConfiguration(cn).Result;
+                Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
+            }
+        }
+
+        public void DoGetActionAndConfiguration()
+        {
+            Console.WriteLine("GET-ACTION-AND-CONFIGURATION");
+
+            var configNames = _client.GetDscActionAsync().Result?.ToArray();
+
+            if (configNames?.Length > 0)
+            {
+                Console.WriteLine("We have configs to get:");
+                foreach(var cn in configNames)
+                {
+                    Console.WriteLine($"  * Config [{cn}]");
+                    var bytes = _client.GetConfiguration(cn).Result;
+                    Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
+                }
+            }
+        }
+
+        public void DoGetModule()
+        {
+            Console.WriteLine("GET-MODULE");
+        }
+
+        public void DoSendReport(DscPullClient client)
+        {
+            Console.WriteLine("SEND-REPORT");
+
+            throw new NotImplementedException();
+        }
+
+        public static void Main(string[] args)
+        {
+            AppLog.Factory.AddConsole(LogLevel.Debug);
+
+            new Program().Execute(args);
+        }
+
+        public DscPullConfig ResolveClientConfiguration()
+        {
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(_commandLine.ConfigFile, optional: true)
+                .AddEnvironmentVariables(_commandLine.ConfigEnvPrefix);
+
+            if (_commandLine.ConfigValues != null)
+                configBuilder.AddCommandLine(_commandLine.ConfigValues);
+
+            var config = configBuilder.Build();
+
+            // Optionally load additionally config files
+            var addJsonFile = nameof(JsonConfigurationExtensions.AddJsonFile);
+            var addJsonSingle = config[addJsonFile];
+            var addJsonMultiple = config.GetSection(addJsonFile);
+            if (!string.IsNullOrEmpty(config[addJsonFile]))
+                configBuilder.AddJsonFile(config[addJsonFile], optional: true);
+            else if (addJsonMultiple != null)
+                foreach (var s in addJsonMultiple.GetChildren())
+                    configBuilder.AddJsonFile(s.Value, optional: true);
+
+            // Optionally load User Secrets if specified in the config so far
+            // **************************************************************
+            // NOTE:  cannot use nameof(ConfigurationExtension.AddUserSecrets)
+            // because we have duplicate extension class names across different
+            // assemblies and current .NET Core does not allow use to hone in to
+            // a specific class within a specific assembly using the extern alias
+            // feature as you can with the /r switch of the  .NET Framework CSC CLI
+            var addUserSecrets = "AddUserSecrets";
+            if (!string.IsNullOrEmpty(config[addUserSecrets]))
+                configBuilder.AddUserSecrets(config[addUserSecrets]);
+
+            // Rebuild config with possible additions
+            config = configBuilder.Build();
+
+            // Resolve the strongly-typed configuration model
+            var clientConfig = config.Get<DscPullConfig>();
+
+            // If AgentInformation is not explicitly configured
+            // resolve a default instance based on context
+            if (clientConfig.AgentInformation == null)
+                clientConfig.AgentInformation = ComputeAgentInformation();
+
+            return clientConfig;
+        }
+
         public static Model.AgentInformation ComputeAgentInformation(
                 string nodeName = null,
                 string ipAddress = null,
-                string agentVersion = "2.0")
+                string agentVersion = DEFAULT_AGENT_VERSION)
         {
             if (nodeName == null)
             {
