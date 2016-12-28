@@ -4,10 +4,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tug.Client.Configuration;
@@ -29,30 +31,31 @@ namespace Tug.Client
         /// </summary>
         public const string APP_CONFIG_ENV_PREFIX = "TUG_CLIENT_";
 
-        public static void Main(string[] args)
-        {
-            AppLog.Factory.AddConsole(LogLevel.Debug);
+        private CommandLine _commandLine;
+        private DscPullConfig _config;
+        private DscPullClient _client;
 
-            var clientConfig = ResolveClientConfiguration(args);
+        public void Execute(string[] args)
+        {
+            var run = new List<Action>();
+
+            _commandLine = new CommandLine();
+            _commandLine.OnRegisterAgent = () => run.Add(DoRegisterAgent);
+            _commandLine.OnGetAction = () => run.Add(DoGetAction);
+            _commandLine.OnGetConfiguration = () => run.Add(DoGetConfiguration);
+            _commandLine.OnGetActionAndConfiguration = () => run.Add(DoGetActionAndConfiguration);
+            _commandLine.OnGetModule = () => run.Add(DoGetModule);
+            
+            _commandLine.Init().Execute(args);
+
+            _config = ResolveClientConfiguration();
 
             try
             {
-                using (var client = new DscPullClient(clientConfig))
+                using (_client = new DscPullClient(_config))
                 {
-                    //client.RegisterDscAgentAsync().Wait();
-
-                    var configNames = client.GetDscActionAsync().Result?.ToArray();
-
-                    if (configNames?.Length > 0)
-                    {
-                        Console.WriteLine("We have configs to get:");
-                        foreach(var cn in configNames)
-                        {
-                            Console.WriteLine($"  * Config [{cn}]");
-                            var bytes = client.GetConfiguration(cn).Result;
-                            Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
-                        }
-                    }
+                    foreach (var r in run)
+                        r();
                 }
             }
             catch (AggregateException ex)
@@ -65,13 +68,77 @@ namespace Tug.Client
             }
         }
 
-        public static DscPullConfig ResolveClientConfiguration(params string[] args)
+        public void DoRegisterAgent()
+        {
+            Console.WriteLine("REGISTER-AGENT");
+            _client.RegisterDscAgentAsync().Wait();
+        }
+
+        public void DoGetAction()
+        {
+            Console.WriteLine("GET-ACTION");
+            _client.GetDscActionAsync().Result?.ToArray();
+        }
+
+        public void DoGetConfiguration()
+        {
+            Console.WriteLine("GET-CONFIGURATION");
+            
+            Console.WriteLine("Getting configs:");
+            foreach (var cn in _config.ConfigurationNames)
+            {
+                Console.WriteLine($"  * Config [{cn}]");
+                var bytes = _client.GetConfiguration(cn).Result;
+                Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
+            }
+        }
+
+        public void DoGetActionAndConfiguration()
+        {
+            Console.WriteLine("GET-ACTION-AND-CONFIGURATION");
+
+            var configNames = _client.GetDscActionAsync().Result?.ToArray();
+
+            if (configNames?.Length > 0)
+            {
+                Console.WriteLine("We have configs to get:");
+                foreach(var cn in configNames)
+                {
+                    Console.WriteLine($"  * Config [{cn}]");
+                    var bytes = _client.GetConfiguration(cn).Result;
+                    Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
+                }
+            }
+        }
+
+        public void DoGetModule()
+        {
+            Console.WriteLine("GET-MODULE");
+        }
+
+        public void DoSendReport(DscPullClient client)
+        {
+            Console.WriteLine("SEND-REPORT");
+
+            throw new NotImplementedException();
+        }
+
+        public static void Main(string[] args)
+        {
+            AppLog.Factory.AddConsole(LogLevel.Debug);
+
+            new Program().Execute(args);
+        }
+
+        public DscPullConfig ResolveClientConfiguration()
         {
             var configBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(APP_CONFIG_FILENAME, optional: true)
-                .AddEnvironmentVariables(APP_CONFIG_ENV_PREFIX)
-                .AddCommandLine(args);
+                .AddJsonFile(_commandLine.ConfigFile, optional: true)
+                .AddEnvironmentVariables(_commandLine.ConfigEnvPrefix);
+
+            if (_commandLine.ConfigValues != null)
+                configBuilder.AddCommandLine(_commandLine.ConfigValues);
 
             var config = configBuilder.Build();
 
