@@ -2,7 +2,11 @@
   "version": "0.5.1-*",
 
   "buildOptions": {
-    "debugType": "portable"
+    "debugType": "portable",
+    "nowarn": [
+      "CS0169", // The field 'X' is never used
+      "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
+    ]
   },
 
   "dependencies": {

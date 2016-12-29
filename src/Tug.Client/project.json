@@ -8,7 +8,11 @@
   "buildOptions": {
     "debugType": "portable",
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "nowarn": [
+      "CS0169", // The field 'X' is never used
+      "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
+    ]
   },
 
   "dependencies": {
