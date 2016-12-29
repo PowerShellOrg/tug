@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tug.Ext
@@ -13,13 +14,21 @@ namespace Tug.Ext
     [TestClass]
     public class Tests
     {
-            // Weird the relative path behavior differs across platforms!?!?!
+        public static readonly string AUX_TEST_LIB_PATH;
+
+        static Tests()
+        {
+            var thisPath = Path.GetDirectoryName(typeof(Tests).GetTypeInfo().Assembly.Location);
+
+            // Weird the relative path behavior differs across platforms!?!?!            
 #if DOTNET_FRAMEWORK
-            public const string AUX_TEST_LIB_PATH = "../../../../../Tug.Ext-tests-aux/bin/Debug/net452";
+            var auxPath = Path.GetFullPath(Path.Combine(thisPath, "../../../../../Tug.Ext-tests-aux/bin/Debug/net452"));
 #else
-            public const string AUX_TEST_LIB_PATH = "../Tug.Ext-tests-aux/bin/Debug/netcoreapp1.0";
+            var auxPath = Path.GetFullPath(Path.Combine(thisPath, "../../../../../test/Tug.Ext-tests-aux/bin/Debug/netcoreapp1.0"));
 #endif
-        
+            AUX_TEST_LIB_PATH = auxPath;
+        }
+
         [TestMethod]
         public void TestProviderModel_SimpleManager_FoundProviders()
         {
