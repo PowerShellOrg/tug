@@ -26,7 +26,9 @@ namespace Tug.Ext
 #else
             var auxPath = Path.GetFullPath(Path.Combine(thisPath, "../../../../../test/Tug.Ext-tests-aux/bin/Debug/netcoreapp1.0"));
 #endif
+
             AUX_TEST_LIB_PATH = auxPath;
+            System.Console.WriteLine("*** Computed AUX_TEST_LIB_PATH:  " + AUX_TEST_LIB_PATH);
         }
 
         [TestMethod]
