@@ -24,7 +24,7 @@ can be discussed, defined and designed.
 * [ ] Continuous Integration (CI)
   * We should setup one or more CI services to build continuously:
     * Windows:
-      * AppVeyor
+      * ~~AppVeyor~~ - Tracked at https://github.com/PowerShellOrg/tug/issues/30
       * MyGet - [build services](http://docs.myget.org/docs/reference/build-services)
       * TeamCity @ [JetBrains](https://teamcity.jetbrains.com/) - [hosted version for OSS](https://blog.jetbrains.com/teamcity/2016/10/hosted-teamcity-for-open-source-a-new-home/)
       * TeamCity @ [POSH.org](https://powershell.org/build-server/) - for OSS POSH
