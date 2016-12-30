@@ -1,6 +1,8 @@
 # tug
 Open-source, cross-platform Pull/Reporting Server for DSC
 
+[![Build status](https://ci.appveyor.com/api/projects/status/xw3k8flvys5g37ct?svg=true)](https://ci.appveyor.com/project/ebekker/tug)
+
 ## Status
 * Currently at proof-of-concept; correctly calculates Authorization header given a hardcoded Registration Key
 * Unfortunately, load-testing suggests that spawning a new PowerShell process for each request is going to suck from a performance perspective. Because .NET Core is presently not capable of hosting the PowerShell Core engine, this presents some difficulties. Going to do some back-end testing just on Windows in normal ASP.NET to see if hosting the shell directly provides sufficient performance gain.
