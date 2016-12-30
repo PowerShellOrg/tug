@@ -42,7 +42,7 @@ Configuration DscPullServer {
     ## Resolve the Certificate and its Thumbprint
     if (-not $CertThumbprint) {
         $CertThumbprint = ((dir Cert:\LocalMachine\My |
-                Where-Object { $_.FriendlyName -eq 'PSDSCPullServer' } |
+                Where-Object { $_.Subject -eq 'CN=PSDSCPullServer' } |
                 Select-Object -First 1).Thumbprint)
     }
 
@@ -96,74 +96,76 @@ Configuration DscPullServer {
         Script PSDSCPullServerCert {
             TestScript = {
                 (dir Cert:\LocalMachine\My |
-                        Where-Object { $_.FriendlyName -eq 'PSDSCPullServer' } |
+                        Where-Object { $_.Subject -eq 'CN=PSDSCPullServer' } |
                         Select-Object -First 1).length -eq 1
             }.ToString()
 
             SetScript = {
-                New-SelfSignedCertificate -FriendlyName 'PSDSCPullServer' `
-                        -Subject PSDSCPullServer `
+                New-SelfSignedCertificate `
+                        -DnsName PSDSCPullServer `
                         -CertStoreLocation Cert:\LocalMachine\My
             }.ToString()
 
 
             GetScript = {
                 @{ Result = ((dir Cert:\LocalMachine\My |
-                        Where-Object { $_.FriendlyName -eq 'PSDSCPullServer' } |
+                        Where-Object { $_.Subject -eq 'CN=PSDSCPullServer' } |
                         Select-Object -First 1).Thumbprint) }
             }.ToString()
         }
 
-        xDSCWebService PSDSCPullServer {
-            DependsOn = @(
-                "[WindowsFeature]DSCServiceFeature",
-                "[File]RegKeyFile"
-            )
-            Ensure = 'Present' # 'Absent' # 
-            EndpointName = "PSDSCPullServer"
-            CertificateThumbPrint = $CertThumbprint
-            AcceptSelfSignedCertificates = $true
-            Port = 8443
-            State = 'Started'
+        if ($CertThumbprint) {
+            xDSCWebService PSDSCPullServer {
+                DependsOn = @(
+                    "[WindowsFeature]DSCServiceFeature",
+                    "[File]RegKeyFile"
+                )
+                Ensure = 'Present' # 'Absent' # 
+                EndpointName = "PSDSCPullServer"
+                CertificateThumbPrint = $CertThumbprint
+                AcceptSelfSignedCertificates = $true
+                Port = 8443
+                State = 'Started'
+                
+                UseSecurityBestPractices = $false
+
+                PhysicalPath = $webSitePath
+                RegistrationKeyPath = $regKeyDirPath
+                ModulePath = $modulePath
+                ConfigurationPath = $configPath
+                DatabasePath = $dbPath
+            }
+
             
-            UseSecurityBestPractices = $false
 
-            PhysicalPath = $webSitePath
-            RegistrationKeyPath = $regKeyDirPath
-            ModulePath = $modulePath
-            ConfigurationPath = $configPath
-            DatabasePath = $dbPath
-        }
+            xWebsite PSDSCPullServerAltPorts {
+                DependsOn = @(
+                    "[xDSCWebService]PSDSCPullServer"
+                )
+                Name = "PSDSCPullServer"
+                State = 'Started'
+                BindingInfo = @(
+                    MSFT_xWebBindingInformation {
+                        Protocol = 'http'
+                        Port     = 8080
+                    }
+                    MSFT_xWebBindingInformation {
+                        Protocol = 'https'
+                        Port = 8443
+                        CertificateThumbprint = $CertThumbprint
+                    }
+                )
+            }
 
-        
-
-        xWebsite PSDSCPullServerAltPorts {
-            DependsOn = @(
-                "[xDSCWebService]PSDSCPullServer"
-            )
-            Name = "PSDSCPullServer"
-            State = 'Started'
-            BindingInfo = @(
-                MSFT_xWebBindingInformation {
-                    Protocol = 'http'
-                    Port     = 8080
-                }
-                MSFT_xWebBindingInformation {
-                    Protocol = 'https'
-                    Port = 8443
-                    CertificateThumbprint = $CertThumbprint
-                }
-            )
-        }
-
-        # To resolve issue with:
-        #    "The Module DLL 'C:\windows\SysWOW64\inetsrv\IISSelfSignedCertModule.dll' could not be loaded due to a configuration problem."
-        # See https://github.com/PowerShell/xPSDesiredStateConfiguration/issues/104
-        # https://powershell.org/forums/topic/defaultapppool-crashes-after-pullserver-installation/
-        xWebAppPool DefaultAppPool {
-            Name                  = 'DefaultAppPool'
-            State                 = 'Started'
-            enable32BitAppOnWin64 = $True
+            # To resolve issue with:
+            #    "The Module DLL 'C:\windows\SysWOW64\inetsrv\IISSelfSignedCertModule.dll' could not be loaded due to a configuration problem."
+            # See https://github.com/PowerShell/xPSDesiredStateConfiguration/issues/104
+            # https://powershell.org/forums/topic/defaultapppool-crashes-after-pullserver-installation/
+            xWebAppPool DefaultAppPool {
+                Name                  = 'DefaultAppPool'
+                State                 = 'Started'
+                enable32BitAppOnWin64 = $True
+            }
         }
     }
 }
