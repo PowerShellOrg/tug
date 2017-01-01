@@ -12,7 +12,7 @@
 
 Configuration TestConfig1 {
 
-    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+    Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
     Node TestConfig1 {
         File TempDir {
