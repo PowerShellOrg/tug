@@ -49,26 +49,36 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
-
-                var actionResult = client.GetDscActionAsync(new[]
+                try
                 {
-                    new Model.ClientStatusItem
+                    client.RegisterDscAgentAsync().Wait();
+
+                    var actionResult = client.GetDscActionAsync(new[]
                     {
-                        ConfigurationName = "NoSuchConfig",
-                        ChecksumAlgorithm = "SHA-256",
-                        Checksum = "",
-                    }
-                }).Result;
+                        new Model.ClientStatusItem
+                        {
+                            ConfigurationName = "NoSuchConfig",
+                            ChecksumAlgorithm = "SHA-256",
+                            Checksum = "",
+                        }
+                    }).Result;
 
-                Assert.IsNotNull(actionResult, "Action result is not null");
+                    Assert.IsNotNull(actionResult, "Action result is not null");
 
-                var resultArr = actionResult.ToArray();
-                Assert.AreEqual(1, resultArr.Length, "Number of action results");
-                Assert.AreEqual("NoSuchConfig", resultArr[0]?.ConfigurationName,
-                        "Action result config name");
-                Assert.AreEqual(Model.DscActionStatus.RETRY, resultArr[0].Status,
-                        "Action result status");
+                    var resultArr = actionResult.ToArray();
+                    Assert.AreEqual(1, resultArr.Length, "Number of action results");
+                    Assert.AreEqual("NoSuchConfig", resultArr[0]?.ConfigurationName,
+                            "Action result config name");
+                    Assert.AreEqual(Model.DscActionStatus.RETRY, resultArr[0].Status,
+                            "Action result status");
+                }
+                catch (Exception ex)
+                        when (ex.Message.Contains(
+                                "Response status code does not indicate success: 404 (Not Found)"))
+                {
+                    Assert.IsInstanceOfType(ex, typeof(System.Net.Http.HttpRequestException),
+                            "Expected HTTP exception for missing config");
+                }
             }
         }
 
