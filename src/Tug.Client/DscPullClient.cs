@@ -129,7 +129,7 @@ namespace Tug.Client
                     RegisterDscAgentRequest.ROUTE, dscRequ);
         }
 
-        public async Task<IEnumerable<string>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
+        public async Task<IEnumerable<ActionDetailsItem>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetDscActionAsync));
@@ -140,15 +140,32 @@ namespace Tug.Client
             AssertServerConfig(serverConfig);
 
             if (clientStatus == null)
-                clientStatus = new[]
+            {
+                if (Configuration.ConfigurationNames != null)
                 {
-                    new ClientStatusItem
+                    clientStatus = Configuration.ConfigurationNames.Select(x =>
                     {
-                        ConfigurationName = string.Empty,
-                        ChecksumAlgorithm = "SHA-256", // TODO: figure out this
-                        Checksum = string.Empty,
-                    }
-                };
+                        return new ClientStatusItem
+                        {
+                            ConfigurationName = x,
+                            ChecksumAlgorithm = "SHA-256", // TODO: figure out this
+                            Checksum = string.Empty,
+                        };
+                    });
+                }
+                else
+                {
+                    clientStatus = new[]
+                    {
+                        new ClientStatusItem
+                        {
+                            ConfigurationName = string.Empty,
+                            ChecksumAlgorithm = "SHA-256", // TODO: figure out this
+                            Checksum = string.Empty,
+                        }
+                    };
+                }
+            }
 
             var dscRequ = new GetDscActionRequest
             {
@@ -169,21 +186,19 @@ namespace Tug.Client
                 Console.WriteLine("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
                         _jsonSerSettings));
 
-                // TODO:  Figure these out later on
-                if (dscResp.Body.NodeStatus == DscActionStatus.RETRY)
-                    throw new NotImplementedException(
-                            /*SR*/"the node status of RETRY is not supported");
-                if (dscResp.Body?.NodeStatus == DscActionStatus.UpdateMetaConfiguration)
-                    throw new NotImplementedException(
-                            /*SR*/"the node status of UpdateMetaConfiguration is not supported");
+                if (dscResp?.Body?.Details?.Length == 0)
+                {
+                    return new[]
+                    {
+                        new ActionDetailsItem
+                        {
+                            ConfigurationName = string.Empty,
+                            Status = (dscResp?.Body?.NodeStatus).GetValueOrDefault(),  
+                        }
+                    };
+                }
 
-                if (dscResp.Body?.NodeStatus == DscActionStatus.OK)
-                    return new string[0];
-
-                // Else -- GetConfiguration, so return all the config names we have to get
-                return dscResp.Body.Details
-                        .Where(x => x.Status == DscActionStatus.GetConfiguration)
-                        .Select(x => x.ConfigurationName);
+                return dscResp.Body.Details;
             }
         }
 
