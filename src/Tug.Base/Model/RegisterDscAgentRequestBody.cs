@@ -10,6 +10,10 @@ namespace Tug.Model
     /// </summary>
     public class RegisterDscAgentRequestBody
     {
+        // NOTE:  DO NOT CHANGE THE ORDER OF THESE PROPERTIES!!!
+        // Apparently the order of these properties is important
+        // to successfully fulfill the RegKey authz requirements
+
         public AgentInformation AgentInformation
         { get; set; }
 

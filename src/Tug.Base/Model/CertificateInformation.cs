@@ -7,16 +7,20 @@ namespace Tug.Model
 {
     public class CertificateInformation
     {
+        // NOTE:  DO NOT CHANGE THE ORDER OF THESE PROPERTIES!!!
+        // Apparently the order of these properties is important
+        // to successfully fulfill the RegKey authz requirements
+
         public string FriendlyName
         { get; set; }
 
         public string Issuer
         { get; set; }
 
-        public string NotBefore
+        public string NotAfter
         { get; set; }
 
-        public string NotAfter
+        public string NotBefore
         { get; set; }
 
         public string Subject

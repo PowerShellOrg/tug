@@ -7,6 +7,10 @@ namespace Tug.Model
 {
     public class RegistrationInformation
     {
+        // NOTE:  DO NOT CHANGE THE ORDER OF THESE PROPERTIES!!!
+        // Apparently the order of these properties is important
+        // to successfully fulfill the RegKey authz requirements
+
         public CertificateInformation CertificateInformation
         { get; set; }
 
