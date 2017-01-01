@@ -70,11 +70,12 @@ namespace Tug.Client
                     Assert.AreEqual(Model.DscActionStatus.RETRY, resultArr[0].Status,
                             "Action result status");
                 }
-                catch (Exception ex)
-                        when (ex.Message.Contains(
+                catch (AggregateException ex)
+                        when (ex.InnerException.Message.Contains(
                                 "Response status code does not indicate success: 404 (Not Found)"))
                 {
-                    Assert.IsInstanceOfType(ex, typeof(System.Net.Http.HttpRequestException),
+                    Assert.IsInstanceOfType(ex.InnerException,
+                            typeof(System.Net.Http.HttpRequestException),
                             "Expected HTTP exception for missing config");
                 }
             }
