@@ -40,8 +40,6 @@ namespace Tug.Client
         }
 
         [TestMethod]
-        [ExpectedExceptionAttribute(typeof(System.Net.Http.HttpRequestException),
-                AllowDerivedTypes = true)]
         public void TestGetDscAction_NonExistentConfig()
         {
             var config = BuildConfig();
