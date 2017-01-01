@@ -128,7 +128,8 @@ namespace Tug.Client
                 ServerUrl = new Uri("http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"),
                 RegistrationKey = "c3ea5066-ce5a-4d12-a42a-850be287b2d8",
 
-                Proxy = new BasicWebProxy("http://localhost:8888")
+                // Only for debugging/testing in DEV (i.e. with Fiddler)
+                //Proxy = new BasicWebProxy("http://localhost:8888")
             };
 
             return config;
