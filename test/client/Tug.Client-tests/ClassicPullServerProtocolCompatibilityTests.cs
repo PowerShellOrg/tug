@@ -126,7 +126,7 @@ namespace Tug.Client
             config.ConfigurationRepositoryServer = new DscPullConfig.ServerConfig
             {
                 ServerUrl = new Uri("http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"),
-                RegistrationKey = "f65e1a0c-46b0-424c-a6a5-c3701aef32e5", //"c3ea5066-ce5a-4d12-a42a-850be287b2d8",
+                RegistrationKey = "c3ea5066-ce5a-4d12-a42a-850be287b2d8",
 
                 Proxy = new BasicWebProxy("http://localhost:8888")
             };
