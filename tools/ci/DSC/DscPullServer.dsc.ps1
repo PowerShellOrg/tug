@@ -40,13 +40,7 @@ Configuration DscPullServer {
     Import-DscResource -ModuleName xPSDesiredStateConfiguration -ModuleVersion 5.1.0.0
     Import-DscResource -ModuleName xWebAdministration -ModuleVersion 1.16.0.0
 
-    $dscServicePath = 'C:\DscService'
-    $regKeyDirPath  = "$dscServicePath\RegKeys"
-    $regKeyPath     = "$regKeyDirPath\RegistrationKeys.txt"
-    $webSitePath    = "$dscServicePath\WebSite"
-    $modulePath     = "$dscServicePath\Modules"
-    $configPath     = "$dscServicePath\Configurations"
-    $dbPath         = "$dscServicePath\Data\DB"
+    . "$PSScriptRoot\DscCommon.ps1"
 
     ## Resolve the Certificate and its Thumbprint
     if (-not $CertThumbprint) {
@@ -144,8 +138,6 @@ Configuration DscPullServer {
                 ConfigurationPath = $configPath
                 DatabasePath = $dbPath
             }
-
-            
 
             xWebsite PSDSCPullServerAltPorts {
                 DependsOn = @(

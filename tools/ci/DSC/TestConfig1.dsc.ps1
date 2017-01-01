@@ -8,7 +8,9 @@
 ## a DSC Pull Server v2.  It is published to a DSC Pull Server
 ## setup by the configuration settings in DscPullServer.dsc.ps1 
 
-Configuration ClientConfig {
+Configuration TestConfig1 {
+
+    . "$PSScriptRoot\DscCommon.ps1"
 
     Node ClientConfig {
         File TempDir {
@@ -21,12 +23,13 @@ Configuration ClientConfig {
             DependsOn = "[File]TempDir"
             Ensure = 'Present'
             Type = 'File'
-            DestinationPath = 'c:\temp\foo.txt'
+            DestinationPath = 'c:\temp\tug-testconfig1-file.txt'
             Contents = 'This is a test!'
         }
     }
 }
 
-ClientConfig
+TestConfig1
 
-Publish-MOFToPullServer -PullServerWebConfig C:\DscService\WebSite\web.config -FullName .\ClientConfig\ClientConfig.mof -Verbose
+Get-ChildItem TestConfig1\*.MOF | Publish-MOFToPullServer -Verbose `
+        -PullServerWebConfig "$webSitePath\web.config"
