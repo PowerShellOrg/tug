@@ -182,8 +182,8 @@ namespace Tug.Client
             using (var disposable = await SendDscAsync(serverConfig, GetDscActionRequest.VERB,
                     GetDscActionRequest.ROUTE, dscRequ, dscResp))
             {
-                Console.WriteLine("*********************************************************");
-                Console.WriteLine("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
+                LOG.LogDebug("*********************************************************");
+                LOG.LogDebug("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
                         _jsonSerSettings));
 
                 if (dscResp?.Body?.Details?.Length == 0)
@@ -319,6 +319,8 @@ namespace Tug.Client
             // See if we need to add RegKey authorization data
             if (!string.IsNullOrEmpty(server.RegistrationKey) && requMessage.Content != null)
             {
+                LOG.LogInformation("Computing RegKey Authorization");
+
                 // Shhh!  This is the super-secret formula for computing an
                 // Authorization challenge when using Reg Key Authentication
                 // Details can be found at /references/regkey-authorization.md
@@ -334,15 +336,16 @@ namespace Tug.Client
                     await requMessage.Content.CopyToAsync(ms);
 
                     var body = ms.ToArray();
-                    Console.WriteLine("BODY:-----------------------------");
-                    Console.WriteLine($"<{Encoding.UTF8.GetString(body)}>");
-                    Console.WriteLine("-----------------------------:BODY");
+                    LOG.LogDebug("Computing hash over body content");
+                    LOG.LogDebug("BODY:-----------------------------");
+                    LOG.LogDebug($"<{Encoding.UTF8.GetString(body)}>");
+                    LOG.LogDebug("-----------------------------:BODY");
 
                     var digest = sha.ComputeHash(body);
                     var digB64 = Convert.ToBase64String(digest);
-                    Console.WriteLine("digB64=" + digB64);
+                    LOG.LogDebug("  * digB64=" + digB64);
                     var concat = $"{digB64}\n{msDate}";
-                    Console.WriteLine("concat=" + concat);
+                    LOG.LogDebug("  * concat=" + concat);
                     var macSig = mac.ComputeHash(Encoding.UTF8.GetBytes(concat));
                     var sigB64 = Convert.ToBase64String(macSig);
 
