@@ -63,6 +63,7 @@ Configuration DscPullServer {
     ## Resolve the Registration Key
     if (-not $RegistrationKey) {
         if (Test-Path -Type Leaf $regKeyPath) {
+            Write-Warning "Trying to load RegKey from RegKey path"
             $RegistrationKey = [System.IO.File]::ReadAllText($regKeyPath)
         }
     }
@@ -171,6 +172,6 @@ Configuration DscPullServer {
     }
 }
 
-DscPullServer
+DscPullServer @args
 
 Start-DscConfiguration -Wait -Force -Verbose -Path .\DscPullServer

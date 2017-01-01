@@ -8,11 +8,13 @@
 ## a DSC Pull Server v2.  It is published to a DSC Pull Server
 ## setup by the configuration settings in DscPullServer.dsc.ps1 
 
+. "$PSScriptRoot\DscCommon.ps1"
+
 Configuration TestConfig1 {
 
-    . "$PSScriptRoot\DscCommon.ps1"
+    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
 
-    Node ClientConfig {
+    Node TestConfig1 {
         File TempDir {
             Ensure = 'Present'
             Type = 'Directory'
@@ -29,7 +31,7 @@ Configuration TestConfig1 {
     }
 }
 
-TestConfig1
+TestConfig1 @args
 
 Get-ChildItem TestConfig1\*.MOF | Publish-MOFToPullServer -Verbose `
         -PullServerWebConfig "$webSitePath\web.config"
