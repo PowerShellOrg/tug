@@ -1,3 +1,12 @@
+<#
+ # Copyright © The DevOps Collective, Inc. All rights reserved.
+ # Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ #>
+
+## This DSC configuration is used to setup a classic DSC Pull Server (v2) on
+## the CI build host which is then used to run some unit tests which validate
+## MS-DSCPM protocol compatibility and behavior of the Tug.Client library
+
 
 ## Based on:
 ##  Older (PSv4) refs:
