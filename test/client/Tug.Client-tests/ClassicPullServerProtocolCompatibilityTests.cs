@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tug.Client.Configuration;
-using Tug.Client.Util;
+using Tug.UnitTesting;
 
 namespace Tug.Client
 {
     [TestClass]
     public class ClassicPullServerProtocolCompatibilityTests
     {
+        public const string DEFAULT_AGENT_ID = "12345678-0000-0000-0000-000000000001";
+        public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/";
+        public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
+
+        // Only for debugging/testing in DEV (i.e. with Fiddler)
+        public const string PROXY_URL = "http://localhost:8888"; // null // 
+        
+
         [TestMethod]
         public void TestRegisterDscAgent() 
         {
@@ -16,6 +25,122 @@ namespace Tug.Client
             using (var client = new DscPullClient(config))
             {
                 client.RegisterDscAgentAsync().Wait();
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_NoRegKey()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Remove the RegKey
+            config.ConfigurationRepositoryServer.RegistrationKey = null;
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 401 (Unauthorized)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for unauthorized (401)");
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadRegKey()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Force a bad RegKey
+            config.ConfigurationRepositoryServer.RegistrationKey = Guid.NewGuid().ToString();
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 401 (Unauthorized)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for unauthorized (401)");
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadCert_FieldType() 
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Force bad/unexpected cert info
+            var badCert = new BadVersionTypeCertInfo(config.CertificateInformation)
+            {
+                Version = config.CertificateInformation.Version.ToString(),
+            };
+            config.CertificateInformation = badCert;
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 500 (Internal Server Error)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for unauthorized (401)");
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadCert_NewField()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Force bad/unexpected cert info
+            var badCert = new BadNewFieldCertInfo(config.CertificateInformation);
+            config.CertificateInformation = badCert;
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for unauthorized (401)");
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadCert_FieldOrder()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Force bad/unexpected cert info
+            var badCert = new BadNewFieldCertInfo(config.CertificateInformation);
+            config.CertificateInformation = badCert;
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for unauthorized (401)");
             }
         }
 
@@ -42,7 +167,7 @@ namespace Tug.Client
         [TestMethod]
         public void TestGetDscAction_NonExistentConfig()
         {
-            var config = BuildConfig();
+            var config = BuildConfig(newAgentId: true);
             config.ConfigurationNames = new[] { "NoSuchConfig" };
 
             using (var client = new DscPullClient(config))
@@ -75,7 +200,7 @@ namespace Tug.Client
                                 "Response status code does not indicate success: 404 (Not Found)"))
                 {
                     Assert.IsInstanceOfType(ex.InnerException,
-                            typeof(System.Net.Http.HttpRequestException),
+                            typeof(HttpRequestException),
                             "Expected HTTP exception for missing config");
                 }
             }
@@ -113,11 +238,14 @@ namespace Tug.Client
             }
         }
 
-        private static DscPullConfig BuildConfig()
+        private static DscPullConfig BuildConfig(bool newAgentId = false)
         {
             var config = new DscPullConfig();
 
-            config.AgentId = Guid.NewGuid();
+            config.AgentId = newAgentId
+                    ? Guid.NewGuid()
+                    : Guid.Parse(DEFAULT_AGENT_ID);
+
             config.AgentInformation = Program.ComputeAgentInformation();
             config.ConfigurationNames = new[] { "TestConfig1" };
 
@@ -136,14 +264,66 @@ namespace Tug.Client
 
             config.ConfigurationRepositoryServer = new DscPullConfig.ServerConfig
             {
-                ServerUrl = new Uri("http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"),
-                RegistrationKey = "c3ea5066-ce5a-4d12-a42a-850be287b2d8",
-
-                // Only for debugging/testing in DEV (i.e. with Fiddler)
-                //Proxy = new BasicWebProxy("http://localhost:8888")
+                ServerUrl = new Uri(DEFAULT_SERVER_URL),
+                RegistrationKey = DEFAULT_REG_KEY,
             };
 
+            
+            // Only for debugging/testing in DEV (i.e. with Fiddler)
+            if (PROXY_URL != null)
+                config.ConfigurationRepositoryServer.Proxy = new Util.BasicWebProxy(PROXY_URL);
+
+
             return config;
+        }
+
+
+        public class BadVersionTypeCertInfo : Model.CertificateInformation
+        {
+            public BadVersionTypeCertInfo(Model.CertificateInformation copyFrom) : base(copyFrom)
+            { }
+
+            public new string FriendlyName { get; set; }
+            public new string Issuer { get; set; }
+            public new string NotAfter { get; set; }
+            public new string NotBefore { get; set; }
+            public new string Subject { get; set; }
+            public new string PublicKey { get; set; }
+            public new string Thumbprint { get; set; }
+
+            // This is expected to be a number not a string
+            public new string Version
+            { get; set; }
+        }
+
+        public class BadNewFieldCertInfo : Model.CertificateInformation
+        {
+            public BadNewFieldCertInfo(Model.CertificateInformation copyFrom) : base(copyFrom)
+            { }
+
+            public new string FriendlyName { get; set; }
+            public new string Issuer { get; set; }
+            public new string NotAfter { get; set; }
+            public new string NotBefore { get; set; }
+            public new string Subject { get; set; }
+            public new string PublicKey { get; set; }
+            public new string Thumbprint { get; set; }
+            public new int Version { get; set; }
+
+            // This is not a valid CertInfo field
+            public string Foo
+            { get; set; } = "BAR";
+        }
+
+
+        public class BadFieldOrderCertInfo : Model.CertificateInformation
+        {
+            public BadFieldOrderCertInfo(Model.CertificateInformation copyFrom) : base(copyFrom)
+            { }
+
+            // Redefining this field forces it to
+            // go to the top of serialization order
+            public new int Version { get; set; }
         }
     }
 }
