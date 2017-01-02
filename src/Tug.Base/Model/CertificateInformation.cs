@@ -7,6 +7,20 @@ namespace Tug.Model
 {
     public class CertificateInformation
     {
+        public CertificateInformation()
+        { }
+
+        public CertificateInformation(CertificateInformation copyFrom)
+        {
+            this.FriendlyName = copyFrom.FriendlyName;
+            this.Issuer = copyFrom.Issuer;
+            this.NotAfter = copyFrom.NotAfter;
+            this.NotBefore = copyFrom.NotBefore;
+            this.Subject = copyFrom.Subject;
+            this.PublicKey = copyFrom.PublicKey;
+            this.Thumbprint = copyFrom.Thumbprint;
+        }
+
         // NOTE:  DO NOT CHANGE THE ORDER OF THESE PROPERTIES!!!
         // Apparently the order of these properties is important
         // to successfully fulfill the RegKey authz requirements
