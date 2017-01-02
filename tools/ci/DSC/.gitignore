@@ -1,1 +1,4 @@
-*.mof
+## Ignore all the generated MOF files of child config folders
+## Note, this will *NOT* ignore any MOF files that are in the
+## immediately current folder, such as fixed static MOF files
+*/*.mof
