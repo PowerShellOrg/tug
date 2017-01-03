@@ -33,9 +33,14 @@ namespace Tug.Client
 
         private JsonSerializerSettings _jsonSerSettings;
 
-        public DscPullClient(DscPullConfig config)
+        // A function that generates a client given a client handler
+        private Func<HttpClientHandler, HttpClient> _clientFactory = x => new HttpClient(x);
+
+        public DscPullClient(DscPullConfig config, Func<HttpClientHandler, HttpClient> clientFactory = null)
         {
             Configuration = config;
+            if (clientFactory != null)
+                _clientFactory = clientFactory;
 
             LOG.LogInformation("Initializing DSC Pull Client -- validating state");
 
@@ -365,7 +370,7 @@ namespace Tug.Client
             // TODO:  Eventually we'll address this improper usage pattern as described here:
             //    https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
             HttpResponseMessage respMessage = null;
-            using (var http = new HttpClient(httpHandler))
+            using (var http = _clientFactory(httpHandler))
             {
                 respMessage = await http.SendAsync(requMessage);
             }
