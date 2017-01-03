@@ -88,7 +88,7 @@ namespace Tug.Client
             foreach (var cn in _config.ConfigurationNames)
             {
                 Console.WriteLine($"  * Config [{cn}]");
-                var bytes = _client.GetConfiguration(cn).Result;
+                var bytes = _client.GetConfiguration(cn).Result?.Content;
                 Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
             }
         }
@@ -116,7 +116,7 @@ namespace Tug.Client
 
                     if (a.Status == Model.DscActionStatus.GetConfiguration)
                     {
-                        var bytes = _client.GetConfiguration(a.ConfigurationName).Result;
+                        var bytes = _client.GetConfiguration(a.ConfigurationName).Result?.Content;
                         Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
                     }
                 }

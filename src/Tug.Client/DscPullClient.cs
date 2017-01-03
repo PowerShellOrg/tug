@@ -204,7 +204,7 @@ namespace Tug.Client
 
         // TODO:  I think returning a Stream would be better here, but coordinating that
         // with the disposable resources that are contained within could be tricky
-        public async Task<byte[]> GetConfiguration(string configName)
+        public async Task<FileResponse> GetConfiguration(string configName)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetConfiguration));
@@ -228,14 +228,18 @@ namespace Tug.Client
                     GetConfigurationRequest.ROUTE, dscRequ, dscResp))
             {
                 dscResp.Configuration.CopyTo(bs);
-
-                return bs.ToArray();
+                return new FileResponse
+                {
+                    ChecksumAlgorithm = dscResp.ChecksumAlgorithmHeader,
+                    Checksum = dscResp.ChecksumHeader,
+                    Content = bs.ToArray(),
+                };
             }
         }
 
         // TODO:  I think returning a Stream would be better here, but coordinating that
         // with the disposable resources that are contained within could be tricky
-        public async Task<byte[]> GetModule(string moduleName, string moduleVersion)
+        public async Task<FileResponse> GetModule(string moduleName, string moduleVersion)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetConfiguration));
@@ -259,8 +263,12 @@ namespace Tug.Client
                     GetConfigurationRequest.ROUTE, dscRequ, dscResp))
             {
                 dscResp.Module.CopyTo(bs);
-
-                return bs.ToArray();
+                return new FileResponse
+                {
+                    ChecksumAlgorithm = dscResp.ChecksumAlgorithmHeader,
+                    Checksum = dscResp.ChecksumHeader,
+                    Content = bs.ToArray(),
+                };
             }
         }
 
