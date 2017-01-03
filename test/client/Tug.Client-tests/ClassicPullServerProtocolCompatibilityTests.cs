@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tug.Client.Configuration;
 using Tug.UnitTesting;
@@ -233,8 +236,61 @@ namespace Tug.Client
                         "Action result status");
 
                 var configResult = client.GetConfiguration(resultArr[0]?.ConfigurationName).Result;
-                Assert.IsNotNull(configResult, "Configuration content not null");
-                Assert.AreNotEqual(0, configResult, "Configuration content length > 0");
+                Assert.IsNotNull(configResult?.Content, "Configuration content not null");
+                Assert.AreNotEqual(0, configResult.Content.Length, "Configuration content length > 0");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetConfiguration_Content()
+        {
+            // Get path and content of expected results
+            var myPath = typeof(ClassicPullServerProtocolCompatibilityTests).GetTypeInfo().Assembly.Location;
+            var myDir = Path.GetDirectoryName(myPath);
+            var dscDir = Path.Combine(myDir, "../../../../../../tools/ci/DSC");
+            var mofPath = Path.Combine(dscDir, "StaticTestConfig.mof");
+            var csumPath = Path.Combine(dscDir, "StaticTestConfig.mof.checksum");
+            var mofBody = File.ReadAllText(mofPath);
+            var csumBody = File.ReadAllText(csumPath);
+
+            var config = BuildConfig(newAgentId: true);
+
+            config.ConfigurationNames = new[] { "StaticTestConfig" };
+
+            using (var client = new DscPullClient(config))
+            {
+                client.RegisterDscAgentAsync().Wait();
+
+                var actionResult = client.GetDscActionAsync(new[]
+                {
+                    new Model.ClientStatusItem
+                    {
+                        ConfigurationName = "StaticTestConfig",
+                        ChecksumAlgorithm = "SHA-256",
+                        Checksum = "",
+                    }
+                }).Result;
+                Assert.IsNotNull(actionResult, "Action result is not null");
+
+                var resultArr = actionResult.ToArray();
+                Assert.AreEqual(1, resultArr.Length, "Number of action results");
+                Assert.AreEqual("StaticTestConfig", resultArr[0]?.ConfigurationName,
+                        "Action result config name");
+                Assert.AreEqual(Model.DscActionStatus.GetConfiguration, resultArr[0].Status,
+                        "Action result status");
+                
+                var configResult = client.GetConfiguration(resultArr[0]?.ConfigurationName).Result;
+                Assert.IsNotNull(configResult?.Content, "Configuration content not null");
+                Assert.AreNotEqual(0, configResult.Content.Length, "Configuration content length > 0");
+
+                Assert.AreEqual(csumBody, configResult.Checksum, "Expected MOF config checksum");
+
+                // The fixed content is expected to be in UTF-16 Little Endian (LE)
+                var configBody = Encoding.Unicode.GetString(configResult.Content);
+                // Skip the BOM
+                configBody = configBody.Substring(1);
+
+                Assert.AreEqual(mofBody, configBody, "Expected MOF config content");
             }
         }
 
