@@ -294,6 +294,37 @@ namespace Tug.Client
             }
         }
 
+        [TestMethod]
+        public void TestGetModule_Content()
+        {
+            var modName = "xPSDesiredStateConfiguration";
+            var modVers = "5.1.0.0";
+
+            // Get path and content of expected results
+            var myPath = typeof(ClassicPullServerProtocolCompatibilityTests).GetTypeInfo().Assembly.Location;
+            var myDir = Path.GetDirectoryName(myPath);
+            var dscDir = Path.Combine(myDir, "../../../../../../tools/ci/DSC");
+            var modPath = Path.Combine(dscDir, $"{modName}_{modVers}.zip");
+            var csumPath = Path.Combine(dscDir, $"{modName}_{modVers}.zip.checksum");
+            var modBody = File.ReadAllBytes(modPath);
+            var csumBody = File.ReadAllText(csumPath);
+
+            var config = BuildConfig();
+
+            using (var client = new DscPullClient(config))
+            {
+                client.RegisterDscAgentAsync().Wait();
+                
+                var moduleResult = client.GetModule(modName, modVers).Result;
+                Assert.IsNotNull(moduleResult?.Content, "Module content not null");
+                Assert.AreNotEqual(0, moduleResult.Content.Length, "Module content length > 0");
+
+                Assert.AreEqual(csumBody, moduleResult.Checksum, "Expected module checksum");
+
+                CollectionAssert.AreEqual(modBody, moduleResult.Content, "Expected MOF config content");
+            }
+        }
+
         private static DscPullConfig BuildConfig(bool newAgentId = false)
         {
             var config = new DscPullConfig();
@@ -329,6 +360,8 @@ namespace Tug.Client
             if (PROXY_URL != null)
                 config.ConfigurationRepositoryServer.Proxy = new Util.BasicWebProxy(PROXY_URL);
 
+            // Resource Server endpoint URL same as Config Server endpoint URL
+            config.ResourceRepositoryServer = config.ConfigurationRepositoryServer;
 
             return config;
         }
