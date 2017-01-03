@@ -17,8 +17,8 @@ namespace Tug.Client
         public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/";
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
-        // Only for debugging/testing in DEV (i.e. with Fiddler)
-        public const string PROXY_URL = null; // "http://localhost:8888"; // 
+        // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
+        public static readonly string PROXY_URL = null; // "http://localhost:8888"; // 
         
 
         [TestMethod]
