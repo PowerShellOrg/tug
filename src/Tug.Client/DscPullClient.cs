@@ -259,8 +259,8 @@ namespace Tug.Client
             var dscResp = new GetModuleResponse();
 
             using (var bs = new MemoryStream())
-            using (var disposable = await SendDscAsync(serverConfig, GetConfigurationRequest.VERB,
-                    GetConfigurationRequest.ROUTE, dscRequ, dscResp))
+            using (var disposable = await SendDscAsync(serverConfig, GetModuleRequest.VERB,
+                    GetModuleRequest.ROUTE, dscRequ, dscResp))
             {
                 dscResp.Module.CopyTo(bs);
                 return new FileResponse
