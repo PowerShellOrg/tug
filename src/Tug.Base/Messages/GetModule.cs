@@ -3,6 +3,7 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net.Http;
@@ -16,7 +17,12 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Get;
 
         public const string ROUTE = "Modules(ModuleName='{ModuleName}',ModuleVersion='{ModuleVersion}')/ModuleContent";
-        
+
+        [FromHeader(Name = "AgentId")]
+        [Required]
+        public Guid AgentId
+        { get; set; }
+
         [FromRoute]
         [Required]
         public string ModuleName
