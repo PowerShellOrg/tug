@@ -61,7 +61,7 @@ namespace Tug.Server
 
             // This is ugly as hell but unfortunately, we could not find another
             // way to pass this along from Program to other parts of the app via DI
-            var args = Program.CommandLineArgs.ToArray();
+            var args = Program.CommandLineArgs?.ToArray();
 
             _logger.LogInformation("Resolving final runtime configuration");
             _config = ResolveAppConfig(args);
