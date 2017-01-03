@@ -88,7 +88,7 @@ namespace Tug.Client
             foreach (var cn in _config.ConfigurationNames)
             {
                 Console.WriteLine($"  * Config [{cn}]");
-                var bytes = _client.GetConfiguration(cn).Result;
+                var bytes = _client.GetConfiguration(cn).Result?.Content;
                 Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
             }
         }
@@ -97,16 +97,28 @@ namespace Tug.Client
         {
             Console.WriteLine("GET-ACTION-AND-CONFIGURATION");
 
-            var configNames = _client.GetDscActionAsync().Result?.ToArray();
+            var actions = _client.GetDscActionAsync().Result?.ToArray();
 
-            if (configNames?.Length > 0)
+            if (actions?.Length > 0)
             {
-                Console.WriteLine("We have configs to get:");
-                foreach(var cn in configNames)
+                Console.WriteLine("We have actions:");
+                foreach(var a in actions)
                 {
-                    Console.WriteLine($"  * Config [{cn}]");
-                    var bytes = _client.GetConfiguration(cn).Result;
-                    Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
+                    Console.WriteLine($"  * Action [{a.ConfigurationName}] = [{a.Status}]");
+
+                    if (a.Status == Model.DscActionStatus.RETRY)
+                        throw new NotSupportedException(
+                                /*SR*/"Action RETRY status not supported");
+
+                    if (a.Status == Model.DscActionStatus.UpdateMetaConfiguration)
+                        throw new NotSupportedException(
+                                /*SR*/"Action UpdateMetaConfiguration status not supported");
+
+                    if (a.Status == Model.DscActionStatus.GetConfiguration)
+                    {
+                        var bytes = _client.GetConfiguration(a.ConfigurationName).Result?.Content;
+                        Console.WriteLine($"    Got config file with [{bytes.Length}] bytes");
+                    }
                 }
             }
         }

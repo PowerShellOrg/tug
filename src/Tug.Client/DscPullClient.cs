@@ -129,7 +129,7 @@ namespace Tug.Client
                     RegisterDscAgentRequest.ROUTE, dscRequ);
         }
 
-        public async Task<IEnumerable<string>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
+        public async Task<IEnumerable<ActionDetailsItem>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetDscActionAsync));
@@ -140,15 +140,32 @@ namespace Tug.Client
             AssertServerConfig(serverConfig);
 
             if (clientStatus == null)
-                clientStatus = new[]
+            {
+                if (Configuration.ConfigurationNames != null)
                 {
-                    new ClientStatusItem
+                    clientStatus = Configuration.ConfigurationNames.Select(x =>
                     {
-                        ConfigurationName = string.Empty,
-                        ChecksumAlgorithm = "SHA-256", // TODO: figure out this
-                        Checksum = string.Empty,
-                    }
-                };
+                        return new ClientStatusItem
+                        {
+                            ConfigurationName = x,
+                            ChecksumAlgorithm = "SHA-256", // TODO: figure out this
+                            Checksum = string.Empty,
+                        };
+                    });
+                }
+                else
+                {
+                    clientStatus = new[]
+                    {
+                        new ClientStatusItem
+                        {
+                            ConfigurationName = string.Empty,
+                            ChecksumAlgorithm = "SHA-256", // TODO: figure out this
+                            Checksum = string.Empty,
+                        }
+                    };
+                }
+            }
 
             var dscRequ = new GetDscActionRequest
             {
@@ -165,31 +182,29 @@ namespace Tug.Client
             using (var disposable = await SendDscAsync(serverConfig, GetDscActionRequest.VERB,
                     GetDscActionRequest.ROUTE, dscRequ, dscResp))
             {
-                Console.WriteLine("*********************************************************");
-                Console.WriteLine("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
+                LOG.LogDebug("*********************************************************");
+                LOG.LogDebug("DSC Action:  " + JsonConvert.SerializeObject(dscResp.Body,
                         _jsonSerSettings));
 
-                // TODO:  Figure these out later on
-                if (dscResp.Body.NodeStatus == DscActionStatus.RETRY)
-                    throw new NotImplementedException(
-                            /*SR*/"the node status of RETRY is not supported");
-                if (dscResp.Body?.NodeStatus == DscActionStatus.UpdateMetaConfiguration)
-                    throw new NotImplementedException(
-                            /*SR*/"the node status of UpdateMetaConfiguration is not supported");
+                if (dscResp?.Body?.Details?.Length == 0)
+                {
+                    return new[]
+                    {
+                        new ActionDetailsItem
+                        {
+                            ConfigurationName = string.Empty,
+                            Status = (dscResp?.Body?.NodeStatus).GetValueOrDefault(),  
+                        }
+                    };
+                }
 
-                if (dscResp.Body?.NodeStatus == DscActionStatus.OK)
-                    return new string[0];
-
-                // Else -- GetConfiguration, so return all the config names we have to get
-                return dscResp.Body.Details
-                        .Where(x => x.Status == DscActionStatus.GetConfiguration)
-                        .Select(x => x.ConfigurationName);
+                return dscResp.Body.Details;
             }
         }
 
         // TODO:  I think returning a Stream would be better here, but coordinating that
         // with the disposable resources that are contained within could be tricky
-        public async Task<byte[]> GetConfiguration(string configName)
+        public async Task<FileResponse> GetConfiguration(string configName)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetConfiguration));
@@ -213,14 +228,18 @@ namespace Tug.Client
                     GetConfigurationRequest.ROUTE, dscRequ, dscResp))
             {
                 dscResp.Configuration.CopyTo(bs);
-
-                return bs.ToArray();
+                return new FileResponse
+                {
+                    ChecksumAlgorithm = dscResp.ChecksumAlgorithmHeader,
+                    Checksum = dscResp.ChecksumHeader,
+                    Content = bs.ToArray(),
+                };
             }
         }
 
         // TODO:  I think returning a Stream would be better here, but coordinating that
         // with the disposable resources that are contained within could be tricky
-        public async Task<byte[]> GetModule(string moduleName, string moduleVersion)
+        public async Task<FileResponse> GetModule(string moduleName, string moduleVersion)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(GetConfiguration));
@@ -232,6 +251,7 @@ namespace Tug.Client
 
             var dscRequ = new GetModuleRequest
             {
+                AgentId = Configuration.AgentId,
                 ModuleName = moduleName,
                 ModuleVersion = moduleVersion,
                 AcceptHeader = DscContentTypes.OCTET_STREAM,
@@ -240,12 +260,16 @@ namespace Tug.Client
             var dscResp = new GetModuleResponse();
 
             using (var bs = new MemoryStream())
-            using (var disposable = await SendDscAsync(serverConfig, GetConfigurationRequest.VERB,
-                    GetConfigurationRequest.ROUTE, dscRequ, dscResp))
+            using (var disposable = await SendDscAsync(serverConfig, GetModuleRequest.VERB,
+                    GetModuleRequest.ROUTE, dscRequ, dscResp))
             {
                 dscResp.Module.CopyTo(bs);
-
-                return bs.ToArray();
+                return new FileResponse
+                {
+                    ChecksumAlgorithm = dscResp.ChecksumAlgorithmHeader,
+                    Checksum = dscResp.ChecksumHeader,
+                    Content = bs.ToArray(),
+                };
             }
         }
 
@@ -304,6 +328,8 @@ namespace Tug.Client
             // See if we need to add RegKey authorization data
             if (!string.IsNullOrEmpty(server.RegistrationKey) && requMessage.Content != null)
             {
+                LOG.LogInformation("Computing RegKey Authorization");
+
                 // Shhh!  This is the super-secret formula for computing an
                 // Authorization challenge when using Reg Key Authentication
                 // Details can be found at /references/regkey-authorization.md
@@ -319,15 +345,16 @@ namespace Tug.Client
                     await requMessage.Content.CopyToAsync(ms);
 
                     var body = ms.ToArray();
-                    Console.WriteLine("BODY:-----------------------------");
-                    Console.WriteLine($"<{Encoding.UTF8.GetString(body)}>");
-                    Console.WriteLine("-----------------------------:BODY");
+                    LOG.LogDebug("Computing hash over body content");
+                    LOG.LogDebug("BODY:-----------------------------");
+                    LOG.LogDebug($"<{Encoding.UTF8.GetString(body)}>");
+                    LOG.LogDebug("-----------------------------:BODY");
 
                     var digest = sha.ComputeHash(body);
                     var digB64 = Convert.ToBase64String(digest);
-                    Console.WriteLine("digB64=" + digB64);
+                    LOG.LogDebug("  * digB64=" + digB64);
                     var concat = $"{digB64}\n{msDate}";
-                    Console.WriteLine("concat=" + concat);
+                    LOG.LogDebug("  * concat=" + concat);
                     var macSig = mac.ComputeHash(Encoding.UTF8.GetBytes(concat));
                     var sigB64 = Convert.ToBase64String(macSig);
 
