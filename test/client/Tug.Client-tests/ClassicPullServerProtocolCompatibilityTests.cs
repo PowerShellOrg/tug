@@ -18,7 +18,7 @@ namespace Tug.Client
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
         // Only for debugging/testing in DEV (i.e. with Fiddler)
-        public const string PROXY_URL = "http://localhost:8888"; // null // 
+        public const string PROXY_URL = null; // "http://localhost:8888"; // 
         
 
         [TestMethod]
