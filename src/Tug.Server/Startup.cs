@@ -79,6 +79,7 @@ namespace Tug.Server
 
             // Enable and bind to strongly-typed configuration
             var appSettings = _config.GetSection(nameof(AppSettings));
+            services.AddSingleton<IConfiguration>(appSettings);
             services.AddOptions();
             services.Configure<AppSettings>(appSettings);
             services.Configure<ChecksumSettings>(
