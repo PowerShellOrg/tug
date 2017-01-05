@@ -10,14 +10,21 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Management.Automation.Runspaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tug.Model;
+using Tug.Util;
 
 namespace Tug.Server.Providers
 {
     public class Ps5DscHandler : IDscHandler
     {
         public static readonly IEnumerable EMPTY_INPUT = new object[0];
+
+        public const string PS_VAR_HANDLER_LOGGER = "handlerLogger";
+        public const string PS_VAR_HANDLER_APP_CONFIGURATION = "handlerAppConfiguration";
+        public const string PS_VAR_HANDLER_CONTEXT = "handlerContext";
 
         private string _bootstrapFullpath;
         private PowerShell _posh;
@@ -26,6 +33,9 @@ namespace Tug.Server.Providers
         { get; private set; }
 
         public ILogger<Ps5DscHandler> Logger
+        { get; set; }
+
+        public IConfiguration AppConfig
         { get; set; }
 
         public string BootstrapPath
@@ -43,6 +53,30 @@ namespace Tug.Server.Providers
             _posh = PowerShell.Create();
             Logger.LogInformation("Constructed PowerShell execution context");
             
+            // Need to create our own runspace so we can pass in our own custom PSHost
+            // which ties the PowerShell context to our custom handler environment
+            _posh.Runspace = RunspaceFactory.CreateRunspace(new Ps5CustomHost(Logger, name: "PS5Host"));
+            _posh.Runspace.Open();
+
+            // Register some context-supporting variables in scope
+            _posh.AddCommand("Microsoft.PowerShell.Utility\\Set-Variable");
+            _posh.AddParameter("Name", PS_VAR_HANDLER_LOGGER);
+            _posh.AddParameter("Option", "ReadOnly");
+            _posh.AddParameter("Description", "ILogger to be used by handler cmdlet");
+            _posh.AddParameter("Value", new PsLogger(Logger));
+            _posh.Invoke();
+            _posh.Commands.Clear();
+
+            // Register some context-supporting variables in scope
+            _posh.AddCommand("Microsoft.PowerShell.Utility\\Set-Variable");
+            _posh.AddParameter("Name", PS_VAR_HANDLER_APP_CONFIGURATION);
+            _posh.AddParameter("Option", "ReadOnly");
+            _posh.AddParameter("Description", "App-wide configuration (read-only)");
+            _posh.AddParameter("Value", new ReadOnlyConfiguration(AppConfig));
+            _posh.Invoke();
+            _posh.Commands.Clear();
+
+            // Set the CWD for the PowerShell cmdlets to run from
             _posh.AddCommand("Microsoft.PowerShell.Management\\Set-Location");
             _posh.AddArgument(BootstrapPath);
             var result = _posh.Invoke();
@@ -51,7 +85,8 @@ namespace Tug.Server.Providers
             foreach (var r in result)
                 Logger.LogWarning(">> " + r.ToString());
             
-
+            // If a bootstrap script was provided in the app settings
+            // let's invoke it and capture the results for diagnostics
             if (BootstrapScript != null && BootstrapScript.Count() > 0)
             {
                 Logger.LogInformation("Bootstrap Script found");
@@ -77,54 +112,67 @@ namespace Tug.Server.Providers
         public void RegisterDscAgent(Guid agentId, RegisterDscAgentRequestBody detail)
         {
             // Return value is ignored, if no exceptions are thrown up, we assume success
-            ThreadSafeInvoke<object>("Register-TugNode", agentId, detail);
-
-            //throw new NotImplementedException();
+            ThreadSafeInvokeNoResult("Register-TugNode", agentId, detail);
         }
 
         public ActionStatus GetDscAction(Guid agentId, GetDscActionRequestBody detail)
         {
-            var result = ThreadSafeInvoke<object>("Get-TugNodeAction", agentId, detail);
+            var result = ThreadSafeInvokeSingleResult<ActionStatus>("Get-TugNodeAction", agentId, detail);
 
-            //throw new NotImplementedException();
+            // TODO:  any additional checks or translations?
 
-            return new ActionStatus
-            {
-                NodeStatus = DscActionStatus.OK,
-            };
+            return result;
         }
         public FileContent GetConfiguration(Guid agentId, string configName)
         {
-            // 
-            // ThreadSafeInvoke<object>("Get-TugNodeConfiguration", agentId, configName);
-            // 
-            throw new NotImplementedException();
+            var result = ThreadSafeInvokeSingleResult<FileContent>("Get-TugNodeConfiguration", agentId, configName);
+
+            // TODO:  any additional checks or translations?
+
+            return result;
         }
 
         public FileContent GetModule(string moduleName, string moduleVersion)
         {
-            // 
-            // ThreadSafeInvoke<object>("Get-TugModule", moduleName, moduleVersion);
-            // 
-            throw new NotImplementedException();
+            var result = ThreadSafeInvokeSingleResult<FileContent>("Get-TugModule", moduleName, moduleVersion);
+
+            // TODO:  any additional checks or translations?
+
+            return result;
         }
 
         public void SendReport(Guid agentId, SendReportRequestBody detail)
         {
-            // 
-            // ThreadSafeInvoke<object>("New-TugNodeReport", agentId, reportContent, reserved);
-            // 
-            throw new NotImplementedException();
+            ThreadSafeInvokeNoResult("New-TugNodeReport", agentId, detail);
         }
 
         public Stream GetReports(Guid agentId)
         {
-            // 
-            // ThreadSafeInvoke<object>("Get-TugNodeReports", agentId, reserved);
-            // 
-            throw new NotImplementedException();
+            // TODO:  this interface is not definitive yet
+            var result = ThreadSafeInvokeSingleResult<Stream>("Get-TugNodeReports", agentId);
+
+            return result;
         }
-                
+
+        protected void ThreadSafeInvokeNoResult(string cmd, params object[] args)
+        {
+            var result = ThreadSafeInvoke<object>(cmd, args);
+
+            if (result != null && result.Count > 0)
+                throw new InvalidDataException(/*SR*/"Unexpected result found");
+        }
+
+        protected T ThreadSafeInvokeSingleResult<T>(string cmd, params object[] args)
+        {
+            var result = ThreadSafeInvoke<T>(cmd, args);
+
+            if (result == null || result.Count < 1)
+                throw new InvalidDataException(/*SR*/"Missing or empty result");
+            if (result.Count > 1)
+                throw new InvalidDataException(/*SR*/"Multiple results found");
+            
+            return result[0];
+        }
 
         protected Collection<T> ThreadSafeInvoke<T>(string cmd, params object[] args)
         {
