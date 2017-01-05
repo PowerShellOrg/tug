@@ -5,7 +5,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tug.Ext;
 using Tug.Ext.Util;
@@ -25,6 +25,7 @@ namespace Tug.Server.Providers
 
         private ILogger<Ps5DscHandlerProvider> _pLogger;
         private ILogger<Ps5DscHandler> _hLogger;
+        private IConfiguration _appConfig;
         private IDictionary<string, object> _productParams;
         private ChecksumHelper _checksumHelper;
         private IChecksumAlgorithmProvider _checksumProvider;
@@ -34,10 +35,12 @@ namespace Tug.Server.Providers
         public Ps5DscHandlerProvider(
                 ILogger<Ps5DscHandlerProvider> providerLogger,
                 ILogger<Ps5DscHandler> handlerlogger,
+                IConfiguration appSettings,
                 ChecksumHelper checksumHelper)
         {
             _pLogger = providerLogger;
             _hLogger = handlerlogger;
+            _appConfig = appSettings;
             _checksumHelper = checksumHelper;
         }
 
@@ -61,6 +64,7 @@ namespace Tug.Server.Providers
                     {
                         var h = new Ps5DscHandler();
                         h.Logger = _hLogger;
+                        h.AppConfig = _appConfig;
 
                         _pLogger.LogInformation("Handler Constructed");
 
