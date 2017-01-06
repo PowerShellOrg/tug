@@ -1,3 +1,21 @@
+<#
+ # Copyright © The DevOps Collective, Inc. All rights reserved.
+ # Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ #> 
+
+###########################################################################
+## This is a "dummy" set of Tug Cmdlets that implement a very simple
+## back-end DSC Pull Handler but demonstrate some key features.
+## These cmdlets cooperate to return a fixed Node Configuration
+## named "Dummy" which contains 2 DSC resources in it, namely a
+## temp directory at "C:\temp" and a temp file in that directory
+## "dsc-dummy-file.txt".  The content of that file is dynamically
+## calculated to contain a simple message and that computed MOF
+## for this configuration is computed as if it were created at
+## the top of the hour, so if a node checks for any updates, it
+## should only detect them after the top of the hour has passed
+###########################################################################
+
 ## At our disposal we have access to several contextual variables
 ##  [Tug.Server.Providers.PsLogger]$handlerLogger -
 ##    provides a logging object specific to the handler cmdlets
@@ -9,12 +27,15 @@
 ##  [Tug.Server.Provider.Ps5DscHandlercontext]$handlerContext -
 ##    TODO:  NOT IMPLEMENTED YET
 
-$handlerLogger.LogInformation("Loading BASIC Tug Cmdlets...")
+$handlerLogger.LogInformation("Loading DUMMY Tug Cmdlets...")
 $handlerLogger.LogInformation("Got Config:  $handlerAppConfiguration")
 
 function Register-TugNode {
-    $handlerLogger.LogInformation("REGISTER:")
-    $handlerLogger.LogInformation(($args | ConvertTo-Json -Depth 3))
+    param(
+        [guid]$AgentId,
+        [Tug.Model.RegisterDscAgentRequestBody]$Details
+    )
+    $handlerLogger.LogInformation("REGISTER: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
     ## Return:
     ##    SUCCESS:  n/a
@@ -22,82 +43,97 @@ function Register-TugNode {
 }
 
 function Get-TugNodeAction {
-    $handlerLogger.LogInformation("GET-ACTION")
-    $handlerLogger.LogInformation(($args | ConvertTo-Json -Depth 3))
-
+    param(
+        [guid]$AgentId,
+        [Tug.Model.GetDscActionRequestBody]$Detail
+    )
+    $handlerLogger.LogInformation("GET-ACTION: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
     ## Return:
     ##    SUCCESS:  return an instance of [Tug.Server.ActionStatus]
     ##    FAILURE:  throw an exception
 
+    $dummyConfig = New-SimpleMof
+    $dummyConfigBytes = [System.Text.Encoding]::UTF8.GetBytes($dummyConfig)
+    $checksum = Get-Sha256Checksum $dummyConfigBytes
+
+    $configStatus = "OK"
+    if ($checksum -ne $Detail.ClientStatus.Checksum) {
+        $configStatus = "GetConfiguration"
+    }
+
     $status = [Tug.Server.ActionStatus]@{
-        NodeStatus = "GetConfiguration" ## "OK" ## 
+        NodeStatus = $configStatus
         ConfigurationStatuses = [Tug.Model.ActionDetailsItem[]]@(
             [Tug.Model.ActionDetailsItem]@{
-                ConfigurationName = "foobar"
-                Status = "GetConfiguration" ## "OK" ## 
+                ConfigurationName = "dummy"
+                Status = $configStatus
             }
         )
     }
-    
-    $handlerLogger.LogInformation("Returning status: $($status.GetType().FullName)")
+
+    $handlerLogger.LogInformation("RETURNING: $($status | ConvertTo-Json)");
+
     return $status
 }
 
 function Get-TugNodeConfiguration {
-    $handlerLogger.LogInformation("GET-CONFIGURATION")
-    $handlerLogger.LogInformation(($args | ConvertTo-Json -Depth 3))
+    param(
+        [guid]$AgentId,
+        [string]$ConfigName
+    )
+    $handlerLogger.LogInformation("GET-CONFIGURATION: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
     ## Return:
     ##    SUCCESS:  return an instance of [Tug.Server.FileContent]
     ##    FAILURE:  throw an exception
 
-    $foobarConfig = Build-SimpleMof
-    $foobarConfigBytes = [System.Text.Encoding]::UTF8.GetBytes($foobarConfig)
-    $sha256 = [System.Security.Cryptography.SHA256]::Create()
-    $checksumBytes = $sha256.ComputeHash($foobarConfigBytes)
-    $checksum = [System.BitConverter]::ToString($checksumBytes).Replace("-", "")
-    $sha256.Dispose()
+    $dummyConfig = New-SimpleMof
+    $dummyConfigBytes = [System.Text.Encoding]::UTF8.GetBytes($dummyConfig)
+    $checksum = Get-Sha256Checksum $dummyConfigBytes
 
     return [Tug.Server.FileContent]@{
         ChecksumAlgorithm = "SHA-256"
         Checksum = $checksum
-        Content = (New-Object System.IO.MemoryStream(,$foobarConfigBytes))
+        Content = (New-Object System.IO.MemoryStream(,$dummyConfigBytes))
     }
 }
 
 function Get-TugModule {
-    $handlerLogger.LogInformation("GET-MODULE")
-    $handlerLogger.LogInformation(($args | ConvertTo-Json -Depth 3))
+    param(
+        [string]$ModuleName,
+        [string]$ModuleVersion
+    )
+    $handlerLogger.LogInformation("GET-MODULE: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
     throw "NOT IMPLEMENTED"
 }
 
 function New-TugNodeReport {
-    $handlerLogger.LogInformation("NEW-REPORT")
-    $handlerLogger.LogInformation(($args | ConvertTo-Json -Depth 3))
+    $handlerLogger.LogInformation("NEW-REPORT: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
     throw "NOT IMPLEMENTED"
 }
 
 function Get-TugNodeReports {
-    $handlerLogger.LogInformation("GET-REPORTS")
-    $handlerLogger.LogInformation(($args | ConvertTo-Json -Depth 3))
+    $handlerLogger.LogInformation("GET-REPORTS: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
     throw "NOT IMPLEMENTED"
 }
 
 
-function Build-SimpleMof {
+function New-SimpleMof {
     param(
-        [string]$NodeName="StaticTestConfig",
+        [string]$NodeName="Dummy",
         [string]$TempDirName="c:\\temp",
-        [string]$TempFileName="c:\\temp\\dsc-statictestconfig-file.txt",
-        [string]$TempFileContent=$null
+        [string]$TempFileName="c:\\temp\\dsc-dummy-file.txt",
+        [string]$TempFileContent=$null,
+        ## By default we round down to the top of the hour
+        [datetime]$MofDate=[datetime]::Now.ToString("yyyy/MM/dd HH:00")
     )
     $mofCreatedOn = $env:COMPUTERNAME
     $mofCreatedBy = $env:USERNAME
-    $mofCreatedAt = [DateTime]::Now.ToString('MM/dd/yyyy hh:mm:ss')
+    $mofCreatedAt = $MofDate.ToString('MM/dd/yyyy hh:mm:ss')
 
     if (-not $TempFileContent) {
         $TempFileContent = "THIS FILE GENERATED BY TUG PS5 DSC CONFIGURATION [$NodeName] @ [$mofCreatedAt]"
@@ -152,4 +188,16 @@ instance of OMI_ConfigurationDocument
 "@
 }
 
-Write-Output "All BASIC Tug Cmdlets are defined"
+function Get-Sha256Checksum {
+    param(
+        [byte[]]$Bytes
+    )
+
+    $sha256 = [System.Security.Cryptography.SHA256]::Create()
+    $checksumBytes = $sha256.ComputeHash($Bytes)
+    $checksum = [System.BitConverter]::ToString($checksumBytes).Replace("-", "")
+    $sha256.Dispose()
+    return $checksum
+}
+
+Write-Output "All DUMMY Tug Cmdlets are defined"
