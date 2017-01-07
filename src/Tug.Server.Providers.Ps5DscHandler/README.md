@@ -59,7 +59,7 @@ propagate up the Tug Server request/response pipeline as an error response.
 
 ##### Parameters:
 * `[guid] $AgentId`
-* `[[Tug.Model.RegisterDscAgentRequestBody](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/RegisterDscAgentRequestBody.cs)] $Details`
+* `[`[`Tug.Model.RegisterDscAgentRequestBody`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/RegisterDscAgentRequestBody.cs)`] $Details`
 
 ##### Return:
 * SUCCESS - no return expected
@@ -78,15 +78,47 @@ a current configuration.
 
 ##### Parameters:
 * `[guid] $AgentId`
-* `[[Tug.Model.GetDscActionRequestBody](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/GetDscActionRequestBody.cs)] $Details`
+* `[`[`Tug.Model.GetDscActionRequestBody`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/GetDscActionRequestBody.cs)`] $Details`
 
 ##### Return:
-* SUCCESS - `[[Tug.Server.ActionStatus](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/ActionStatus.cs)]`
+* SUCCESS - `[`[`Tug.Server.ActionStatus`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/ActionStatus.cs)`]`
 * FAILURE - throw an exception
 
 #### Getting a DSC Configuration (MOF):  `Get-TugNodeConfiguration`
 
+This message corresponds to the MS-DSCPM v2 message `GetConfiguration`.
+
+This cmdlet is invoked with two parameters and is expected to return
+a file object containing a DSC Configuration in the form of a MOF file
+and related meta-data.
+
+##### Cmdlet:  `Get-TugNodeConfiguration`
+
+##### Parameters:
+* `[guid] $AgentId`
+* `[string] $ConfigName`
+
+##### Return:
+* SUCCESS - `[`[`Tug.Server.FileContent`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/FileContent.cs)`]`
+* FAILURE - throw an exception
+
 #### Getting a DSC Resource Module:  `Get-TugModule`
+
+This message corresponds to the MS-DSCPM v2 message `GetModule`.
+
+This cmdlet is invoked with two parameters and is expected to return
+a file object containing a DSC Resource Module in the form of a ZIP
+archive file and related meta-data.
+
+##### Cmdlet:  `Get-TugModule`
+
+##### Parameters:
+* `[string] $ModuleName`
+* `[string] $ModuleVersion`
+
+##### Return:
+* SUCCESS - `[`[`Tug.Server.FileContent`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/FileContent.cs)`]`
+* FAILURE - throw an exception
 
 #### Sending a Node Status Report:  `New-TugNodeReport`
 
