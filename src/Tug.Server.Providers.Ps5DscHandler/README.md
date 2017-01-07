@@ -144,6 +144,48 @@ archive file and related meta-data.
 ---
 ### Logging from your script - `$handlerLogger`
 
+The globally-scoped, read-only variable `$handlerLogger` is made available
+in the context of the Runspace invoked during initialization and when
+invoking handler cmdlets and can be used to log messages at different
+verbosity levels to the server's logging system.  The variable is an
+instance of an
+[`ILogger`](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.extensions.logging.ilogger)
+which is defined by the
+[Microsoft Logging Extension](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging).
+
+To be more precise, the variable is concrete instance of a
+[`PsLogger`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Providers.Ps5DscHandler/PsLogger.cs)
+which is a specialized `ILogger` that is tailored to work well in a
+PowerShell scripting context.  The Logging Extension package makes many
+of the fundamental logging primitives available as .NET *extension methods*
+however PowerShell does not have a natural or native way to invoke these
+methods except to treat them as static method calls which can be cumbersome
+and lengthy.  Instead, the `PsLogger` class redefines the most common of
+these extension methods as first-class instance methods.
+
 ---
 ### Accessing app-wide settings - `$handlerAppConfiguration`
 
+The Tug Server's operating behavior is largely driven by a set of app
+settings that are resolved at startup by the culmination of files,
+environment variables and command-line switches.  This includes settings
+that are used to resolve, configure and initialize the DSC Pull Handler
+provider.
+
+These settings are passed to the PS5 Pull Handler and it will
+apply those settings of which it is aware to drive its own behavior.
+But it will also ignore any additional settings of which it is not
+aware and you can make use of these to pass additional settings to
+the PowerShell script and cmdlets that are invoked in the Runspace.
+
+The app-wide settings are passed in as the globally-scoped, readonly
+variable `$handlerAppConfiguration`.  This variable is an instance of
+an [`IConfiguration`](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.extensions.configuration.iconfiguration)
+which is defined by the
+[Microsoft Configuration Extension](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration).
+
+The exact implementation that is made available to the Runspace is
+a specialized variation that is readonly so while the extension
+interface normally allows modification to the configuration instance
+or any of its children, this particular implementation will silently
+ignore any such modifications.
