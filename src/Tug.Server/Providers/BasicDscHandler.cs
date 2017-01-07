@@ -46,7 +46,7 @@ namespace Tug.Server.Providers
         public bool IsDisposed
         { get; private set; }
 
-        public void Init()
+        public virtual void Init()
         {
             Assert(Logger != null, "missing logger");
             Assert(ChecksumHelper != null, "missing checksum helper");
@@ -67,7 +67,7 @@ namespace Tug.Server.Providers
             Logger.LogInformation("All Directories Created/Confirmed");
         }
 
-        private void Assert(bool value, string failMessage = null)
+        protected virtual void Assert(bool value, string failMessage = null)
         {
             if (!value)
                 if (string.IsNullOrEmpty(failMessage))
@@ -76,7 +76,7 @@ namespace Tug.Server.Providers
                     throw new Exception(); // ($"failed assertion: {message}");
         }
 
-        public void RegisterDscAgent(Guid agentId,
+        public virtual void RegisterDscAgent(Guid agentId,
                 RegisterDscAgentRequestBody detail)
         {
             var regPath = Path.Combine(RegistrationSavePath, $"{agentId}.json");
@@ -89,7 +89,7 @@ namespace Tug.Server.Providers
             File.WriteAllText(regPath, JsonConvert.SerializeObject(detail));
         }
 
-        public ActionStatus GetDscAction(Guid agentId,
+        public virtual ActionStatus GetDscAction(Guid agentId,
             GetDscActionRequestBody detail)
         {
             var regPath = Path.Combine(RegistrationSavePath, $"{agentId}.json");
@@ -256,7 +256,7 @@ namespace Tug.Server.Providers
             };
         }
 
-        public FileContent GetConfiguration(Guid agentId, string configName)
+        public virtual FileContent GetConfiguration(Guid agentId, string configName)
         {
             var configPath = Path.Combine(ConfigurationPath, $"SHARED/{configName}.mof");
             if (!File.Exists(configPath))
@@ -278,7 +278,7 @@ namespace Tug.Server.Providers
             }
         }
 
-        public FileContent GetModule(string moduleName, string moduleVersion)
+        public virtual FileContent GetModule(string moduleName, string moduleVersion)
         {
             var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}.zip");
             if (!File.Exists(modulePath))
@@ -297,12 +297,12 @@ namespace Tug.Server.Providers
             }
         }
 
-        public void SendReport(Guid agentId, SendReportRequestBody reserved)
+        public virtual void SendReport(Guid agentId, SendReportRequestBody reserved)
         {
             throw new NotImplementedException();
         }
 
-        public Stream GetReports(Guid agentId)
+        public virtual Stream GetReports(Guid agentId)
         {
             throw new NotImplementedException();
         }
