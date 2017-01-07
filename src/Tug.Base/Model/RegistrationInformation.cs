@@ -5,7 +5,7 @@
 
 namespace Tug.Model
 {
-    public class RegistrationInformation
+    public class RegistrationInformation : Util.ExtDataIndexerBase
     {
         // NOTE:  DO NOT CHANGE THE ORDER OF THESE PROPERTIES!!!
         // Apparently the order of these properties is important

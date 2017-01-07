@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Model
 {
-    public class ClientStatusItem
+    public class ClientStatusItem : Util.ExtDataIndexerBase
     {
         public string ConfigurationName
         { get; set; }

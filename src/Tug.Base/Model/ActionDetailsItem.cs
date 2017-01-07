@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Model
 {
-    public class ActionDetailsItem
+    public class ActionDetailsItem : Util.ExtDataIndexerBase
     {
         [Required]
         public string ConfigurationName
