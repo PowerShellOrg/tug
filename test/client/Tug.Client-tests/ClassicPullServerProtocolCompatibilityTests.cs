@@ -32,6 +32,50 @@ namespace Tug.Client
         }
 
         [TestMethod]
+        public void TestRegisterDscAgent_BadContent_AgentInfo()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Add an unexpected property
+            config.AgentInformation["foo"] = "bar";
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadContent_CertInfo()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Add an unexpected property
+            config.CertificateInformation["foo"] = "bar";
+
+            using (var client = new DscPullClient(config))
+            {
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
+            }
+        }
+
+        [TestMethod]
         public void TestRegisterDscAgent_NoRegKey()
         {
             var config = BuildConfig(newAgentId: true);
@@ -164,6 +208,34 @@ namespace Tug.Client
                         "Action result config name");
                 Assert.AreEqual(Model.DscActionStatus.GetConfiguration, resultArr[0].Status,
                         "Action result status");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetDscAction_BadContent_StatusItem()
+        {
+            var config = BuildConfig();
+            using (var client = new DscPullClient(config))
+            {
+                // Construct our own status item collection
+                var statusItems = new[] { new Model.ClientStatusItem() };
+                statusItems[0].ChecksumAlgorithm = "SHA-256";
+                statusItems[0].Checksum = "";
+                statusItems[0].ConfigurationName = config.ConfigurationNames.First();
+                // Inject one unexpected property
+                statusItems[0]["foo"] = "bar";
+
+                client.RegisterDscAgentAsync().Wait();
+
+                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.GetDscActionAsync(statusItems).Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
             }
         }
 
