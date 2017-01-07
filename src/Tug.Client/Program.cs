@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -201,11 +202,21 @@ namespace Tug.Client
 
             if (ipAddress == null)
             {
-                // TODO:  this is not correct, it doesn't return all IP addresses
-                // (e.g. loopbacks) and it returns dups, but it's a start
-                ipAddress = string.Join(";", NetworkInterface.GetAllNetworkInterfaces()
-                        .Select(x => string.Join(";", x.GetIPProperties().DnsAddresses
-                                .Select(y => y.ToString()))));
+                // TODO:  this *might* not be correct or complete -- based on issue #26
+                // this is definitely a better approach than what we had before, but need
+                // to do some more exploring and experimenting to see if this is all of it
+                var ipList = new System.Collections.Generic.List<IPAddress>();
+                foreach (var ni in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    // Collect all IPv4 & IPVv6 address
+                    foreach (var ua in ni.GetIPProperties().UnicastAddresses)
+                        if (ua.Address.AddressFamily == AddressFamily.InterNetwork
+                                || ua.Address.AddressFamily == AddressFamily.InterNetworkV6)
+                            ipList.Add(ua.Address);
+                }
+                // Sort by IPv4 first, then v6
+                ipAddress = string.Join(";", ipList.OrderBy(x => x.AddressFamily)
+                        .Select(x => x.ToString()));
             }
 
             return new Model.AgentInformation
