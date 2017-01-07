@@ -63,7 +63,7 @@ propagate up the Tug Server request/response pipeline as an error response.
 
 ##### PARAMETERS:
 
-* `[guid] $AgentId`
+* `[ guid ] $AgentId`
 * `[`[`Tug.Model.RegisterDscAgentRequestBody`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/RegisterDscAgentRequestBody.cs)`] $Details`
 
 ##### RETURN:
@@ -84,7 +84,7 @@ a current configuration.
 > `Get-TugNodeAction`
 
 ##### PARAMETERS:
-* `[guid] $AgentId`
+* `[ guid ] $AgentId`
 * `[`[`Tug.Model.GetDscActionRequestBody`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/GetDscActionRequestBody.cs)`] $Details`
 
 ##### RETURN:
@@ -104,8 +104,8 @@ and related meta-data.
 >`Get-TugNodeConfiguration`
 
 ##### PARAMETERS:
-* `[guid] $AgentId`
-* `[string] $ConfigName`
+* `[ guid ] $AgentId`
+* `[ string ] $ConfigName`
 
 ##### RETURN:
 * success: `[`[`Tug.Server.FileContent`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/FileContent.cs)`]`
@@ -124,8 +124,8 @@ archive file and related meta-data.
 > `Get-TugModule`
 
 ##### PARAMETERS:
-* `[string] $ModuleName`
-* `[string] $ModuleVersion`
+* `[ string ] $ModuleName`
+* `[ string ] $ModuleVersion`
 
 ##### RETURN:
 * success: `[`[`Tug.Server.FileContent`](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/FileContent.cs)`]`
