@@ -50,12 +50,35 @@ by the handler in the context of the previously allocated Runspace:
 
 This message corresponds to the MS-DSCPM v2 message `RegisterDscAgent`.
 
-This cmdlet is provided with two parameters and is not expected to return
+This cmdlet is invoked with two parameters and is not expected to return
 anything if the Node is successfully registered.  If there are any failures
 or unexpected conditions, the cmdlet should throw an exception that will
 propagate up the Tug Server request/response pipeline as an error response.
 
+##### Cmdlet:  `Register-TugNode`
+##### Parameters:
+* `[guid] $AgentId`
+* `[[Tug.Model.RegisterDscAgentRequestBody](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/RegisterDscAgentRequestBody.cs)] $Details`
+##### Return:
+* SUCCESS - no return expected
+* FAILURE - throw an exception
+
 #### Getting the Node's Configuration Status:  `Get-TugNodeAction`
+
+This message corresponds to the MS-DSCPM v2 message `GetDscAction`.
+
+This cmdlet is invoked with two parameters and is expected to return
+a status object indicating whether the calling Node needs to retrieve
+and updated DSC configuration (MOF) or whether the Node already has
+a current configuration.
+
+##### Cmdlet:  `Get-TugNodeAction`
+##### Parameters:
+* `[guid] $AgentId`
+* `[[Tug.Model.GetDscActionRequestBody](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/GetDscActionRequestBody.cs)] $Details`
+##### Return:
+* SUCCESS - `[[Tug.Server.ActionStatus](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/ActionStatus.cs)]`
+* FAILURE - throw an exception
 
 #### Getting a DSC Configuration (MOF):  `Get-TugNodeConfiguration`
 
