@@ -56,9 +56,11 @@ or unexpected conditions, the cmdlet should throw an exception that will
 propagate up the Tug Server request/response pipeline as an error response.
 
 ##### Cmdlet:  `Register-TugNode`
+
 ##### Parameters:
 * `[guid] $AgentId`
 * `[[Tug.Model.RegisterDscAgentRequestBody](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/RegisterDscAgentRequestBody.cs)] $Details`
+
 ##### Return:
 * SUCCESS - no return expected
 * FAILURE - throw an exception
@@ -73,9 +75,11 @@ and updated DSC configuration (MOF) or whether the Node already has
 a current configuration.
 
 ##### Cmdlet:  `Get-TugNodeAction`
+
 ##### Parameters:
 * `[guid] $AgentId`
 * `[[Tug.Model.GetDscActionRequestBody](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Base/Model/GetDscActionRequestBody.cs)] $Details`
+
 ##### Return:
 * SUCCESS - `[[Tug.Server.ActionStatus](https://github.com/PowerShellOrg/tug/blob/master/src/Tug.Server.Base/ActionStatus.cs)]`
 * FAILURE - throw an exception
