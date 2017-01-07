@@ -1,3 +1,8 @@
+/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
