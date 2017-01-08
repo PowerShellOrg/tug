@@ -35,8 +35,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPut]
-        [Route(RegisterDscAgentRequest.ROUTE)]
-        //TODO:  [Authorize]
+        [Route(RegisterDscAgentRequest.ROUTE,
+            Name = nameof(RegisterDscAgent))]
+        [ActionName(nameof(RegisterDscAgent))]
         public IActionResult RegisterDscAgent(RegisterDscAgentRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -54,7 +55,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPost]
-        [Route(GetDscActionRequest.ROUTE)]
+        [Route(GetDscActionRequest.ROUTE,
+            Name = nameof(GetDscAction))]
+        [ActionName(nameof(GetDscAction))]
         public IActionResult GetDscAction(GetDscActionRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -82,7 +85,9 @@ namespace Tug.Server.Controllers
 
 
         [HttpGet]
-        [Route(GetConfigurationRequest.ROUTE)]
+        [Route(GetConfigurationRequest.ROUTE,
+            Name = nameof(GetConfiguration))]
+        [ActionName(nameof(GetConfiguration))]
         public IActionResult GetConfiguration(GetConfigurationRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -114,7 +119,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpGet]
-        [Route(GetModuleRequest.ROUTE)]
+        [Route(GetModuleRequest.ROUTE,
+            Name = nameof(GetModule))]
+        [ActionName(nameof(GetModule))]
         public IActionResult GetModule(GetModuleRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))

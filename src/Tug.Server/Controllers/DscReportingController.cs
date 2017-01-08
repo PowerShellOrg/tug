@@ -23,7 +23,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPost]
-        [Route(SendReportRequest.ROUTE)]
+        [Route(SendReportRequest.ROUTE,
+            Name = nameof(SendReport))]
+        [ActionName(nameof(SendReport))]
         public IActionResult SendReport(SendReportRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -42,7 +44,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpGet]
-        [Route(GetReportsRequest.ROUTE)]
+        [Route(GetReportsRequest.ROUTE,
+            Name = nameof(GetReports))]
+        [ActionName(nameof(GetReports))]
         public IActionResult GetReports(GetReportsRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
