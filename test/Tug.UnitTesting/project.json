@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0-*",
+
+  "buildOptions": {
+    "debugType": "portable",
+    "nowarn": [
+      "CS0169", // The field 'X' is never used
+      "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
+    ]
+  },
+
+  "dependencies": {
+    "dotnet-test-mstest": "1.1.2-preview",
+    "MSTest.TestFramework": "1.0.7-preview"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      },
+      "imports": [
+        "dotnet5.4",
+        "portable-net451+win8"
+      ]
+    },
+    "net452": {
+    }
+  }
+}
