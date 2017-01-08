@@ -34,6 +34,11 @@
     // ASP.NET Core Test Host
     "Microsoft.AspNetCore.TestHost": "1.1.0",
 
+    // Assemblies with additional test support
+    "Tug.UnitTesting": {
+      "target": "project"
+    },
+
     // Assemblies under test
     "Tug.Server": {
       "target": "project"
