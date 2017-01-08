@@ -41,7 +41,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -63,7 +63,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -85,7 +85,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -107,7 +107,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -133,7 +133,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -156,7 +156,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -179,7 +179,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -227,7 +227,7 @@ namespace Tug.Client
 
                 client.RegisterDscAgentAsync().Wait();
 
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
