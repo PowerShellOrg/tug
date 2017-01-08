@@ -10,12 +10,12 @@ namespace Tug.Util
 {
     public static class ExtDataExtensions
     {
-        public static int GetExtDataCount(this IExtData extData, string key)
+        public static int GetExtDataCount(this IExtData extData)
         {
             return extData.GetExtData().Count;
         }
 
-        public static IEnumerable<string> GetExtDataKeys(this IExtData extData, string key)
+        public static IEnumerable<string> GetExtDataKeys(this IExtData extData)
         {
             return extData.GetExtData().Keys;
         }
