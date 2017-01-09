@@ -34,6 +34,15 @@ namespace Tug.Messages
         [FromRoute]
         public string ModuleVersion
         { get; set; }
+
+        public override Guid? GetAgentId()
+        {
+            Guid agentId;
+            if (Guid.TryParse(AgentId, out agentId))
+                return agentId;
+            else
+                return null;
+        }
     }
 
     public class GetModuleResponse : DscResponse

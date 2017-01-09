@@ -61,7 +61,7 @@ namespace Tug.Messages
     {
         [FromRoute]
         [Required]
-        public Guid AgentId
+        public Guid? AgentId
         { get; set; }
 
         [FromRoute]
@@ -76,5 +76,7 @@ namespace Tug.Messages
         [RegularExpression("(\\d+\\.\\d+(\\.\\d+\\.\\d+)?)?")]
         public string ModuleVersion
         { get; set; }
+
+        public override Guid? GetAgentId() => AgentId;
     }
 }
