@@ -278,7 +278,7 @@ namespace Tug.Server.Providers
             }
         }
 
-        public virtual FileContent GetModule(string moduleName, string moduleVersion)
+        public virtual FileContent GetModule(Guid? agentId, string moduleName, string moduleVersion)
         {
             var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}.zip");
             if (!File.Exists(modulePath))

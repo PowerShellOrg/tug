@@ -46,7 +46,7 @@ namespace Tug.Server.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
-                _dscHandler.RegisterDscAgent(input.AgentId, input.Body);
+                _dscHandler.RegisterDscAgent(input.AgentId.Value, input.Body);
 
                 return this.Model(RegisterDscAgentResponse.INSTANCE);
             }
@@ -67,7 +67,7 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
 
-                var actionInfo = _dscHandler.GetDscAction(input.AgentId, input.Body);
+                var actionInfo = _dscHandler.GetDscAction(input.AgentId.Value, input.Body);
                 var response = new GetDscActionResponse
                 {
                     Body = new GetDscActionResponseBody
@@ -97,7 +97,7 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}] Configuration=[{input.ConfigurationName}]");
                 
-                var configContent = _dscHandler.GetConfiguration(input.AgentId,
+                var configContent = _dscHandler.GetConfiguration(input.AgentId.Value,
                         // TODO:
                         // Strictly speaking, this may not be how the DSCPM
                         // protocol is supposed to resolve the config name
@@ -131,7 +131,8 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"Module name=[{input.ModuleName}] Version=[{input.ModuleVersion}]");
 
-                var moduleContent = _dscHandler.GetModule(input.ModuleName, input.ModuleVersion);
+                var moduleContent = _dscHandler.GetModule(input.GetAgentId(),
+                        input.ModuleName, input.ModuleVersion);
                 if (moduleContent == null)
                     return NotFound();
 
