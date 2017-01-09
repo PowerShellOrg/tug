@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tug.Client.Configuration;
 using Tug.UnitTesting;
@@ -14,7 +15,7 @@ namespace Tug.Client
     public class ClassicPullServerProtocolCompatibilityTests
     {
         public const string DEFAULT_AGENT_ID = "12345678-0000-0000-0000-000000000001";
-        public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/";
+        public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://localhost:5000/"; // 
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
         // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
@@ -399,6 +400,8 @@ namespace Tug.Client
 
         private static DscPullConfig BuildConfig(bool newAgentId = false)
         {
+            Tug.Client.AppLog.Factory.AddConsole(LogLevel.Information);
+
             var config = new DscPullConfig();
 
             config.AgentId = newAgentId
