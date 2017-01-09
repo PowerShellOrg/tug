@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
 using Tug.Server.Configuration;
+using Tug.Server.Filters;
 using Tug.Server.Util;
 
 namespace Tug.Server
@@ -84,13 +85,17 @@ namespace Tug.Server
             services.Configure<AppSettings>(appSettings);
             services.Configure<ChecksumSettings>(
                     appSettings.GetSection(nameof(AppSettings.Checksum)));
+            services.Configure<AuthzSettings>(
+                    appSettings.GetSection(nameof(AppSettings.Authz)));
             services.Configure<HandlerSettings>(
                     appSettings.GetSection(nameof(AppSettings.Handler)));
 
             // Add MVC-supporting services
             _logger.LogInformation("Adding MVC services");
-            services.AddMvc()
-                .AddJsonOptions(options =>
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(DscRegKeyAuthzFilter));
+            }).AddJsonOptions(options =>
                 {
                     // This enables converting Enums to/from their string names instead
                     // of their numerical value, based on:
