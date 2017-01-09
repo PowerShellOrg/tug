@@ -95,6 +95,7 @@ namespace Tug.Server
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(DscRegKeyAuthzFilter));
+                options.Filters.Add(typeof(StrictInputFilter));
             }).AddJsonOptions(options =>
                 {
                     // This enables converting Enums to/from their string names instead
