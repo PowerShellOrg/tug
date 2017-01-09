@@ -9,6 +9,9 @@ namespace Tug.Server.Configuration
     {
         public ChecksumSettings Checksum
         { get; set; }
+
+        public AuthzSettings Authz
+        { get; set; }
         
         public HandlerSettings Handler
         { get; set; }
