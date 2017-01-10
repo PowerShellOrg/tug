@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,16 @@ using Tug.Client.Configuration;
 
 namespace Tug.Server
 {
+    /// <summary>
+    /// Set of <see cref="https://docs.microsoft.com/en-us/aspnet/core/testing/integration-testing"
+    /// >Integration Tests</see> used to validate the Tug Server's protocol compliance.
+    /// </summary>
+    /// <remarks>
+    /// We use the special support of the ASP.NET Core TestHost to setup a closed loop
+    /// HTTP client/server test environment that runs in-process and in-memory and we
+    /// use the Tug.Client to drive the tests and validate the expected protocol
+    /// behaviors and responses.
+    /// </remarks>
     [TestClass]
     public class ServerProtocolTests
     {
