@@ -44,10 +44,18 @@ $handlerLogger.LogInformation("  * dscConfigPath  = [$dscConfigPath]")
 $handlerLogger.LogInformation("  * dscModulePath  = [$dscModulePath]")
 
 ## Make sure the paths exist
-mkdir -Force -Path $dscRegKeyPath  | Out-Null
-mkdir -Force -Path $dscRegSavePath | Out-Null
-mkdir -Force -Path $dscConfigPath  | Out-Null
-mkdir -Force -Path $dscModulePath  | Out-Null
+if (!(test-path $dscRegKeyPath)) {
+    new-item -ItemType Directory -Force -Path $dscRegKeyPath
+    }
+if (!(test-path -path $dscRegSavePath)) {
+    new-item -ItemType Directory -Force -Path $dscRegSavePath
+    }
+if (!(test-path -path $dscConfigPath)) {
+    new-item -ItemType Directory -Force -Path $dscConfigPath
+    }
+if (!(Test-Path -Path $dscModulePath)) {
+    new-item -ItemType Directory -Force -Path $dscModulePath
+    }
 
 
 function Register-TugNode {
