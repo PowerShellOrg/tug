@@ -63,16 +63,36 @@ function Register-TugNode {
         [guid]$AgentId,
         [Tug.Model.RegisterDscAgentRequestBody]$Details
     )
-    $handlerLogger.LogTrace("REGISTER: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
-
+    
     ## Return:
     ##    SUCCESS:  n/a
     ##    FAILURE:  throw an exception
 
+    $handlerLogger.LogTrace("REGISTER: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
+
     $regPath = [System.IO.Path]::Combine($dscRegSavePath, "$($AgentId).json")
     $regInfo = $Details | ConvertTo-Json -Depth 10
-    $handlerLogger.LogDebug("Saving node reg details [$regPath]: $regInfo")
-    Set-Content -Path $regPath -Value $regInfo
+    
+    #New Registration
+    if (!(Test-Path $regPath)) {
+        $handlerLogger.LogDebug("Saving node reg details [$regPath]: $regInfo")
+        Set-Content -Path $regPath -Value $regInfo
+        }
+    
+    #Update existing registration
+    else {
+        set-content -path "$dscRegSavePath\Temp.json" -value $reginfo
+        if ((compare-object -referenceObject (get-content $regPath) -differenceObject (get-content "$dscRegSavePath\Temp.json")) -ne $Null) {
+            $handlerLogger.LogDebug("Updating node reg details [$regPath]: $regInfo")
+            Set-Content -Path $regPath -Value $regInfo
+            }
+        else {
+   
+        #Registration information is current
+            $handlerLogger.logDebug("Node registration details are current.  No changes necessary.")
+        }
+        remove-item -path "$dscRegSavePath\Temp.json"
+    }
 }
 
 function Get-TugNodeAction {
