@@ -15,12 +15,18 @@ namespace Tug.Client
     public class ClassicPullServerProtocolCompatibilityTests
     {
         public const string DEFAULT_AGENT_ID = "12345678-0000-0000-0000-000000000001";
-        public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://localhost:5000/"; // 
+        public const string DEFAULT_SERVER_URL = "http://localhost:5000/"; // "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://DSC-LOCALHOST:5000/"; // 
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
         // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
         public static readonly string PROXY_URL = null; // "http://localhost:8888"; // 
         
+        [ClassInitialize]
+        public static void SetClientLogLevel(TestContext ctx)
+        {
+            Tug.Client.AppLog.Factory.AddConsole(LogLevel.Information);
+        }
+
 
         [TestMethod]
         public void TestRegisterDscAgent() 
@@ -137,12 +143,18 @@ namespace Tug.Client
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
-                            && ex.InnerException.Message.Contains(
-                                    "Response status code does not indicate success: 500 (Internal Server Error)"),
+                            // We test for one of two possible error codes, either
+                            // 500 which is returned from Classic DSC Pull Server or
+                            // 400 which is returned from Tug Server which could not
+                            // easily or practically reproduce the same error condition
+                            && (ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 500 (Internal Server Error)")
+                                || ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
                             client.RegisterDscAgentAsync().Wait(),
                         message:
-                            "Throws HTTP exception for unauthorized (401)");
+                            "Throws HTTP exception for internal server error (500)");
             }
         }
 
@@ -175,7 +187,7 @@ namespace Tug.Client
             var config = BuildConfig(newAgentId: true);
 
             // Force bad/unexpected cert info
-            var badCert = new BadNewFieldCertInfo(config.CertificateInformation);
+            var badCert = new BadFieldOrderCertInfo(config.CertificateInformation);
             config.CertificateInformation = badCert;
 
             using (var client = new DscPullClient(config))
@@ -400,8 +412,6 @@ namespace Tug.Client
 
         private static DscPullConfig BuildConfig(bool newAgentId = false)
         {
-            Tug.Client.AppLog.Factory.AddConsole(LogLevel.Information);
-
             var config = new DscPullConfig();
 
             config.AgentId = newAgentId
