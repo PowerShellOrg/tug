@@ -53,7 +53,8 @@ namespace Tug.Messages
 
         /// <summary>
         /// Returns the Agent ID passed in the request message, however it
-        /// may have been conveyed.
+        /// may have been conveyed.  If the request does not receive an Agent ID
+        /// then returns <c>null</c>.
         /// </summary>
         /// <remarks>
         /// Unlike most of the other fields the Agent ID may be conveyed as part
@@ -61,6 +62,13 @@ namespace Tug.Messages
         /// caller to consistently retrieve the ID regardless.
         /// </remarks>
         public virtual Guid? GetAgentId() => null;
+
+        /// <summary>
+        /// Returns the body content object captured in the request message. If
+        /// the request does not capture an object representing the body content
+        /// then returns <c>null</c>.
+        /// </summary>
+        public virtual object GetBody() => null;
     }
 
     /// <summary>

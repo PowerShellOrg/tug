@@ -21,7 +21,9 @@ namespace Tug.Messages
         [FromBody]
         [Required]
         public GetDscActionRequestBody Body
-        { get; set; } 
+        { get; set; }
+
+        public override object GetBody() => Body;
     }
 
     public class GetDscActionResponse : DscResponse

@@ -22,6 +22,8 @@ namespace Tug.Messages
         [Required]
         public RegisterDscAgentRequestBody Body
         { get; set; }
+
+        public override object GetBody() => Body;
     }
 
     public class RegisterDscAgentResponse : DscResponse

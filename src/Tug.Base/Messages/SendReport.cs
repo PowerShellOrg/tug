@@ -19,5 +19,7 @@ namespace Tug.Messages
         [FromBody]
         public SendReportRequestBody Body
         { get; set; }
+
+        public override object GetBody() => Body;
     }
 }
