@@ -256,7 +256,7 @@ namespace Tug.Client
 
             var dscRequ = new GetModuleRequest
             {
-                AgentId = Configuration.AgentId,
+                AgentId = Configuration.AgentId.ToString(),
                 ModuleName = moduleName,
                 ModuleVersion = moduleVersion,
                 AcceptHeader = DscContentTypes.OCTET_STREAM,

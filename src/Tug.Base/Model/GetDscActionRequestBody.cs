@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Model
 {
-    public class GetDscActionRequestBody
+    public class GetDscActionRequestBody : Util.ExtDataIndexerBase
     {
         [Required]
         [MinLengthAttribute(1)]

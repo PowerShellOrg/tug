@@ -8,7 +8,7 @@ namespace Tug.Model
     /// <summary>
     /// https://msdn.microsoft.com/en-us/library/dn365245.aspx 
     /// </summary>
-    public class RegisterDscAgentRequestBody
+    public class RegisterDscAgentRequestBody : Util.ExtDataIndexerBase
     {
         // NOTE:  DO NOT CHANGE THE ORDER OF THESE PROPERTIES!!!
         // Apparently the order of these properties is important

@@ -14,6 +14,7 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Get;
 
         public const string ROUTE = "Nodes(AgentId='{AgentId}')/Reports(JobId='{JobId}'))";
+        public const string ROUTE_NAME = nameof(GetReportsRequest);
 
         [Required]
         public Guid JobId

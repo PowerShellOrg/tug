@@ -8,30 +8,12 @@
       "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
     ]
   },
-  
-//"testRunner": "xunit",
-  "testRunner": "mstest",
-  
+
   "dependencies": {
-    "System.Runtime.Serialization.Primitives": "4.3.0",
-
-  //"xunit": "2.1.0",
-  //"dotnet-test-xunit": "1.0.0-rc2-build10025",
-
     "dotnet-test-mstest": "1.1.2-preview",
-    "MSTest.TestFramework": "1.0.7-preview",
-
-    // Assemblies with additional test support
-    "Tug.UnitTesting": {
-      "target": "project"
-    },
-
-    // Assemblies under test
-    "Tug.Client": {
-      "target": "project"
-    }
+    "MSTest.TestFramework": "1.0.7-preview"
   },
-  
+
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
@@ -44,6 +26,8 @@
         "dotnet5.4",
         "portable-net451+win8"
       ]
+    },
+    "net452": {
     }
   }
 }

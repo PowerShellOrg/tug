@@ -57,3 +57,16 @@ using (PowerShell PowerShellInstance = PowerShell.Create())
 ```
 
 You need a reference to System.Management.Automation, and must have the reference assembly installed (it's on NuGet and in the Windows SDK). See https://blogs.msdn.microsoft.com/kebab/2014/04/28/executing-powershell-scripts-from-c/
+
+## Self-contained .NET Core app deployment and Linux Daemon Process
+
+* http://cloudauthority.blogspot.co.uk/2017/01/deploying-self-contained-net-core.html
+
+Be sure to have installed:
+* [libunwind](http://www.nongnu.org/libunwind/)
+
+This could be handy:
+* https://github.com/bmc/daemonize
+* man page:  http://software.clapper.org/daemonize/daemonize.html
+* e.g.  `daemonize -a -c /var/appRoot -e /var/appRoot/stderr.txt -o /var/appRoot/stdout.txt -p /var/appRoot/app-pid.txt -l /var/appRoot/app-lock.txt dotnet run /path/to/app/foo.dll`
+

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tug.Client.Configuration;
 using Tug.UnitTesting;
@@ -14,12 +15,18 @@ namespace Tug.Client
     public class ClassicPullServerProtocolCompatibilityTests
     {
         public const string DEFAULT_AGENT_ID = "12345678-0000-0000-0000-000000000001";
-        public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/";
+        public const string DEFAULT_SERVER_URL = "http://localhost:5000/"; // "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://DSC-LOCALHOST:5000/"; // 
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
         // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
         public static readonly string PROXY_URL = null; // "http://localhost:8888"; // 
         
+        [ClassInitialize]
+        public static void SetClientLogLevel(TestContext ctx)
+        {
+            Tug.Client.AppLog.Factory.AddConsole(LogLevel.Information);
+        }
+
 
         [TestMethod]
         public void TestRegisterDscAgent() 
@@ -28,6 +35,50 @@ namespace Tug.Client
             using (var client = new DscPullClient(config))
             {
                 client.RegisterDscAgentAsync().Wait();
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadContent_AgentInfo()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Add an unexpected property
+            config.AgentInformation["foo"] = "bar";
+
+            using (var client = new DscPullClient(config))
+            {
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
+            }
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadContent_CertInfo()
+        {
+            var config = BuildConfig(newAgentId: true);
+
+            // Add an unexpected property
+            config.CertificateInformation["foo"] = "bar";
+
+            using (var client = new DscPullClient(config))
+            {
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.RegisterDscAgentAsync().Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
             }
         }
 
@@ -41,7 +92,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -63,7 +114,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -89,15 +140,21 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
-                            && ex.InnerException.Message.Contains(
-                                    "Response status code does not indicate success: 500 (Internal Server Error)"),
+                            // We test for one of two possible error codes, either
+                            // 500 which is returned from Classic DSC Pull Server or
+                            // 400 which is returned from Tug Server which could not
+                            // easily or practically reproduce the same error condition
+                            && (ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 500 (Internal Server Error)")
+                                || ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
                             client.RegisterDscAgentAsync().Wait(),
                         message:
-                            "Throws HTTP exception for unauthorized (401)");
+                            "Throws HTTP exception for internal server error (500)");
             }
         }
 
@@ -112,7 +169,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -130,12 +187,12 @@ namespace Tug.Client
             var config = BuildConfig(newAgentId: true);
 
             // Force bad/unexpected cert info
-            var badCert = new BadNewFieldCertInfo(config.CertificateInformation);
+            var badCert = new BadFieldOrderCertInfo(config.CertificateInformation);
             config.CertificateInformation = badCert;
 
             using (var client = new DscPullClient(config))
             {
-                MyAssert.ThrowsExceptionWhen<AggregateException>(
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
                             && ex.InnerException.Message.Contains(
@@ -164,6 +221,34 @@ namespace Tug.Client
                         "Action result config name");
                 Assert.AreEqual(Model.DscActionStatus.GetConfiguration, resultArr[0].Status,
                         "Action result status");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetDscAction_BadContent_StatusItem()
+        {
+            var config = BuildConfig();
+            using (var client = new DscPullClient(config))
+            {
+                // Construct our own status item collection
+                var statusItems = new[] { new Model.ClientStatusItem() };
+                statusItems[0].ChecksumAlgorithm = "SHA-256";
+                statusItems[0].Checksum = "";
+                statusItems[0].ConfigurationName = config.ConfigurationNames.First();
+                // Inject one unexpected property
+                statusItems[0]["foo"] = "bar";
+
+                client.RegisterDscAgentAsync().Wait();
+
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.GetDscActionAsync(statusItems).Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
             }
         }
 

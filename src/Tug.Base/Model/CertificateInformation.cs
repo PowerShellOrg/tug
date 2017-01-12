@@ -5,7 +5,7 @@
 
 namespace Tug.Model
 {
-    public class CertificateInformation
+    public class CertificateInformation : Util.ExtDataIndexerBase
     {
         public CertificateInformation()
         { }

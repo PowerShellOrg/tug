@@ -17,10 +17,14 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Get;
 
         public const string ROUTE = "Modules(ModuleName='{ModuleName}',ModuleVersion='{ModuleVersion}')/ModuleContent";
+        public const string ROUTE_NAME = nameof(GetModuleRequest);
 
+        // Apparently this *has* to be a string when binding it from a
+        // header field otherwise, it just gets skipped over for some
+        // reason -- not sure if this is a bug in MVC model binding???
         [FromHeader(Name = "AgentId")]
         [Required]
-        public Guid AgentId
+        public string AgentId
         { get; set; }
 
         [FromRoute]
@@ -31,6 +35,15 @@ namespace Tug.Messages
         [FromRoute]
         public string ModuleVersion
         { get; set; }
+
+        public override Guid? GetAgentId()
+        {
+            Guid agentId;
+            if (Guid.TryParse(AgentId, out agentId))
+                return agentId;
+            else
+                return null;
+        }
     }
 
     public class GetModuleResponse : DscResponse

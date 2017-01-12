@@ -41,7 +41,7 @@ namespace Tug.Server
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt766336.aspx
         /// </summary>
-        FileContent GetModule(string moduleName, string moduleVersion);
+        FileContent GetModule(Guid? agentId, string moduleName, string moduleVersion);
 
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt766272.aspx

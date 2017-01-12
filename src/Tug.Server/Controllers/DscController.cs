@@ -35,8 +35,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPut]
-        [Route(RegisterDscAgentRequest.ROUTE)]
-        //TODO:  [Authorize]
+        [Route(RegisterDscAgentRequest.ROUTE,
+            Name = RegisterDscAgentRequest.ROUTE_NAME)]
+        [ActionName(nameof(RegisterDscAgent))]
         public IActionResult RegisterDscAgent(RegisterDscAgentRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -45,7 +46,7 @@ namespace Tug.Server.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
-                _dscHandler.RegisterDscAgent(input.AgentId, input.Body);
+                _dscHandler.RegisterDscAgent(input.AgentId.Value, input.Body);
 
                 return this.Model(RegisterDscAgentResponse.INSTANCE);
             }
@@ -54,7 +55,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpPost]
-        [Route(GetDscActionRequest.ROUTE)]
+        [Route(GetDscActionRequest.ROUTE,
+            Name = GetDscActionRequest.ROUTE_NAME)]
+        [ActionName(nameof(GetDscAction))]
         public IActionResult GetDscAction(GetDscActionRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -64,7 +67,10 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
 
-                var actionInfo = _dscHandler.GetDscAction(input.AgentId, input.Body);
+                var actionInfo = _dscHandler.GetDscAction(input.AgentId.Value, input.Body);
+                if (actionInfo == null)
+                    return NotFound();
+                
                 var response = new GetDscActionResponse
                 {
                     Body = new GetDscActionResponseBody
@@ -82,7 +88,9 @@ namespace Tug.Server.Controllers
 
 
         [HttpGet]
-        [Route(GetConfigurationRequest.ROUTE)]
+        [Route(GetConfigurationRequest.ROUTE,
+            Name = GetConfigurationRequest.ROUTE_NAME)]
+        [ActionName(nameof(GetConfiguration))]
         public IActionResult GetConfiguration(GetConfigurationRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -92,7 +100,7 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"AgentId=[{input.AgentId}] Configuration=[{input.ConfigurationName}]");
                 
-                var configContent = _dscHandler.GetConfiguration(input.AgentId,
+                var configContent = _dscHandler.GetConfiguration(input.AgentId.Value,
                         // TODO:
                         // Strictly speaking, this may not be how the DSCPM
                         // protocol is supposed to resolve the config name
@@ -114,7 +122,9 @@ namespace Tug.Server.Controllers
         }
 
         [HttpGet]
-        [Route(GetModuleRequest.ROUTE)]
+        [Route(GetModuleRequest.ROUTE,
+            Name = GetModuleRequest.ROUTE_NAME)]
+        [ActionName(nameof(GetModule))]
         public IActionResult GetModule(GetModuleRequest input)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -124,7 +134,8 @@ namespace Tug.Server.Controllers
             {
                 _logger.LogDebug($"Module name=[{input.ModuleName}] Version=[{input.ModuleVersion}]");
 
-                var moduleContent = _dscHandler.GetModule(input.ModuleName, input.ModuleVersion);
+                var moduleContent = _dscHandler.GetModule(input.GetAgentId(),
+                        input.ModuleName, input.ModuleVersion);
                 if (moduleContent == null)
                     return NotFound();
 
