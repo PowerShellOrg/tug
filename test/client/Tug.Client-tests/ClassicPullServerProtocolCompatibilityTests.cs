@@ -195,8 +195,14 @@ namespace Tug.Client
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
-                            && ex.InnerException.Message.Contains(
-                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                            // We test for one of two possible error codes, either
+                            // 401 which is returned from Classic DSC Pull Server or
+                            // 400 which is returned from Tug Server which could not
+                            // easily or practically reproduce the same error condition
+                            && (ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 401 (Unauthorized)")
+                                || ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
                             client.RegisterDscAgentAsync().Wait(),
                         message:
