@@ -68,6 +68,9 @@ namespace Tug.Server.Controllers
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
 
                 var actionInfo = _dscHandler.GetDscAction(input.AgentId.Value, input.Body);
+                if (actionInfo == null)
+                    return NotFound();
+                
                 var response = new GetDscActionResponse
                 {
                     Body = new GetDscActionResponseBody

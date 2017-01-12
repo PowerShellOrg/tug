@@ -126,8 +126,11 @@ namespace Tug.Server.Providers
                     // Checksum is for the single default configuration of this node
                     var configPath = Path.Combine(ConfigurationPath, $"SHARED/{cn}.mof");
                     if (!File.Exists(configPath))
-                        // TODO:  move CN out of message string and into EX DATA
-                        throw new InvalidOperationException($"missing configuration by name [{cn}]");
+                    {
+                        Logger.LogWarning($"unable to find ConfigurationName=[{cn}] for AgentId=[{agentId}]");
+                        return null;
+                    }
+
 
                     // Assume we have to pull
                     nodeStatus = DscActionStatus.GetConfiguration;
