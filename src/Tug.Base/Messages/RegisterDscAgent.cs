@@ -16,6 +16,7 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Put;
 
         public const string ROUTE = "Nodes(AgentId='{AgentId}')";
+        public const string ROUTE_NAME = nameof(RegisterDscAgentRequest);
 
         [FromBody]
         [Required]

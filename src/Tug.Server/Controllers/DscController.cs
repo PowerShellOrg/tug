@@ -36,7 +36,7 @@ namespace Tug.Server.Controllers
 
         [HttpPut]
         [Route(RegisterDscAgentRequest.ROUTE,
-            Name = nameof(RegisterDscAgent))]
+            Name = RegisterDscAgentRequest.ROUTE_NAME)]
         [ActionName(nameof(RegisterDscAgent))]
         public IActionResult RegisterDscAgent(RegisterDscAgentRequest input)
         {
@@ -56,7 +56,7 @@ namespace Tug.Server.Controllers
 
         [HttpPost]
         [Route(GetDscActionRequest.ROUTE,
-            Name = nameof(GetDscAction))]
+            Name = GetDscActionRequest.ROUTE_NAME)]
         [ActionName(nameof(GetDscAction))]
         public IActionResult GetDscAction(GetDscActionRequest input)
         {
@@ -86,7 +86,7 @@ namespace Tug.Server.Controllers
 
         [HttpGet]
         [Route(GetConfigurationRequest.ROUTE,
-            Name = nameof(GetConfiguration))]
+            Name = GetConfigurationRequest.ROUTE_NAME)]
         [ActionName(nameof(GetConfiguration))]
         public IActionResult GetConfiguration(GetConfigurationRequest input)
         {
@@ -120,7 +120,7 @@ namespace Tug.Server.Controllers
 
         [HttpGet]
         [Route(GetModuleRequest.ROUTE,
-            Name = nameof(GetModule))]
+            Name = GetModuleRequest.ROUTE_NAME)]
         [ActionName(nameof(GetModule))]
         public IActionResult GetModule(GetModuleRequest input)
         {

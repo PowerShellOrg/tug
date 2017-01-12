@@ -17,6 +17,7 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Get;
 
         public const string ROUTE = "Modules(ModuleName='{ModuleName}',ModuleVersion='{ModuleVersion}')/ModuleContent";
+        public const string ROUTE_NAME = nameof(GetModuleRequest);
 
         // Apparently this *has* to be a string when binding it from a
         // header field otherwise, it just gets skipped over for some

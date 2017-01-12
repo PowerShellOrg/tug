@@ -14,6 +14,7 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Post;
 
         public const string ROUTE = "Nodes(AgentID='{AgentId}')/SendReport";
+        public const string ROUTE_NAME = nameof(SendReportRequest);
 
         [FromBody]
         public SendReportRequestBody Body

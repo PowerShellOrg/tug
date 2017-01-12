@@ -24,7 +24,7 @@ namespace Tug.Server.Controllers
 
         [HttpPost]
         [Route(SendReportRequest.ROUTE,
-            Name = nameof(SendReport))]
+            Name = SendReportRequest.ROUTE_NAME)]
         [ActionName(nameof(SendReport))]
         public IActionResult SendReport(SendReportRequest input)
         {
@@ -45,7 +45,7 @@ namespace Tug.Server.Controllers
 
         [HttpGet]
         [Route(GetReportsRequest.ROUTE,
-            Name = nameof(GetReports))]
+            Name = GetReportsRequest.ROUTE_NAME)]
         [ActionName(nameof(GetReports))]
         public IActionResult GetReports(GetReportsRequest input)
         {
