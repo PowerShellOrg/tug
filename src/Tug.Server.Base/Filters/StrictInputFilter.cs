@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -20,14 +21,14 @@ namespace Tug.Server.Filters
     /// </remarks>
     public class StrictInputFilter : IActionFilter
     {
-        private ILogger<StrictInputFilter> _logger;
+        protected ILogger<StrictInputFilter> _logger;
 
         public StrictInputFilter(ILogger<StrictInputFilter> logger)
         {
             _logger = logger;
         }
 
-        public void OnActionExecuting(ActionExecutingContext context)
+        public virtual void OnActionExecuting(ActionExecutingContext context)
         {
             int extDataCount = 0;
             foreach (var arg in context.ActionArguments)
@@ -47,28 +48,46 @@ namespace Tug.Server.Filters
             }
         }
 
-        public void OnActionExecuted(ActionExecutedContext context)
+        public virtual void OnActionExecuted(ActionExecutedContext context)
         { }
 
         /// <summary>
         /// Recursively identifies any properties that implement the IExtData
         /// interface and comutes the total count of ext data elements.
         /// </summary>
-        protected int GetExtDataCount(object value)
+        protected int GetExtDataCount(params object[] values)
         {
             var extDataCount = 0;
-            if (value != null)
+            var extDataProps = 0;
+            if (values != null && values.Length > 0)
             {
-                var valueType = value.GetType();
-                foreach (var prop in valueType.GetTypeInfo().GetProperties())
+                foreach (var value in values)
                 {
-                    if (typeof(IExtData).IsAssignableFrom(prop.PropertyType))
+                    var valueType = value.GetType();
+                    foreach (var prop in valueType.GetTypeInfo().GetProperties())
                     {
-                        var extData = (IExtData)prop.GetValue(value);
-                        if (extData != null)
+                        if (typeof(IExtData).IsAssignableFrom(prop.PropertyType))
                         {
-                            extDataCount += extData.GetExtDataCount();
-                            extDataCount += GetExtDataCount(extData);
+                            ++extDataProps;
+                            var extData = (IExtData)prop.GetValue(value);
+                            if (extData != null)
+                            {
+                                extDataCount += extData.GetExtDataCount();
+                                extDataCount += GetExtDataCount(extData);
+                            }
+                        }
+                        else if (typeof(IEnumerable<IExtData>).IsAssignableFrom(prop.PropertyType))
+                        {
+                            ++extDataProps;
+                            var extDataCollection = (IEnumerable<IExtData>)prop.GetValue(value);
+                            if (extDataCollection != null)
+                            {
+                                foreach (var item in extDataCollection)
+                                {
+                                    extDataCount += item.GetExtDataCount();
+                                    extDataCount += GetExtDataCount(item);
+                                }
+                            }
                         }
                     }
                 }

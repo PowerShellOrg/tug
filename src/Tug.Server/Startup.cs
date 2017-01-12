@@ -90,12 +90,18 @@ namespace Tug.Server
             services.Configure<HandlerSettings>(
                     appSettings.GetSection(nameof(AppSettings.Handler)));
 
+            // Register a single instance of each filter type we'll use down below
+            services.AddSingleton<DscRegKeyAuthzFilter>();
+            services.AddSingleton<StrictInputFilter>();
+            services.AddSingleton<VeryStrictInputFilter>();
+
             // Add MVC-supporting services
             _logger.LogInformation("Adding MVC services");
             services.AddMvc(options =>
             {
-                options.Filters.Add(typeof(DscRegKeyAuthzFilter));
-                options.Filters.Add(typeof(StrictInputFilter));
+                // Add the filter by service type reference
+                options.Filters.AddService(typeof(DscRegKeyAuthzFilter));
+                options.Filters.AddService(typeof(VeryStrictInputFilter));
             }).AddJsonOptions(options =>
                 {
                     // This enables converting Enums to/from their string names instead
