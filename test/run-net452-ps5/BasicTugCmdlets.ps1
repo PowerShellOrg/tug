@@ -167,6 +167,7 @@ function Get-TugNodeConfiguration {
 
 function Get-TugModule {
     param(
+        [guid]$AgentId,
         [string]$ModuleName,
         [string]$ModuleVersion
     )
