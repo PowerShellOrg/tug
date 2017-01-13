@@ -36,7 +36,6 @@ namespace Tug.Server.Filters
         public const string REG_SAVE_PATH = "RegistrationSavePath";
 
         public const string REG_KEY_DEFAULT_FILENAME = "RegistrationKeys.txt";
-
         public const char REG_KEY_FILE_COMMENT_START = '#';
 
         public const string SHARED_AUTHORIZATION_PREFIX = "Shared ";
@@ -80,9 +79,14 @@ namespace Tug.Server.Filters
                         .WithData(nameof(_regKeyFilePath), _regKeyFilePath);
 
             if (!Directory.Exists(_regSavePath))
-                throw new InvalidOperationException(
-                        /*SR*/"could not find registration save directory")
-                        .WithData(nameof(_regSavePath), _regSavePath);
+            {
+                _logger.LogInformation("registartion save path not found, trying to create");
+                var dirInfo = Directory.CreateDirectory(_regSavePath);
+                if (!dirInfo.Exists)
+                    throw new InvalidOperationException(
+                            /*SR*/"could not create registration save directory")
+                            .WithData(nameof(_regSavePath), _regSavePath);
+            }
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
