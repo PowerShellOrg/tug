@@ -17,7 +17,6 @@ namespace Tug.Server.Providers
 
         protected static readonly IEnumerable<ProviderParameterInfo> PARAMS = new[]
         {
-            new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationKeyPath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationSavePath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.ConfigurationPath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.ModulePath)),
