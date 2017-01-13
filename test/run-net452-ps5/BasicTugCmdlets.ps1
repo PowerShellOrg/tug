@@ -108,13 +108,15 @@ function Get-TugNodeAction {
     ## in the node registration, or if the config names don't match in $Details
 
     $configName = $regInfo.ConfigurationNames
+    $handlerLogger.LogTrace("Resolved requested configuration name as [$configName]")
     if (-not $configName) {
         $handlerLogger.LogWarning("No configuration name specified for agent [$AgentId]")
     }
     else {
         $configPath = [System.IO.Path]::Combine($dscConfigPath, "SHARED/$($configName).mof")
         if (-not (Test-Path -PathType Leaf $configPath)) {
-            throw "Missing configuration by name [$configName]"
+            $handlerLogger.LogWarning("No configuration found for name [$ConfigName]")
+            return $null
         }
         $nodeStatus = "GetConfiguration"
         $configData = [System.IO.File]::ReadAllBytes($configPath)
@@ -167,6 +169,7 @@ function Get-TugNodeConfiguration {
 
 function Get-TugModule {
     param(
+        [guid]$AgentId,
         [string]$ModuleName,
         [string]$ModuleVersion
     )
