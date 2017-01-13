@@ -15,7 +15,7 @@ namespace Tug.Client
     public class ClassicPullServerProtocolCompatibilityTests
     {
         public const string DEFAULT_AGENT_ID = "12345678-0000-0000-0000-000000000001";
-        public const string DEFAULT_SERVER_URL = "http://localhost:5000/"; // "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://DSC-LOCALHOST:5000/"; // 
+        public const string DEFAULT_SERVER_URL = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://localhost:5000/"; // "http://DSC-LOCALHOST:5000/"; // 
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
         // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
@@ -195,8 +195,14 @@ namespace Tug.Client
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
-                            && ex.InnerException.Message.Contains(
-                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                            // We test for one of two possible error codes, either
+                            // 401 which is returned from Classic DSC Pull Server or
+                            // 400 which is returned from Tug Server which could not
+                            // easily or practically reproduce the same error condition
+                            && (ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 401 (Unauthorized)")
+                                || ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
                             client.RegisterDscAgentAsync().Wait(),
                         message:

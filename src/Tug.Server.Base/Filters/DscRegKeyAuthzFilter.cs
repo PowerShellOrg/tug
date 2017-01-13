@@ -35,6 +35,7 @@ namespace Tug.Server.Filters
         public const string REG_SAVE_PATH = "RegistrationSavePath";
 
         public const string REG_KEY_DEFAULT_FILENAME = "RegistrationKeys.txt";
+        public const char REG_KEY_FILE_COMMENT_START = '#';
 
         public const string SHARED_AUTHORIZATION_PREFIX = "Shared ";
 
@@ -80,9 +81,14 @@ namespace Tug.Server.Filters
                         .WithData(nameof(_regKeyFilePath), _regKeyFilePath);
 
             if (!Directory.Exists(_regSavePath))
-                throw new InvalidOperationException(
-                        /*SR*/"could not find registration save directory")
-                        .WithData(nameof(_regSavePath), _regSavePath);
+            {
+                _logger.LogInformation("registartion save path not found, trying to create");
+                var dirInfo = Directory.CreateDirectory(_regSavePath);
+                if (!dirInfo.Exists)
+                    throw new InvalidOperationException(
+                            /*SR*/"could not create registration save directory")
+                            .WithData(nameof(_regSavePath), _regSavePath);
+            }
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -149,7 +155,7 @@ namespace Tug.Server.Filters
                 // Resolve reg keys from file as non-blank lines after optional comments
                 // (starting with a '#') and any surround whitespace have been stripped
                 var regKeys = File.ReadAllLines(_regKeyFilePath)
-                        .Select(x => x.Split('#')[0].Trim())
+                        .Select(x => x.Split(REG_KEY_FILE_COMMENT_START)[0].Trim())
                         .Where(x => x.Length > 0);
 
                 using (var ms = new MemoryStream())

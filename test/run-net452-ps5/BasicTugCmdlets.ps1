@@ -1,5 +1,5 @@
 <#
- # Copyright © The DevOps Collective, Inc. All rights reserved.
+ # Copyright ï¿½ The DevOps Collective, Inc. All rights reserved.
  # Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  #> 
 
@@ -27,8 +27,6 @@ $handlerLogger.LogInformation("* Got Logger:  $handlerLogger")
 $handlerLogger.LogInformation("* Got Config:  $handlerAppConfiguration")
 
 ## We pull out the paths we use to store things from the global app settings
-$dscRegKeyPath  = [System.IO.Path]::GetFullPath(
-        $handlerAppConfiguration["handler:params:RegistrationKeyPath"])
 $dscRegSavePath = [System.IO.Path]::GetFullPath(
         $handlerAppConfiguration["handler:params:RegistrationSavePath"])
 $dscConfigPath  = [System.IO.Path]::GetFullPath(
@@ -38,15 +36,11 @@ $dscModulePath  = [System.IO.Path]::GetFullPath(
 
 ## Log out the resolved paths
 $handlerLogger.LogInformation("Resolved App Settings:")
-$handlerLogger.LogInformation("  * dscRegKeyPath  = [$dscRegKeyPath]")
 $handlerLogger.LogInformation("  * dscRegSavePath = [$dscRegSavePath]")
 $handlerLogger.LogInformation("  * dscConfigPath  = [$dscConfigPath]")
 $handlerLogger.LogInformation("  * dscModulePath  = [$dscModulePath]")
 
 ## Make sure the paths exist
-if (!(test-path $dscRegKeyPath)) {
-    new-item -ItemType Directory -Force -Path $dscRegKeyPath
-    }
 if (!(test-path -path $dscRegSavePath)) {
     new-item -ItemType Directory -Force -Path $dscRegSavePath
     }

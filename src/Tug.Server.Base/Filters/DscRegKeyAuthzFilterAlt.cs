@@ -36,6 +36,7 @@ namespace Tug.Server.Filters
         public const string REG_SAVE_PATH = "RegistrationSavePath";
 
         public const string REG_KEY_DEFAULT_FILENAME = "RegistrationKeys.txt";
+        public const char REG_KEY_FILE_COMMENT_START = '#';
 
         public const string SHARED_AUTHORIZATION_PREFIX = "Shared ";
 
@@ -78,9 +79,14 @@ namespace Tug.Server.Filters
                         .WithData(nameof(_regKeyFilePath), _regKeyFilePath);
 
             if (!Directory.Exists(_regSavePath))
-                throw new InvalidOperationException(
-                        /*SR*/"could not find registration save directory")
-                        .WithData(nameof(_regSavePath), _regSavePath);
+            {
+                _logger.LogInformation("registartion save path not found, trying to create");
+                var dirInfo = Directory.CreateDirectory(_regSavePath);
+                if (!dirInfo.Exists)
+                    throw new InvalidOperationException(
+                            /*SR*/"could not create registration save directory")
+                            .WithData(nameof(_regSavePath), _regSavePath);
+            }
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
@@ -123,10 +129,16 @@ namespace Tug.Server.Filters
                     _logger.LogDebug("received x-ms-date header [{msDateHeader}]", xmsdate);
                 }
 
+                // NOTE:  we repeat the following process on every lookup instead
+                //        of caching it as a fast and dirty way of picking up any
+                //        changes to the file.
+                // TODO:  in future preload the file into an array and reload after
+                //        listening for and detecting any file changes
+
                 // Resolve reg keys from file as non-blank lines after optional comments
                 // (starting with a '#') and any surround whitespace have been stripped
                 var regKeys = File.ReadAllLines(_regKeyFilePath)
-                        .Select(x => x.Split('#')[0].Trim())
+                        .Select(x => x.Split(REG_KEY_FILE_COMMENT_START)[0].Trim())
                         .Where(x => x.Length > 0);
                 var bodyJson = JsonConvert.SerializeObject(requ.Body);
                 var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);

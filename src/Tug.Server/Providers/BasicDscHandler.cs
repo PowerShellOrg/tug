@@ -31,9 +31,6 @@ namespace Tug.Server.Providers
         public ChecksumHelper ChecksumHelper
         { get; set; }
 
-        public string RegistrationKeyPath
-        { get; set; } = $"{DEFAULT_WORK_FOLDER}";
-
         public string RegistrationSavePath
         { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Registrations";
         
@@ -50,8 +47,6 @@ namespace Tug.Server.Providers
         {
             Assert(Logger != null, "missing logger");
             Assert(ChecksumHelper != null, "missing checksum helper");
-            Assert(!string.IsNullOrWhiteSpace(RegistrationKeyPath),
-                    "registration key path not set");
             Assert(!string.IsNullOrWhiteSpace(RegistrationSavePath),
                     "registration save path not set");
             Assert(!string.IsNullOrWhiteSpace(ConfigurationPath),
@@ -60,7 +55,6 @@ namespace Tug.Server.Providers
                     "module path not set");
 
             Logger.LogInformation("All Assertions Passed!");
-            Directory.CreateDirectory(RegistrationKeyPath);
             Directory.CreateDirectory(RegistrationSavePath);
             Directory.CreateDirectory(ConfigurationPath);
             Directory.CreateDirectory(ModulePath);
