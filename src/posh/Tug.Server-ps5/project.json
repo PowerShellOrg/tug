@@ -1,0 +1,36 @@
+{
+  "name": "Tug.Server-ps5",
+  "version": "0.5.1-*",
+  "copyright": "Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.",
+  "title": "Tug Server PowerShell Module",
+  "authors": ["Don Jones"],
+  "language": "en-US",
+
+  "buildOptions": {
+    "debugType": "portable"
+  },
+
+  "dependencies": {
+    "Tug.Server": {
+      "target": "project"
+    },
+    "Tug.Server.Providers.Ps5DscHandler": {
+      "target": "project"
+    }
+  },
+  
+  "frameworks": {
+    "net452": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_FRAMEWORK"
+        ]
+      },
+      "dependencies": {}
+    }
+  },
+
+  "commands": {
+    "posh-publish": "echo hello!"
+  }
+}
