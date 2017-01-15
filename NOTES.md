@@ -72,11 +72,18 @@ This could be handy:
 
 ## Windows Service Hosting
 
+### On Windows w/ .NET Framework
 * https://github.com/aspnet/Home/issues/1386
 * https://github.com/aspnet/Hosting/tree/dev/src/Microsoft.AspNetCore.Hosting.WindowsServices
+* https://docs.microsoft.com/en-us/aspnet/core/fundamentals/hosting
+  * "Hosting as a Windows Service" in the *Additional Resources* section is **not written yet** :-(
+* http://stackoverflow.com/questions/37346383/hosting-asp-net-core-as-windows-service/37464074#37464074
 * Older (DNX):
   * http://taskmatics.com/blog/host-asp-net-in-a-windows-service/
   * http://taskmatics.com/blog/run-dnx-applications-windows-service/
+
+### On Windows w/ .NET Core
+* https://github.com/dasMulli/dotnet-win32-service
 
 ## Pre-release Nuget Feed
 
