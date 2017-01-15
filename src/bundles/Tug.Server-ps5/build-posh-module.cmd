@@ -19,7 +19,7 @@ dotnet publish %THIS_DIR%                                         -o %PUBLISH_DI
 @REM exactly the same in the parent bin folder, we can remove it
 @FOR /F %%f IN ('DIR %PUBLISH_DIR%\bin\ext\* /a-d/b') DO @(
     @IF EXIST %PUBLISH_DIR%\bin\%%f (
-        @FC /B %PUBLISH_DIR%\bin\ext\%%f %PUBLISH_DIR%\bin\%%f > null
+        @FC /B %PUBLISH_DIR%\bin\ext\%%f %PUBLISH_DIR%\bin\%%f > nul
         @IF "%ERRORLEVEL%"=="0" @DEL %PUBLISH_DIR%\bin\ext\%%f
     )
 )

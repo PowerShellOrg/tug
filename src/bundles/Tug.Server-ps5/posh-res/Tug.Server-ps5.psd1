@@ -12,7 +12,7 @@
 RootModule = 'Tug.Server-ps5.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.5.1.2'
+ModuleVersion = '0.5.1.0'
 
 # ID used to uniquely identify this module
 GUID = '1d4fb7c2-2509-476a-88d9-20dc4831779f'
