@@ -11,10 +11,21 @@
 
 @REM We need to publish each of the Tug.Server and the PS5 Handler
 @REM projects to produce the necessary artifacts for deployment
-dotnet publish %THIS_DIR%..\..\Tug.Server                         -o %PUBLISH_DIR%\bin -f net452 -r win7-x64
-dotnet publish %THIS_DIR%..\..\Tug.Server.Providers.Ps5DscHandler -o %PUBLISH_DIR%\bin -f net452 -r win7-x64
-dotnet publish %THIS_DIR%                                         -o %PUBLISH_DIR%\bin -f net452 -r win7-x64
+dotnet publish %THIS_DIR%..\..\Tug.Server                         -o %PUBLISH_DIR%\bin     -f net452 -r win7-x64
+dotnet publish %THIS_DIR%..\..\Tug.Server.Providers.Ps5DscHandler -o %PUBLISH_DIR%\bin\ext -f net452 -r win7-x64
+dotnet publish %THIS_DIR%                                         -o %PUBLISH_DIR%\bin     -f net452 -r win7-x64
 
+@REM We iterate through each file that's in EXT and if it exists
+@REM exactly the same in the parent bin folder, we can remove it
+@FOR /F %%f IN ('DIR %PUBLISH_DIR%\bin\ext\* /a-d/b') DO @(
+    @IF EXIST %PUBLISH_DIR%\bin\%%f (
+        @FC /B %PUBLISH_DIR%\bin\ext\%%f %PUBLISH_DIR%\bin\%%f > null
+        @IF "%ERRORLEVEL%"=="0" @DEL %PUBLISH_DIR%\bin\ext\%%f
+    )
+)
+
+@REM Copy over the supporting config and
+@REM doc files exactly as they are
 xcopy %THIS_DIR%posh-res %PUBLISH_DIR%\ /E
 
 @ENDLOCAL

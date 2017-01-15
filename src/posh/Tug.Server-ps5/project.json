@@ -13,10 +13,11 @@
   "dependencies": {
     "Tug.Server": {
       "target": "project"
-    },
-    "Tug.Server.Providers.Ps5DscHandler": {
-      "target": "project"
     }
+    // ,
+    // "Tug.Server.Providers.Ps5DscHandler": {
+    //   "target": "project"
+    // }
   },
   
   "frameworks": {
