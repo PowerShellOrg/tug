@@ -6,7 +6,17 @@
 This is a pre-packaged installation of the Tug DSC Pull Server configured
 to use the PowerShell v5 Handler for servicing DSC Pull Mode requests.
 
-## Configuration
+The server can be run interactively (i.e. blocking mode) from the command
+line by invoking the `tug-server.cmd`.  In this mode, it will listen by
+default on port `5000` on all local network interfaces.  This uses the
+ASP.NET Core Kestral server which only meant for demonstration purposes
+and should not be exposed to a public or untrusted network interface.
+
+Alternatively you can run the server behind IIS.  Details for configuring
+this setup can be found on the ASP.NET Core documentation site under the
+section for [Publishing to IIS](https://docs.microsoft.com/en-us/aspnet/core/publishing/iis).
+
+## Server Application Configuration
 
 The server is configured using the `appsettings.json` file.  There are
 several configuration items that you should inspect and confirm or adjust
@@ -124,6 +134,29 @@ configuration elements which you can customize in the section
         <ModulePath>\xWebAdministration\1.16.0.0.zip
     ```
     This location must be readable by the Tug server.
+
+## Server Hosting Configuration
+
+In addition to the application configuration that drives the behavior of
+Tug Server and it DSC service functionality, you can override some settings
+of the Server's *Hosting* behavior using one of the following methods:
+* Provide a local hosting configuration file named `hosting.json`
+* Set individual hosting settings as environment variables prefixed with the name `TUG_HOST_`
+* Specifify individual hosting settings as CLI arguments
+
+The following settings can be overridden:
+
+Setting Key Name         | Default Value | Comments
+-------------------------|---------------|-----------
+`applicationName`        | Tug.Server    |
+`environment`            | PRODUCTION    | 
+`captureStartupErrors`   | false         |
+`contentRoot`            | .             | Defaults to the current working directory
+`detailedErrors`         | false         |
+`urls`                   | http://*:5000 | semi-colon-separate list of endpoints
+
+***NOTE:  some of these settings are automatically overridden when
+hosting using IIS Integration, such as `urls` and `contentRoot`***
 
 ## Limitations
 
