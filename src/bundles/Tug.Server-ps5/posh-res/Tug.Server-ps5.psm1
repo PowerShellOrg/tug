@@ -51,6 +51,8 @@ location except for configuration files.
     Write-Verbose "Copying binary files over"
     Copy-Item $binSource -Destination "$fullPath\bin" -Recurse -Force
 
+    $initialFiles = @{}
+    Write-Verbose "Copying over initial config/samples..."
     foreach ($f in (Get-ChildItem -Path $smpSource)) {
         Write-Verbose "Installing [$f]:"
 
@@ -95,6 +97,40 @@ location except for configuration files.
         else {
             Write-Verbose "  * creating initial at [$fileFullPath]"
             Copy-Item $f.FullName $fileFullPath
+            $initialFiles[$f.Name] = $true
         }
+    }
+
+    $authzPath = [System.IO.Path]::Combine($fullPath, "var\DscService\Authz")
+    $regKeyPath = [System.IO.Path]::Combine($fullPath, "var\DscService\Authz\RegistrationKeys.txt")
+    if (-not (Test-Path -PathType Container $authzPath)) {
+        Write-Warning "*******************************************************************"
+        Write-Warning "** Initial installation, creating INITIAL REGISTRATION KEY FILE"
+        Write-Warning "**   * Saving to [$regKeyPath]"
+        Write-Warning "**   * You should inspect/update this file with your own Reg Keys"
+        Write-Warning "**     or distribute the newly minted Reg Key to your Nodes"
+        Write-Warning "*******************************************************************"
+
+        mkdir $authzPath -Force | Out-Null
+        Set-Content -Path $regKeyPath -Value @"
+## This file is only relevant if "Registration Key Authorization"
+## (RegKey Authz) is enabled.
+##
+## In this file Tug will use any non-blank lines after stripping out
+## comments starting with the '#' character and trimming whitespace
+## from both ends.
+
+## You should either update the Registration Keys listed here
+## with your own or distribute the keys here to your nodes.
+##
+## This file is auto-generated with a newly-minted Reg Key:
+##     at [$([datetime]::Now)]
+##     by [$($env:USERNAME)]
+##     on [$($env:COMPUTERNAME)]
+##     to [$($regKeyPath)]
+
+$([guid]::NewGuid())
+
+"@
     }
 }
