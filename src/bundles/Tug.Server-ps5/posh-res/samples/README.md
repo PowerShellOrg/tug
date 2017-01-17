@@ -1,6 +1,8 @@
 
 # Tug Server with PowerShell v5 Handler
 
+*(To view this file as formatted HTML, go [here](https://github.com/PowerShellOrg/tug/blob/master/src/bundles/Tug.Server-ps5/posh-res/samples/README.md))*
+
 ## Overview
 
 This is a pre-packaged installation of the Tug DSC Pull Server configured
