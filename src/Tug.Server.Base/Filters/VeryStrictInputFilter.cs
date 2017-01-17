@@ -78,6 +78,11 @@ namespace Tug.Server.Filters
                     if (bodyDeser != inputSer)
                     {
                         _logger.LogWarning("Re-serialized representation does not match actual input");
+                        if (_logger.IsEnabled(LogLevel.Trace))
+                        {
+                            _logger.LogTrace("Expected:  {expected}", inputSer);
+                            _logger.LogTrace("Actual:  {actual}", bodyDeser);
+                        }
                         context.Result = new BadRequestResult();
                     }
                 }
