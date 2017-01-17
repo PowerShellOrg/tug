@@ -41,15 +41,23 @@ namespace Tug.Server
         protected static IConfiguration _hostingConfig;
 
         // Defines the hard-coded default configuration settings for the WebHostBuilder
+        // these can be overridden via env vars and CLI switches or by IIS Integration
         private static IDictionary<string, string> _hostingDefaultSettings =
             new Dictionary<string, string>
             {
-                // TODO:  Figure out what other options can be configured by
-                // WebHostBuilder.UserConfiguration and see if we need to specify
-                // any defaults here; *all* the examples and references on the
-                // net only every shows this one setting
+                // These default settings can be overridden by using environment
+                // variables prefixed with 'TUG-HOST_' or by specifing on the CLI
+                // e.g. --urls "http://*:4321/"
+                // The list of host settings can be found here:
+                //    https://docs.microsoft.com/en-us/aspnet/core/fundamentals/hosting#configuring-a-host
 
-                ["server.urls"] = "http://*:5000", // "http://localhost:5080;https://localhost:5443"
+                ["applicationName"] = "Tug.Server",
+                ["environment"] = "PRODUCTION",
+                ["captureStartupErrors"] = false.ToString(),
+                ["contentRoot"] = Directory.GetCurrentDirectory(),
+                ["detailedErrors"] = false.ToString(),
+                ["urls"] = "http://*:5000", // "http://localhost:5080;https://localhost:5443"
+
             };
 
         #endregion -- Fields --
@@ -109,10 +117,12 @@ namespace Tug.Server
                 // we setup elsewhere to account for non-DI scenarios
                 .UseLoggerFactory(AppLog.Factory)
                 .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
+                // this must come after UserConfiguration because it
+                // overrides several settings such as port, base path
+                // and useStartupErrors config settings
                 .UseIISIntegration()
                 .UseStartup<Startup>();
-
+            
             var host = hostBuilder.Build();
             host.Run();
         }

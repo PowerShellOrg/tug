@@ -1,0 +1,16 @@
+## This is a sample 'Registration Keys' file.  This file is only relevant
+## if "Registration Key Authorization" (RegKey Authz) is enabled.
+
+## In this file Tug will use any non-blank lines after stripping out
+## comments starting with the '#' character and trimming whitespace
+## from both ends.
+
+## A similar file needs to be placed in the folder defined by the
+## "RegistrationKeyPath" authorization parameter.
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!! NOTE:  this is a sample ONLY -- be sure to edit and populate
+#!!        with your own *SECRET* registration keys
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+c3ea5066-ce5a-4d12-a42a-850be287b2d8
