@@ -3,6 +3,8 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Tug.Model
 {
     public class RegistrationInformation : Util.ExtDataIndexerBase
@@ -11,9 +13,11 @@ namespace Tug.Model
         // Apparently the order of these properties is important
         // to successfully fulfill the RegKey authz requirements
 
+        [Required]
         public CertificateInformation CertificateInformation
         { get; set; }
 
+        [Required]
         public string RegistrationMessageType
         { get; set; }
     }

@@ -20,9 +20,11 @@ namespace Tug.Model
         public string ConfigurationName
         { get; set; }
 
+        [Required]
         public string Checksum
         { get; set; }
 
+        [Required]
         [CustomValidation(typeof(ClientStatusItem),
         nameof(ValidateChecksumAlgorithm))]
         public string ChecksumAlgorithm
