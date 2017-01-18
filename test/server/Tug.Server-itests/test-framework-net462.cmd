@@ -5,6 +5,6 @@
 @ECHO THIS=%THIS%
 @ECHO THIS_DIR=%THIS_DIR%
 
-dotnet test %THIS_DIR% %* -- /server_url=http://localhost:5000/
+dotnet test %THIS_DIR% %* -f net462 %*
 
 @ENDLOCAL

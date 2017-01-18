@@ -33,6 +33,7 @@ namespace Tug.Messages
         { get; set; }
 
         [FromRoute]
+        [Required]
         public string ModuleVersion
         { get; set; }
 

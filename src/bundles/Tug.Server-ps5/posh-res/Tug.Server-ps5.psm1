@@ -49,7 +49,7 @@ location except for configuration files.
     }
 
     Write-Verbose "Copying binary files over"
-    Copy-Item $binSource -Destination "$fullPath\bin" -Recurse -Force
+    Copy-Item $binSource -Destination "$fullPath" -Recurse -Force
 
     $initialFiles = @{}
     Write-Verbose "Copying over initial config/samples..."

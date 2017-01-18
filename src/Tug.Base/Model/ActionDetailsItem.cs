@@ -9,7 +9,7 @@ namespace Tug.Model
 {
     public class ActionDetailsItem : Util.ExtDataIndexerBase
     {
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string ConfigurationName
         { get; set; } = string.Empty;
 
