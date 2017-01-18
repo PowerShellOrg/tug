@@ -21,7 +21,7 @@ namespace Tug.Model
         public string NodeName
         { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string IPAddress
         { get; set; }
     }

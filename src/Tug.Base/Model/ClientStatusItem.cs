@@ -20,7 +20,7 @@ namespace Tug.Model
         public string ConfigurationName
         { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string Checksum
         { get; set; }
 
