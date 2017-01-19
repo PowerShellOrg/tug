@@ -1,7 +1,4 @@
 <table style="border:solid blue; width: 100%!" border="0" width="100%"><tr><td><img src="https://raw.githubusercontent.com/PowerShellOrg/tug/master/doc/art/logo/tug-logo-trans-75.png"></td><td><h1>tug</h1></td></tr></table>
-
-
-# tug
 Open-source, cross-platform Pull/Reporting Server for DSC
 
 [![Build status](https://ci.appveyor.com/api/projects/status/xw3k8flvys5g37ct?svg=true)](https://ci.appveyor.com/project/ebekker/tug)
