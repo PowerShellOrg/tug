@@ -37,6 +37,14 @@ namespace Tug.Client.Configuration
         { get; set; }
 
         /// <summary>
+        /// Defines configuration settings that control sending reports
+        /// for status, confguration details and errors.
+        /// </summary>
+        /// <returns></returns>
+        public SendReportConfig SendReport
+        { get; set; }
+
+        /// <summary>
         /// Defines connection settings for a DSC server endpoint.
         /// </summary>
         /// <remarks>
@@ -52,6 +60,38 @@ namespace Tug.Client.Configuration
             { get; set; }
 
             public OfType<IWebProxy> Proxy
+            { get; set; }
+        }
+
+        /// <summary>
+        /// Defines the settings that influence behavior for sending
+        /// reports.
+        /// </summary>
+        public class SendReportConfig
+        {
+            /// <summary>
+            /// Assign this token to any datetime field to automatically
+            /// populate it with a computed current timestamp in the
+            /// standard report format for dates.
+            /// </summary>
+            public const string DATETIME_NOW_TOKEN = "%NOW%";
+
+            /// <summary>
+            /// Defines the elements of a <c>SendReport</c> request that
+            /// will be automatically populated for all sent messages unless
+            /// overridden.
+            /// </summary>
+            public SendReportRequestBody CommonDefaults
+            { get; set; }
+
+            /// <summary>
+            /// Represents named profiles that define a combination of
+            /// elements for a particular report type.  Each profile is
+            /// merged over the <see cref="CommonDefaults"/> to form a
+            /// resultant base set of elements for the <c>SendReport</c>
+            /// request.
+            /// </summary>
+            public Dictionary<string, SendReportRequestBody> Profiles
             { get; set; }
         }
     }
