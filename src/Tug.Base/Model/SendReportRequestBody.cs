@@ -5,6 +5,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace Tug.Model
 {
@@ -124,54 +125,93 @@ namespace Tug.Model
 
     public class SendReportRequestBody
     {
+        public const string REPORT_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffzzz";
+
         [Required]
         public Guid JobId
         { get; set; }
 
+        // Appears to be one of these values (maybe turn this into an Enum?):
+        //    * Initial
+        //    * LocalConfigurationManager
+        //    * Consistency
+        [Required]
         public string OperationType
         { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DscRefreshMode? RefreshMode
         { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Status
         { get; set; }
 
-        public string LCMVersion
-        { get; set; }
-
-        public string ReportFormatVersion
-        { get; set; }
-
-        public string ConfigurationVersion
-        { get; set; }
-
+        // IN TESTING AND OBSERVATION THIS FIELD DOES
+        // NOT ALWAYS GET SENT EVEN BY THE SAME NODE
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string NodeName
         { get; set; }
 
+        /// <summary>
+        /// This is assigned as a comma-separated list of IPv4 and IPv6
+        /// addresses.
+        /// </summary>
+        // IN TESTING AND OBSERVATION THIS FIELD DOES
+        // NOT ALWAYS GET SENT EVEN BY THE SAME NODE
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string IpAddress
         { get; set; }
 
+        // IN TESTING AND OBSERVATION THIS FIELD DOES
+        // NOT ALWAYS GET SENT EVEN BY THE SAME NODE
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string LCMVersion
+        { get; set; }
+
+        [Required]
+        public string ReportFormatVersion
+        { get; set; }
+
+        // IN TESTING AND OBSERVATION THIS FIELD DOES
+        // NOT ALWAYS GET SENT EVEN BY THE SAME NODE
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string ConfigurationVersion
+        { get; set; }
+
+        // START TIME IS ALWAYS PRESENT (END TIME IS NOT)
+        // Example:  2016-08-15T15:21:08.9530000-07:00
+        [Required]
         public string StartTime
         { get; set; }
 
+        // END TIME IS SOMETIMES OMITTED (START TIME IS NOT)
+        // Example:  2017-01-20T06:20:36.6950000-05:00
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string EndTime
         { get; set; }
 
-        public DscTrueFalse RebootRequested
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public DscTrueFalse? RebootRequested
         { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string[] Errors
-        { get; set; }
+        { get; set; } = CommonValues.EMPTY_STRINGS;
 
+        // THIS TYPICALLY HAS A SINGLE STRING ENTRY
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string[] StatusData
-        { get; set; }
+        { get; set; } = CommonValues.EMPTY_STRINGS;
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public AdditionalDataItem[] AdditionalData
-        { get; set; }
+        { get; set; } = AdditionalDataItem.EMPTY_ITEMS;
 
-        public class AdditionalDataItem
+        public class AdditionalDataItem : Util.ExtDataIndexerBase
         {
+            public static readonly AdditionalDataItem[] EMPTY_ITEMS = new AdditionalDataItem[0];
+
             [Required]
             public string Key
             { get; set; }
