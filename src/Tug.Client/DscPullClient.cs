@@ -29,6 +29,8 @@ namespace Tug.Client
     {
         private static readonly ILogger LOG = AppLog.Create<DscPullClient>();
 
+        public const string COMPUTE_MS_DATE_HEADER = "%NOW%";
+
         public const string REGISTRATION_MESSAGE_TYPE_CONFIGURATION_REPOSITORY = "ConfigurationRepository";
 
         private JsonSerializerSettings _jsonSerSettings;
@@ -112,6 +114,7 @@ namespace Tug.Client
             {
                 AgentId = Configuration.AgentId,
                 ContentTypeHeader = DscContentTypes.JSON,
+                MsDateHeader = COMPUTE_MS_DATE_HEADER,
                 Body = new RegisterDscAgentRequestBody
                 {
                     ConfigurationNames = Configuration.ConfigurationNames.ToArray(),
@@ -321,11 +324,13 @@ namespace Tug.Client
                 contentType = DscContentTypes.JSON;
             requMessage.Headers.Accept.Clear();
             requMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
-
+            
             ExtractFromRequestModel(dscRequ, requMessage);
 
             // See if we need to add RegKey authorization data
-            if (!string.IsNullOrEmpty(server.RegistrationKey) && requMessage.Content != null)
+            if (!string.IsNullOrEmpty(server.RegistrationKey)
+                    && dscRequ.MsDateHeader == COMPUTE_MS_DATE_HEADER
+                    && requMessage.Content != null)
             {
                 LOG.LogInformation("Computing RegKey Authorization");
 
@@ -334,6 +339,7 @@ namespace Tug.Client
                 // Details can be found at /references/regkey-authorization.md
                 var msDate = DateTime.UtcNow.ToString(DscRequest.X_MS_DATE_FORMAT);
                 requMessage.Headers.Add(DscRequest.X_MS_DATE_HEADER, msDate);
+                dscRequ.MsDateHeader = null;
 
                 var macKey = Encoding.UTF8.GetBytes(server.RegistrationKey);
 
