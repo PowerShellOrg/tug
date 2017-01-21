@@ -5,6 +5,11 @@
 
 namespace Tug.Model
 {
+    public static class CommonValues
+    {
+        public static readonly string[] EMPTY_STRINGS = new string[0];
+    }
+
     /// <summary>
     /// Defines a collection of constants representing MIME content types
     /// that are in use by the DSCPM protocol specification.
@@ -25,8 +30,8 @@ namespace Tug.Model
     /// </remarks>
     public enum DscTrueFalse
     {
-        True,
         False,
+        True,
     }
 
     /// <summary>
