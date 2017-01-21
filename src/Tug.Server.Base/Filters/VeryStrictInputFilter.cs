@@ -51,7 +51,7 @@ namespace Tug.Server.Filters
             var bodyBytes = context.HttpContext.Items["bodyBytes"] as byte[];
             var bodyBytesLen = (int)bodyBytes?.Length;
 
-            if (dscRequ != null)
+            if (dscRequ != null && dscRequ.HasStrictBody())
             {
                 var dscRequBody = dscRequ.GetBody();
                 if (dscRequBody == null && bodyBytesLen == 0)

@@ -64,6 +64,15 @@ namespace Tug.Messages
         public virtual Guid? GetAgentId() => null;
 
         /// <summary>
+        /// For the purposes of input validation, this method is used to indicate
+        /// whether the body of the DSC Request message is well-defined and
+        /// should be strictly enforced.  If not, then the form of the body may
+        /// take on different <i>shapes</i> under different conditions and cannot
+        /// by systematically validated.
+        /// </summary>
+        public virtual bool HasStrictBody() => true;
+
+        /// <summary>
         /// Returns the body content object captured in the request message. If
         /// the request does not capture an object representing the body content
         /// then returns <c>null</c>.

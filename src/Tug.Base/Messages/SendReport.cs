@@ -20,6 +20,8 @@ namespace Tug.Messages
         public SendReportRequestBody Body
         { get; set; }
 
+        public override bool HasStrictBody() => false;
+
         public override object GetBody() => Body;
     }
 }
