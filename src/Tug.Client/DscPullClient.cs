@@ -22,6 +22,8 @@ using Tug.Messages;
 using Tug.Messages.ModelBinding;
 using Tug.Model;
 using Tug.Client.Configuration;
+using Tug.Util;
+using Newtonsoft.Json.Linq;
 
 namespace Tug.Client
 {
@@ -32,6 +34,20 @@ namespace Tug.Client
         public const string COMPUTE_MS_DATE_HEADER = "%NOW%";
 
         public const string REGISTRATION_MESSAGE_TYPE_CONFIGURATION_REPOSITORY = "ConfigurationRepository";
+
+        public static readonly SendReportRequestBody SendReportRequestBodyDefault =
+                new SendReportRequestBody
+                {
+                    OperationType = "Consistency",
+                    RefreshMode = DscRefreshMode.Pull,
+                    Status = "Success",
+                    ReportFormatVersion = "2.0",
+                    ConfigurationVersion = "2.0",
+                    StartTime = DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN,
+                    EndTime = DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN,
+                    RebootRequested = DscTrueFalse.False,
+                };
+
 
         private JsonSerializerSettings _jsonSerSettings;
 
@@ -273,6 +289,136 @@ namespace Tug.Client
                     Content = bs.ToArray(),
                 };
             }
+        }
+
+        /// <summary>
+        /// Submits a <c>SendReport</c> message request which the body payload
+        /// of the request defined as the JSON-serialized form of the resultant
+        /// combination of the argument provided.
+        /// </summary>
+        /// <param name="defaultsProfile">optionally, the name of a profile of <c>SendReport</c>
+        ///    body payload elements; these must be defined in the configuration</param>
+        /// <param name="overrides">optionally, a set of element overrides of <c>SendReport</c>
+        ///    body payload elements</param>
+        /// <param name="statusData">optionally, an array of status data to override
+        ///    in the body payload</param>
+        /// <param name="errors">optionally, an array of errors to override
+        ///    in the body payload</param>
+        /// <param name="additionalData">optionally, a collection of additional, named
+        ///    data elements to override the body payload</param>
+        /// <remarks>
+        /// <p>This method starts with a base payload defined by the
+        /// <see cref="DscPullConfig.SendReportConfig.CommonDefaults"/> settings.
+        /// If specified, a profile of elements is then merged next.
+        /// Then if specified, the elements defined by the overrides.
+        /// Finally, if any of the additional individual elemnents of <c>statusData</c>
+        /// <c>errors</c> or <c>additionalData</c> are specified, they will replace
+        /// the current elements respectively to produce a final resultant payload.
+        /// </p>
+        /// </remarks>
+        public async Task SendReport(
+                string defaultsProfile = null,
+                SendReportRequestBody overrides = null,
+                string[] statusData = null,
+                string[] errors = null,
+                IDictionary<string, string> additionalData = null)
+        {
+            List<string> jsons = new List<string>();
+
+            var common = Configuration?.SendReport?.CommonDefaults;
+            if (common != null)
+            {
+                jsons.Add(JsonConvert.SerializeObject(common));
+            }
+            else
+            {
+                jsons.Add(JsonConvert.SerializeObject(SendReportRequestBodyDefault));
+            }
+
+            if (defaultsProfile != null)
+            {
+                if (!(Configuration?.SendReport?.Profiles?.ContainsKey(
+                        defaultsProfile)).GetValueOrDefault())
+                {
+                    throw new ArgumentException("invalid or missing defaults profile specified")
+                            .WithData(nameof(defaultsProfile), defaultsProfile);
+                }
+
+                var profile = Configuration.SendReport.Profiles[defaultsProfile];
+                jsons.Add(JsonConvert.SerializeObject(profile));
+            }
+
+            if (overrides != null)
+            {
+                jsons.Add(JsonConvert.SerializeObject(overrides));
+            }
+
+            JObject merged = null;
+            foreach (var j in jsons)
+            {
+                if (j == null)
+                    continue;
+
+                if (merged == null)
+                    merged = JObject.Parse(j);
+                else
+                    merged.Merge(JObject.Parse(j));
+            }
+
+            var body = merged.ToObject<SendReportRequestBody>();
+
+            if (statusData != null)
+                body.StatusData = statusData;
+            if (errors != null)
+                body.Errors = errors;
+            if (additionalData != null)
+                body.AdditionalData = additionalData.Select(
+                        x => new Model.SendReportRequestBody.AdditionalDataItem
+                        {
+                            Key = x.Key,
+                            Value = x.Value,
+                        }).ToArray();
+
+            await SendReport(body);
+        }
+        
+        /// <summary>
+        /// Submits a <c>SendReport</c> message request which the body payload
+        /// of the request defined as the JSON-serialized form of the argument.
+        /// </summary>
+        /// <param name="body"></param>
+        public async Task SendReport(SendReportRequestBody body)
+        {
+            if (LOG.IsEnabled(LogLevel.Trace))
+                LOG.LogTrace(nameof(SendReport));
+            
+            AssertInit();
+
+            var serverConfig = Configuration.ReportServer;
+            AssertServerConfig(serverConfig);
+
+            var now = DateTime.Now.ToString(SendReportRequestBody.REPORT_DATE_FORMAT);
+            var jobId = Guid.NewGuid();
+
+            if (Guid.Empty == body.JobId)
+                body.JobId = jobId;
+
+            if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.StartTime)
+                body.StartTime = now;
+            
+            if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.EndTime)
+                body.EndTime = now;
+
+            var dscRequ = new SendReportRequest
+            {
+                AgentId = Configuration.AgentId,
+                Body = body,
+                ContentTypeHeader = DscContentTypes.JSON,
+                AcceptHeader = DscContentTypes.JSON,
+            };
+
+            await SendDscAsync(serverConfig, SendReportRequest.VERB,
+                    SendReportRequest.ROUTE, dscRequ);
         }
 
         protected async Task SendDscAsync(DscPullConfig.ServerConfig server, HttpMethod verb, string route,
