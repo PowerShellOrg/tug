@@ -78,7 +78,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for bad request (400)");
             }
@@ -100,7 +100,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for bad request (400)");
             }
@@ -122,7 +122,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 401 (Unauthorized)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -144,7 +144,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 401 (Unauthorized)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -176,7 +176,7 @@ namespace Tug.Client
                                 || ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for internal server error (500)");
             }
@@ -199,7 +199,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -228,7 +228,7 @@ namespace Tug.Client
                                 || ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -240,9 +240,9 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
-                var actionResult = client.GetDscActionAsync().Result;
+                var actionResult = client.GetDscAction().Result;
                 Assert.IsNotNull(actionResult, "Action result is not null");
 
                 var resultArr = actionResult.ToArray();
@@ -268,7 +268,7 @@ namespace Tug.Client
                 // Inject one unexpected property
                 statusItems[0]["foo"] = "bar";
 
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
@@ -276,7 +276,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.GetDscActionAsync(statusItems).Wait(),
+                            client.GetDscAction(statusItems).Wait(),
                         message:
                             "Throws HTTP exception for bad request (400)");
             }
@@ -292,9 +292,9 @@ namespace Tug.Client
             {
                 try
                 {
-                    client.RegisterDscAgentAsync().Wait();
+                    client.RegisterDscAgent().Wait();
 
-                    var actionResult = client.GetDscActionAsync(new[]
+                    var actionResult = client.GetDscAction(new[]
                     {
                         new Model.ClientStatusItem
                         {
@@ -330,9 +330,9 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
-                var actionResult = client.GetDscActionAsync(new[]
+                var actionResult = client.GetDscAction(new[]
                 {
                     new Model.ClientStatusItem
                     {
@@ -374,9 +374,9 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
-                var actionResult = client.GetDscActionAsync(new[]
+                var actionResult = client.GetDscAction(new[]
                 {
                     new Model.ClientStatusItem
                     {
@@ -428,7 +428,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
                 
                 var moduleResult = client.GetModule(modName, modVers).Result;
                 Assert.IsNotNull(moduleResult?.Content, "Module content not null");

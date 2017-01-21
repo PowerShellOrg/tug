@@ -98,16 +98,10 @@ namespace Tug.Client
                     /*SR*/"missing server URL configuration");
         }
 
-        // TODO:
-        // public void Run(int refreshFrequencySecs = 30 * 60)
-        // {
-
-        // }
-
-        public async Task RegisterDscAgentAsync()
+        public async Task RegisterDscAgent()
         {
             if (LOG.IsEnabled(LogLevel.Trace))
-                LOG.LogTrace(nameof(RegisterDscAgentAsync));
+                LOG.LogTrace(nameof(RegisterDscAgent));
 
             AssertInit();
 
@@ -134,10 +128,10 @@ namespace Tug.Client
                     RegisterDscAgentRequest.ROUTE, dscRequ);
         }
 
-        public async Task<IEnumerable<ActionDetailsItem>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
+        public async Task<IEnumerable<ActionDetailsItem>> GetDscAction(IEnumerable<ClientStatusItem> clientStatus = null)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
-                LOG.LogTrace(nameof(GetDscActionAsync));
+                LOG.LogTrace(nameof(GetDscAction));
             
             AssertInit();
 

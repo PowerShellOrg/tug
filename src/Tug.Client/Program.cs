@@ -72,13 +72,13 @@ namespace Tug.Client
         public void DoRegisterAgent()
         {
             Console.WriteLine("REGISTER-AGENT");
-            _client.RegisterDscAgentAsync().Wait();
+            _client.RegisterDscAgent().Wait();
         }
 
         public void DoGetAction()
         {
             Console.WriteLine("GET-ACTION");
-            _client.GetDscActionAsync().Result?.ToArray();
+            _client.GetDscAction().Result?.ToArray();
         }
 
         public void DoGetConfiguration()
@@ -98,7 +98,7 @@ namespace Tug.Client
         {
             Console.WriteLine("GET-ACTION-AND-CONFIGURATION");
 
-            var actions = _client.GetDscActionAsync().Result?.ToArray();
+            var actions = _client.GetDscAction().Result?.ToArray();
 
             if (actions?.Length > 0)
             {
