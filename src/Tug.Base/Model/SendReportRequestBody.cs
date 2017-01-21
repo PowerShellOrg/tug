@@ -123,7 +123,7 @@ namespace Tug.Model
     }
     */
 
-    public class SendReportRequestBody
+    public class SendReportRequestBody : Util.ExtDataIndexerBase
     {
         public const string REPORT_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffzzz";
 
