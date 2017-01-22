@@ -4,8 +4,10 @@
  */
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Tug.Messages.ModelBinding;
+using Tug.Model;
 
 namespace Tug.Messages
 {
@@ -13,11 +15,32 @@ namespace Tug.Messages
     {
         public static readonly HttpMethod VERB = HttpMethod.Get;
 
-        public const string ROUTE = "Nodes(AgentId='{AgentId}')/Reports(JobId='{JobId}'))";
-        public const string ROUTE_NAME = nameof(GetReportsRequest);
+        public const string ROUTE_SINGLE = "Nodes(AgentId='{AgentId}')/Reports(JobId='{JobId}')";
+        public const string ROUTE_SINGLE_NAME = nameof(GetReportsRequest) + "Single";
 
-        [Required]
-        public Guid JobId
+        public const string ROUTE_ALL = "Nodes(AgentId='{AgentId}')/Reports()";
+        public const string ROUTE_ALL_NAME = nameof(GetReportsRequest) + "All";
+
+        public const string ROUTE_ALL_ALT = "Nodes(AgentId='{AgentId}')/Reports";
+        public const string ROUTE_ALL_ALT_NAME = nameof(GetReportsRequest) + "AllAlt";
+
+
+        [FromRoute]
+        public Guid? JobId
+        { get; set; }
+    }
+
+    public class GetReportsSingleResponse : DscResponse
+    {
+        [ToResult]
+        public SendReportBody Body
+        { get; set; }
+    }
+
+    public class GetReportsAllResponse : DscResponse
+    {
+        [ToResult]
+        public GetReportsAllResponseBody Body
         { get; set; }
     }
 }
