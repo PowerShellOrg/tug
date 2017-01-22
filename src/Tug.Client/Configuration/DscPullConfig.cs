@@ -81,7 +81,7 @@ namespace Tug.Client.Configuration
             /// will be automatically populated for all sent messages unless
             /// overridden.
             /// </summary>
-            public SendReportRequestBody CommonDefaults
+            public SendReportBody CommonDefaults
             { get; set; }
 
             /// <summary>
@@ -91,7 +91,7 @@ namespace Tug.Client.Configuration
             /// resultant base set of elements for the <c>SendReport</c>
             /// request.
             /// </summary>
-            public Dictionary<string, SendReportRequestBody> Profiles
+            public Dictionary<string, SendReportBody> Profiles
             { get; set; }
         }
     }

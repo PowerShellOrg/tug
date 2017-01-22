@@ -3,6 +3,7 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tug.Model;
@@ -17,7 +18,8 @@ namespace Tug.Messages
         public const string ROUTE_NAME = nameof(SendReportRequest);
 
         [FromBody]
-        public SendReportRequestBody Body
+        [Required(AllowEmptyStrings = true)]
+        public SendReportBody Body
         { get; set; }
 
         public override bool HasStrictBody() => false;

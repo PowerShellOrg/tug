@@ -294,7 +294,7 @@ namespace Tug.Server.Providers
             }
         }
 
-        public virtual void SendReport(Guid agentId, SendReportRequestBody reserved)
+        public virtual void SendReport(Guid agentId, SendReportBody reserved)
         {
             throw new NotImplementedException();
         }

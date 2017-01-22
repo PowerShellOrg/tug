@@ -123,7 +123,18 @@ namespace Tug.Model
     }
     */
 
-    public class SendReportRequestBody : Util.ExtDataIndexerBase
+    
+    /*
+     Response:
+        {
+            "odata.metadata":"http://10.50.1.5:8080/PSDSCPullServer.svc/$metadata#Edm.String",
+            "value":"SavedReport"
+        }     
+     */
+
+     // NOTE: the naming convention of this class is a bit different
+     // because it is not stricly used by the DSC Request class
+    public class SendReportBody : Util.ExtDataIndexerBase
     {
         public const string REPORT_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffzzz";
 

@@ -24,6 +24,7 @@ using Tug.Model;
 using Tug.Client.Configuration;
 using Tug.Util;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Client
 {
@@ -35,8 +36,8 @@ namespace Tug.Client
 
         public const string REGISTRATION_MESSAGE_TYPE_CONFIGURATION_REPOSITORY = "ConfigurationRepository";
 
-        public static readonly SendReportRequestBody SendReportRequestBodyDefault =
-                new SendReportRequestBody
+        public static readonly SendReportBody SendReportRequestBodyDefault =
+                new SendReportBody
                 {
                     OperationType = "Consistency",
                     RefreshMode = DscRefreshMode.Pull,
@@ -318,7 +319,8 @@ namespace Tug.Client
         /// </remarks>
         public async Task SendReport(
                 string defaultsProfile = null,
-                SendReportRequestBody overrides = null,
+                SendReportBody overrides = null,
+                string operationType = null,
                 string[] statusData = null,
                 string[] errors = null,
                 IDictionary<string, string> additionalData = null)
@@ -365,15 +367,17 @@ namespace Tug.Client
                     merged.Merge(JObject.Parse(j));
             }
 
-            var body = merged.ToObject<SendReportRequestBody>();
+            var body = merged.ToObject<SendReportBody>();
 
+            if (operationType != null)
+                body.OperationType = operationType;
             if (statusData != null)
                 body.StatusData = statusData;
             if (errors != null)
                 body.Errors = errors;
             if (additionalData != null)
                 body.AdditionalData = additionalData.Select(
-                        x => new Model.SendReportRequestBody.AdditionalDataItem
+                        x => new Model.SendReportBody.AdditionalDataItem
                         {
                             Key = x.Key,
                             Value = x.Value,
@@ -387,7 +391,7 @@ namespace Tug.Client
         /// of the request defined as the JSON-serialized form of the argument.
         /// </summary>
         /// <param name="body"></param>
-        public async Task SendReport(SendReportRequestBody body)
+        public async Task SendReport(SendReportBody body)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
                 LOG.LogTrace(nameof(SendReport));
@@ -397,28 +401,68 @@ namespace Tug.Client
             var serverConfig = Configuration.ReportServer;
             AssertServerConfig(serverConfig);
 
-            var now = DateTime.Now.ToString(SendReportRequestBody.REPORT_DATE_FORMAT);
-            var jobId = Guid.NewGuid();
+            if (body != null)
+            {
+                var now = DateTime.Now.ToString(SendReportBody.REPORT_DATE_FORMAT);
+                var jobId = Guid.NewGuid();
 
-            if (Guid.Empty == body.JobId)
-                body.JobId = jobId;
+                if (Guid.Empty == body.JobId)
+                    body.JobId = jobId;
 
-            if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.StartTime)
-                body.StartTime = now;
-            
-            if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.EndTime)
-                body.EndTime = now;
+                if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.StartTime)
+                    body.StartTime = now;
+                
+                if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.EndTime)
+                    body.EndTime = now;
+
+            }
 
             var dscRequ = new SendReportRequest
             {
                 AgentId = Configuration.AgentId,
+                AcceptHeader = DscContentTypes.JSON,
                 Body = body,
                 ContentTypeHeader = DscContentTypes.JSON,
-                AcceptHeader = DscContentTypes.JSON,
             };
 
             await SendDscAsync(serverConfig, SendReportRequest.VERB,
                     SendReportRequest.ROUTE, dscRequ);
+        }
+
+        public async Task<IEnumerable<SendReportBody>> GetReports(Guid? jobId = null)
+        {
+            if (LOG.IsEnabled(LogLevel.Trace))
+                LOG.LogTrace(nameof(GetReports));
+            
+            AssertInit();
+
+            var serverConfig = Configuration.ReportServer;
+            AssertServerConfig(serverConfig);
+
+            var dscRequ = new GetReportsRequest
+            {
+                AgentId = Configuration.AgentId,
+                JobId = jobId,
+            };
+
+            if (jobId == null)
+            {
+                var dscResp = new GetReportsAllResponse();
+
+                await SendDscAsync(serverConfig, GetReportsRequest.VERB,
+                        GetReportsRequest.ROUTE_ALL, dscRequ, dscResp);
+                
+                return dscResp.Body.Value;
+            }
+            else
+            {
+                var dscResp = new GetReportsSingleResponse();
+
+                await SendDscAsync(serverConfig, GetReportsRequest.VERB,
+                        GetReportsRequest.ROUTE_SINGLE, dscRequ, dscResp);
+                
+                return new[] { dscResp.Body };
+            }
         }
 
         protected async Task SendDscAsync(DscPullConfig.ServerConfig server, HttpMethod verb, string route,
@@ -484,6 +528,7 @@ namespace Tug.Client
                 // Authorization challenge when using Reg Key Authentication
                 // Details can be found at /references/regkey-authorization.md
                 var msDate = DateTime.UtcNow.ToString(DscRequest.X_MS_DATE_FORMAT);
+                requMessage.Headers.Remove(DscRequest.X_MS_DATE_HEADER);
                 requMessage.Headers.Add(DscRequest.X_MS_DATE_HEADER, msDate);
                 dscRequ.MsDateHeader = null;
 
@@ -560,11 +605,16 @@ namespace Tug.Client
                         value = ConvertTo<string>(value);
 
                     if (LOG.IsEnabled(LogLevel.Debug))
-                        LOG.LogDebug("Extracting request header [{name}] from property [{property}]", name, pi.Name);
+                        LOG.LogDebug("Extracting request header [{name}] from property [{property}]",
+                                name, pi.Name);
 
                     if (!(TryAddHeader(requMessage.Headers, name, (string)value, replace: true)))
-                        if (!(TryAddHeader(requMessage.Content?.Headers, name, (string)value, replace: true)))
-                            throw new Exception("Unable to add header anywhere to request message");
+                        if (!(TryAddHeader(requMessage.Content?.Headers, name, (string)value,
+                                replace: true)))
+                            throw new Exception(
+                                    /*SR*/"unable to add header anywhere to request message")
+                                    .WithData(nameof(name), name)
+                                    .WithData(nameof(value), value);
                         else if (LOG.IsEnabled(LogLevel.Debug))
                             LOG.LogDebug("    added as CONTENT header");
                     else if (LOG.IsEnabled(LogLevel.Debug))
@@ -641,6 +691,9 @@ namespace Tug.Client
                 // We test for a few principal property types that we can send directly as body,
                 // content and otherwise we assume a custom model object that we serialize via JSON
 
+                var required = fromBodyProperty.GetCustomAttribute(typeof(RequiredAttribute))
+                        as RequiredAttribute;
+
                 if (typeof(string).IsAssignableFrom(fromBodyProperty.PropertyType))
                 {
                     var body = (string)fromBodyProperty.GetValue(dscRequ);
@@ -666,6 +719,10 @@ namespace Tug.Client
                     {
                         var bodySer = JsonConvert.SerializeObject(body, _jsonSerSettings);
                         content = new StringContent(bodySer);
+                    }
+                    else if ((bool)required?.AllowEmptyStrings)
+                    {
+                        content = new StringContent(string.Empty);
                     }
                 }
             }
