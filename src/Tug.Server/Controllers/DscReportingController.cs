@@ -78,8 +78,8 @@ namespace Tug.Server.Controllers
 
         [HttpGet]
         [Route(GetReportsRequest.ROUTE_ALL,
-            Name = GetReportsRequest.ROUTE_ALL_ALT_NAME)]
-        [Route(GetReportsRequest.ROUTE_ALL,
+            Name = GetReportsRequest.ROUTE_ALL_NAME)]
+        [Route(GetReportsRequest.ROUTE_ALL_ALT,
             Name = GetReportsRequest.ROUTE_ALL_ALT_NAME)]
         [ActionName(nameof(GetReportsAll))]
         public IActionResult GetReportsAll(GetReportsRequest input)
