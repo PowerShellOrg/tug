@@ -20,6 +20,7 @@ namespace Tug.Server.Providers
             new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationSavePath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.ConfigurationPath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.ModulePath)),
+            new ProviderParameterInfo(nameof(BasicDscHandler.ReportsPath)),
         };
 
         protected ILogger<BasicDscHandlerProvider> _pLogger;
