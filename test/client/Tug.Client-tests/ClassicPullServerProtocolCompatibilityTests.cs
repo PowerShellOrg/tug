@@ -451,6 +451,7 @@ namespace Tug.Client
             var config = BuildConfig(newAgentId: true);
             using (var client = new DscPullClient(config))
             {
+                client.RegisterDscAgent().Wait();
                 client.SendReport("SimpleInventoryDefaults",
                         overrides: new Model.SendReportBody
                         {
@@ -508,6 +509,8 @@ namespace Tug.Client
                 JobId = Guid.NewGuid(),
                 StartTime = "NOW",
                 EndTime = "THEN",
+                OperationType = "FOO",
+                ReportFormatVersion = "BAR",
             };
             
             var config = BuildConfig();
