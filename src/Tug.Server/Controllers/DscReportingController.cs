@@ -3,6 +3,7 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -36,8 +37,17 @@ namespace Tug.Server.Controllers
 
             if (ModelState.IsValid)
             {
+                // This validation of the date elements will throw a FormatException
+                // and result in a 500 error if the dates are invalid which matches
+                // the observed and tested behavior of the Classic DSC Pull Server
+                if (!string.IsNullOrEmpty(input.Body.StartTime))
+                    DateTime.Parse(input.Body.StartTime);
+                if (!string.IsNullOrEmpty(input.Body.EndTime))
+                    DateTime.Parse(input.Body.EndTime);
+
                 _logger.LogDebug($"AgentId=[{input.AgentId}]");
                 _dscHandler.SendReport(input.AgentId.Value, input.Body);
+                return Ok();
             }
 
             return BadRequest(ModelState);
