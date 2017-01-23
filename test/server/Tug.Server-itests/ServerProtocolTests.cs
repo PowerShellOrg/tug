@@ -59,7 +59,7 @@ namespace Tug.Server
         [TestMethod]
         public void TestRegisterDscAgent()
         {
-            _defaultClient.RegisterDscAgentAsync().Wait();
+            _defaultClient.RegisterDscAgent().Wait();
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace Tug.Server
                         && ex.InnerException.Message.Contains(
                                 "Response status code does not indicate success: 400 (Bad Request)"),
                     action: () =>
-                        BuildClient(c).RegisterDscAgentAsync().Wait(),
+                        BuildClient(c).RegisterDscAgent().Wait(),
                     message:
                         "Throws HTTP exception for unauthorized (401)");
         }
@@ -91,7 +91,7 @@ namespace Tug.Server
                         && ex.InnerException.Message.Contains(
                                 "Response status code does not indicate success: 400 (Bad Request)"),
                     action: () =>
-                        BuildClient(c).RegisterDscAgentAsync().Wait(),
+                        BuildClient(c).RegisterDscAgent().Wait(),
                     message:
                         "Throws HTTP exception for unauthorized (401)");
         }
@@ -99,7 +99,7 @@ namespace Tug.Server
         [TestMethod]
         public void TestGetDscAction()
         {
-            var actions = _defaultClient.GetDscActionAsync().Result;
+            var actions = _defaultClient.GetDscAction().Result;
             Assert.IsNotNull(actions, "Actions are not missing or null");
 
             var actionsArr = actions.ToArray();
