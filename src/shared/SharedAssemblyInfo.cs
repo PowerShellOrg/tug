@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyCompany("github.com/ebekker/ACMESharp")]
-[assembly: AssemblyProduct("ACMESharp")]
-[assembly: AssemblyCopyright("Copyright © 2016 Eugene Bekker. All rights reserved.")]
+[assembly: AssemblyCompany("github.com/PowerShellOrg")]
+[assembly: AssemblyProduct("Tug")]
+[assembly: AssemblyCopyright("Copyright © The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.")]
 [assembly: AssemblyTrademark("")]
