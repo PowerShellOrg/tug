@@ -1,5 +1,5 @@
 <#
- # Copyright © The DevOps Collective, Inc. All rights reserved.
+ # Copyright ï¿½ The DevOps Collective, Inc. All rights reserved.
  # Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  #> 
 
@@ -101,6 +101,7 @@ function Get-TugNodeConfiguration {
 
 function Get-TugModule {
     param(
+        [guid]$AgentId,
         [string]$ModuleName,
         [string]$ModuleVersion
     )

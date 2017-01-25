@@ -46,10 +46,29 @@ namespace Tug.Messages
         public string MsDateHeader
         { get; set; }
 
-        [Required]
         [FromHeader(Name = PROTOCOL_VERSION_HEADER)]
+        [Required]
         public string ProtocolVersionHeader
         { get; set; }
+
+        /// <summary>
+        /// Returns the Agent ID passed in the request message, however it
+        /// may have been conveyed.  If the request does not receive an Agent ID
+        /// then returns <c>null</c>.
+        /// </summary>
+        /// <remarks>
+        /// Unlike most of the other fields the Agent ID may be conveyed as part
+        /// of the route or an HTTP request header field.  This method allows a
+        /// caller to consistently retrieve the ID regardless.
+        /// </remarks>
+        public virtual Guid? GetAgentId() => null;
+
+        /// <summary>
+        /// Returns the body content object captured in the request message. If
+        /// the request does not capture an object representing the body content
+        /// then returns <c>null</c>.
+        /// </summary>
+        public virtual object GetBody() => null;
     }
 
     /// <summary>
@@ -61,7 +80,7 @@ namespace Tug.Messages
     {
         [FromRoute]
         [Required]
-        public Guid AgentId
+        public Guid? AgentId
         { get; set; }
 
         [FromRoute]
@@ -76,5 +95,7 @@ namespace Tug.Messages
         [RegularExpression("(\\d+\\.\\d+(\\.\\d+\\.\\d+)?)?")]
         public string ModuleVersion
         { get; set; }
+
+        public override Guid? GetAgentId() => AgentId;
     }
 }

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Model
 {
-    public class GetDscActionResponseBody
+    public class GetDscActionResponseBody : Util.ExtDataIndexerBase
     {
         [Required]
         [EnumDataTypeAttribute(typeof(DscActionStatus))]

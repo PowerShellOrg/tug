@@ -1,0 +1,13 @@
+{
+	///////////////////////////////////////////////////////////////////////
+	// These are the default settings that can be overridden
+	///////////////////////////////////////////////////////////////////////
+	
+	// "applicationName": "Tug.Server",
+	// "environment": "PRODUCTION",
+	// "captureStartupErrors": "false",
+	// "contentRoot": ".",
+	// "detailedErrors": "false",
+	// "urls" = "http://*:5000"
+
+}

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tug.Client;
 using Tug.Client.Configuration;
+using Tug.UnitTesting;
 
 namespace Tug.Server
 {
@@ -35,8 +36,8 @@ namespace Tug.Server
         public const string DEFAULT_REG_KEY = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
 
         static TestServer _tugServer;
-        static DscPullConfig _tugConfig;
-        static DscPullClient _tugClient;
+        static DscPullConfig _defaultConfig;
+        static DscPullClient _defaultClient;
 
         [ClassInitialize]
         public static void Init(TestContext ctx)
@@ -51,26 +52,60 @@ namespace Tug.Server
             
             _tugServer = new TestServer(hostBuilder);
 
-            _tugConfig = BuildConfig();
-            _tugClient = new DscPullClient(_tugConfig, x => _tugServer.CreateClient());
+            _defaultConfig = BuildConfig();
+            _defaultClient = BuildClient();
         }
 
         [TestMethod]
         public void TestRegisterDscAgent()
         {
-            _tugClient.RegisterDscAgentAsync().Wait();
+            _defaultClient.RegisterDscAgentAsync().Wait();
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadContent_AgentInfo()
+        {
+            var c = BuildConfig();
+            c.AgentInformation["foo"] = "bar";
+
+            TugAssert.ThrowsExceptionWhen<AggregateException>(
+                    condition: (ex) =>
+                        ex.InnerException is HttpRequestException
+                        && ex.InnerException.Message.Contains(
+                                "Response status code does not indicate success: 400 (Bad Request)"),
+                    action: () =>
+                        BuildClient(c).RegisterDscAgentAsync().Wait(),
+                    message:
+                        "Throws HTTP exception for unauthorized (401)");
+        }
+
+        [TestMethod]
+        public void TestRegisterDscAgent_BadContent_CertInfo()
+        {
+            var c = BuildConfig();
+            c.CertificateInformation["foo"] = "bar";
+
+            TugAssert.ThrowsExceptionWhen<AggregateException>(
+                    condition: (ex) =>
+                        ex.InnerException is HttpRequestException
+                        && ex.InnerException.Message.Contains(
+                                "Response status code does not indicate success: 400 (Bad Request)"),
+                    action: () =>
+                        BuildClient(c).RegisterDscAgentAsync().Wait(),
+                    message:
+                        "Throws HTTP exception for unauthorized (401)");
         }
 
         [TestMethod]
         public void TestGetDscAction()
         {
-            var actions = _tugClient.GetDscActionAsync().Result;
+            var actions = _defaultClient.GetDscActionAsync().Result;
             Assert.IsNotNull(actions, "Actions are not missing or null");
 
             var actionsArr = actions.ToArray();
             Assert.AreEqual(1, actionsArr.Length, "Exactly 1 action response");
 
-            Assert.AreEqual(_tugConfig.ConfigurationNames.First(), actionsArr[0].ConfigurationName,
+            Assert.AreEqual(_defaultConfig.ConfigurationNames.First(), actionsArr[0].ConfigurationName,
                     "Expected configuration name");
         }
 
@@ -84,7 +119,7 @@ namespace Tug.Server
             var mofBody = File.ReadAllBytes(mofPath);
             var csumBody = File.ReadAllText(csumPath);
 
-            var fileResult = _tugClient.GetConfiguration(_tugConfig.ConfigurationNames.First()).Result;
+            var fileResult = _defaultClient.GetConfiguration(_defaultConfig.ConfigurationNames.First()).Result;
             Assert.IsNotNull(fileResult?.Content, "File result is not missing or null");
             CollectionAssert.AreEqual(mofBody, fileResult.Content, "File result content");
             Assert.AreEqual(csumBody, fileResult.Checksum, "Expected config checksum");
@@ -102,13 +137,20 @@ namespace Tug.Server
             var modBody = File.ReadAllBytes(modPath);
             var csumBody = File.ReadAllText(csumPath);
 
-            var fileResult = _tugClient.GetModule(modName, modVers).Result;
+            var fileResult = _defaultClient.GetModule(modName, modVers).Result;
             Assert.IsNotNull(fileResult?.Content, "File result is not missing or null");
             CollectionAssert.AreEqual(modBody, fileResult.Content, "File result content");
             Assert.AreEqual(csumBody, fileResult.Checksum, "Expected config checksum");
         }
 
-        private static DscPullConfig BuildConfig(bool newAgentId = false)
+        protected static DscPullClient BuildClient(DscPullConfig config = null)
+        {
+            if (config == null)
+                config = _defaultConfig;
+            return new DscPullClient(config, x => _tugServer.CreateClient());
+        }
+
+        protected static DscPullConfig BuildConfig(bool newAgentId = false)
         {
             var config = new DscPullConfig();
 

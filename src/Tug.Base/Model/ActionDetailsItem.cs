@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Model
 {
-    public class ActionDetailsItem
+    public class ActionDetailsItem : Util.ExtDataIndexerBase
     {
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string ConfigurationName
         { get; set; } = string.Empty;
 

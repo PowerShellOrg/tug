@@ -117,7 +117,8 @@ namespace Tug.Server.Providers
 
         public ActionStatus GetDscAction(Guid agentId, GetDscActionRequestBody detail)
         {
-            var result = ThreadSafeInvokeSingleResult<ActionStatus>("Get-TugNodeAction", agentId, detail);
+            var result = ThreadSafeInvokeSingleOrNoResult<ActionStatus>("Get-TugNodeAction",
+                    agentId, detail);
 
             // TODO:  any additional checks or translations?
 
@@ -125,16 +126,18 @@ namespace Tug.Server.Providers
         }
         public FileContent GetConfiguration(Guid agentId, string configName)
         {
-            var result = ThreadSafeInvokeSingleResult<FileContent>("Get-TugNodeConfiguration", agentId, configName);
+            var result = ThreadSafeInvokeSingleOrNoResult<FileContent>("Get-TugNodeConfiguration",
+                    agentId, configName);
 
             // TODO:  any additional checks or translations?
 
             return result;
         }
 
-        public FileContent GetModule(string moduleName, string moduleVersion)
+        public FileContent GetModule(Guid? agentId, string moduleName, string moduleVersion)
         {
-            var result = ThreadSafeInvokeSingleResult<FileContent>("Get-TugModule", moduleName, moduleVersion);
+            var result = ThreadSafeInvokeSingleOrNoResult<FileContent>("Get-TugModule",
+                    agentId, moduleName, moduleVersion);
 
             // TODO:  any additional checks or translations?
 
@@ -149,7 +152,8 @@ namespace Tug.Server.Providers
         public Stream GetReports(Guid agentId)
         {
             // TODO:  this interface is not definitive yet
-            var result = ThreadSafeInvokeSingleResult<Stream>("Get-TugNodeReports", agentId);
+            var result = ThreadSafeInvokeSingleResult<Stream>("Get-TugNodeReports",
+                    agentId);
 
             return result;
         }
@@ -174,6 +178,17 @@ namespace Tug.Server.Providers
             return result[0];
         }
 
+        protected T ThreadSafeInvokeSingleOrNoResult<T>(string cmd, params object[] args)
+            where T : class
+        {
+            var result = ThreadSafeInvoke<T>(cmd, args);
+
+            if (result != null && result.Count > 1)
+                throw new InvalidDataException(/*SR*/"Multiple results found");
+            
+            return result == null ? null : result[0];
+        }
+
         protected Collection<T> ThreadSafeInvoke<T>(string cmd, params object[] args)
         {
             // TODO:  It doesn't look like a PowerShell instance is thread-safe
@@ -189,9 +204,16 @@ namespace Tug.Server.Providers
                     _posh.AddArgument(a);
                 
                 var result = _posh.Invoke<T>(EMPTY_INPUT);
-                Logger.LogInformation($"ThreadSafeInvoke({cmd}) >>>>>>>>>>>>");
-                foreach (var r in result)
-                    Logger.LogWarning(">> " + r.ToString());
+
+                if (Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace($"ThreadSafeInvoke({cmd}) >>>>>>>>>>>>");
+                    if (result == null || result.Count == 0)
+                        Logger.LogTrace("  (NULL/EMPTY result)");
+                    else
+                        foreach (var r in result)
+                            Logger.LogTrace("  >> {resultItem}", r);
+                }
 
                 return result;
             }

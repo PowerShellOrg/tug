@@ -91,6 +91,7 @@
       ],
       "dependencies": {
         "Microsoft.NETCore.App": {
+          // This will generate a framework-dependent deployment
           "type": "platform",
           "version": "1.0.1"
         },

@@ -31,9 +31,6 @@ namespace Tug.Server.Providers
         public ChecksumHelper ChecksumHelper
         { get; set; }
 
-        public string RegistrationKeyPath
-        { get; set; } = $"{DEFAULT_WORK_FOLDER}";
-
         public string RegistrationSavePath
         { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Registrations";
         
@@ -46,12 +43,10 @@ namespace Tug.Server.Providers
         public bool IsDisposed
         { get; private set; }
 
-        public void Init()
+        public virtual void Init()
         {
             Assert(Logger != null, "missing logger");
             Assert(ChecksumHelper != null, "missing checksum helper");
-            Assert(!string.IsNullOrWhiteSpace(RegistrationKeyPath),
-                    "registration key path not set");
             Assert(!string.IsNullOrWhiteSpace(RegistrationSavePath),
                     "registration save path not set");
             Assert(!string.IsNullOrWhiteSpace(ConfigurationPath),
@@ -60,14 +55,13 @@ namespace Tug.Server.Providers
                     "module path not set");
 
             Logger.LogInformation("All Assertions Passed!");
-            Directory.CreateDirectory(RegistrationKeyPath);
             Directory.CreateDirectory(RegistrationSavePath);
             Directory.CreateDirectory(ConfigurationPath);
             Directory.CreateDirectory(ModulePath);
             Logger.LogInformation("All Directories Created/Confirmed");
         }
 
-        private void Assert(bool value, string failMessage = null)
+        protected virtual void Assert(bool value, string failMessage = null)
         {
             if (!value)
                 if (string.IsNullOrEmpty(failMessage))
@@ -76,7 +70,7 @@ namespace Tug.Server.Providers
                     throw new Exception(); // ($"failed assertion: {message}");
         }
 
-        public void RegisterDscAgent(Guid agentId,
+        public virtual void RegisterDscAgent(Guid agentId,
                 RegisterDscAgentRequestBody detail)
         {
             var regPath = Path.Combine(RegistrationSavePath, $"{agentId}.json");
@@ -89,7 +83,7 @@ namespace Tug.Server.Providers
             File.WriteAllText(regPath, JsonConvert.SerializeObject(detail));
         }
 
-        public ActionStatus GetDscAction(Guid agentId,
+        public virtual ActionStatus GetDscAction(Guid agentId,
             GetDscActionRequestBody detail)
         {
             var regPath = Path.Combine(RegistrationSavePath, $"{agentId}.json");
@@ -126,8 +120,11 @@ namespace Tug.Server.Providers
                     // Checksum is for the single default configuration of this node
                     var configPath = Path.Combine(ConfigurationPath, $"SHARED/{cn}.mof");
                     if (!File.Exists(configPath))
-                        // TODO:  move CN out of message string and into EX DATA
-                        throw new InvalidOperationException($"missing configuration by name [{cn}]");
+                    {
+                        Logger.LogWarning($"unable to find ConfigurationName=[{cn}] for AgentId=[{agentId}]");
+                        return null;
+                    }
+
 
                     // Assume we have to pull
                     nodeStatus = DscActionStatus.GetConfiguration;
@@ -256,7 +253,7 @@ namespace Tug.Server.Providers
             };
         }
 
-        public FileContent GetConfiguration(Guid agentId, string configName)
+        public virtual FileContent GetConfiguration(Guid agentId, string configName)
         {
             var configPath = Path.Combine(ConfigurationPath, $"SHARED/{configName}.mof");
             if (!File.Exists(configPath))
@@ -278,7 +275,7 @@ namespace Tug.Server.Providers
             }
         }
 
-        public FileContent GetModule(string moduleName, string moduleVersion)
+        public virtual FileContent GetModule(Guid? agentId, string moduleName, string moduleVersion)
         {
             var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}.zip");
             if (!File.Exists(modulePath))
@@ -297,12 +294,12 @@ namespace Tug.Server.Providers
             }
         }
 
-        public void SendReport(Guid agentId, SendReportRequestBody reserved)
+        public virtual void SendReport(Guid agentId, SendReportRequestBody reserved)
         {
             throw new NotImplementedException();
         }
 
-        public Stream GetReports(Guid agentId)
+        public virtual Stream GetReports(Guid agentId)
         {
             throw new NotImplementedException();
         }

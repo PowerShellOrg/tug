@@ -13,23 +13,22 @@ namespace Tug.Server.Providers
 {
     public class BasicDscHandlerProvider : IDscHandlerProvider
     {
-        private static readonly ProviderInfo INFO = new ProviderInfo("basic");
+        protected static ProviderInfo INFO = new ProviderInfo("basic");
 
-        private static readonly IEnumerable<ProviderParameterInfo> PARAMS = new[]
+        protected static readonly IEnumerable<ProviderParameterInfo> PARAMS = new[]
         {
-            new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationKeyPath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.RegistrationSavePath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.ConfigurationPath)),
             new ProviderParameterInfo(nameof(BasicDscHandler.ModulePath)),
         };
 
-        private ILogger<BasicDscHandlerProvider> _pLogger;
-        private ILogger<BasicDscHandler> _hLogger;
-        private ChecksumHelper _checksumHelper;
+        protected ILogger<BasicDscHandlerProvider> _pLogger;
+        protected ILogger<BasicDscHandler> _hLogger;
+        protected ChecksumHelper _checksumHelper;
 
-        private IDictionary<string, object> _productParams;
+        protected IDictionary<string, object> _productParams;
 
-        private BasicDscHandler _handler;
+        protected BasicDscHandler _handler;
 
         public BasicDscHandlerProvider(
                 ILogger<BasicDscHandlerProvider> pLogger,
@@ -44,16 +43,16 @@ namespace Tug.Server.Providers
             _pLogger.LogInformation("Provider Created");
         }
 
-        public ProviderInfo Describe() => INFO;
+        public virtual ProviderInfo Describe() => INFO;
 
-        public IEnumerable<ProviderParameterInfo> DescribeParameters() => PARAMS;
+        public virtual IEnumerable<ProviderParameterInfo> DescribeParameters() => PARAMS;
 
-        public void SetParameters(IDictionary<string, object> productParams)
+        public virtual void SetParameters(IDictionary<string, object> productParams)
         {
             _productParams = productParams;
         }
 
-        public IDscHandler Produce()
+        public virtual IDscHandler Produce()
         {
             _pLogger.LogDebug("Resolving Handler");
             if (_handler == null)
@@ -64,11 +63,9 @@ namespace Tug.Server.Providers
                     {
                         _pLogger.LogInformation("Building global Handler instance");
 
-                        _handler = new BasicDscHandler
-                        {
-                            Logger = _hLogger,
-                            ChecksumHelper = _checksumHelper,
-                        };
+                        _handler = ConstructHandler();
+                        _handler.Logger = _hLogger;
+                        _handler.ChecksumHelper = _checksumHelper;
 
                         if (_productParams != null)
                         {
@@ -91,6 +88,11 @@ namespace Tug.Server.Providers
             }
 
             return _handler;
+        }
+
+        protected virtual BasicDscHandler ConstructHandler()
+        {
+            return new BasicDscHandler();
         }
     }
 }

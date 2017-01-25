@@ -15,6 +15,7 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Get;
 
         public const string ROUTE = "Nodes(AgentId='{AgentId}')/Configurations(ConfigurationName='{ConfigurationName}')/ConfigurationContent";
+        public const string ROUTE_NAME = nameof(GetConfigurationRequest);
 
         [FromRoute]
         public string ConfigurationName

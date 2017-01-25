@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tug.UnitTesting
 {
-    public static class MyAssert
+    public static class TugAssert
     {
         public static void ThrowsExceptionWhen<T>(Func<T, bool> condition,
                 Action action, string message = null)

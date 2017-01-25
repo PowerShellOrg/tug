@@ -16,11 +16,14 @@ namespace Tug.Messages
         public static readonly HttpMethod VERB = HttpMethod.Post;
 
         public const string ROUTE = "Nodes(AgentId='{AgentId}')/GetDscAction";
+        public const string ROUTE_NAME = nameof(GetDscActionRequest);
 
         [FromBody]
         [Required]
         public GetDscActionRequestBody Body
-        { get; set; } 
+        { get; set; }
+
+        public override object GetBody() => Body;
     }
 
     public class GetDscActionResponse : DscResponse

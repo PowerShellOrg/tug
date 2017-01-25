@@ -3,9 +3,11 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Tug.Model
 {
-    public class CertificateInformation
+    public class CertificateInformation : Util.ExtDataIndexerBase
     {
         public CertificateInformation()
         { }
@@ -25,30 +27,38 @@ namespace Tug.Model
         // Apparently the order of these properties is important
         // to successfully fulfill the RegKey authz requirements
 
+        [Required]
         public string FriendlyName
         { get; set; }
 
+        [Required]
         public string Issuer
         { get; set; }
 
+        [Required]
         public string NotAfter
         { get; set; }
 
+        [Required]
         public string NotBefore
         { get; set; }
 
+        [Required]
         public string Subject
         { get; set; }
 
+        [Required]
         public string PublicKey
         { get; set; }
 
+        [Required]
         public string Thumbprint
         { get; set; }
 
         // This *MUST* be an int or RegisterDscAction will fail with a
         // 401 Unauthorized error and eroneously report an invalid
         // Registration Key -- as HOURS of debugging has proven!
+        [Required]
         public int Version
         { get; set; }
     }
