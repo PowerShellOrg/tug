@@ -53,39 +53,58 @@ if (!(Test-Path -Path $dscModulePath)) {
 
 
 function Register-TugNode {
+<#
+.SYNOPSIS
+Save node registration information.
+.DESCRIPTION
+Register-TugNode will register a node with the Tug Server, saving the node-specifie information in a JSON file for later use.  It will update registration information if a change in registration information is detected.
+.PARAMETER AgentID
+The node's calculated AgentID from the LCM.
+.PARAMETER Details
+The registration details received from the LCM / Tug Server.
+#>
+
+[cmdletbinding()]
     param(
+        [Parameter(Mandatory=$True)]
+        [ValidateCount(1)]
         [guid]$AgentId,
+        
+        [Parameter(Mandatory=$True)]
+        [ValidateCount(1)]
         [Tug.Model.RegisterDscAgentRequestBody]$Details
     )
     
-    ## Return:
-    ##    SUCCESS:  n/a
-    ##    FAILURE:  throw an exception
+    BEGIN {
+        $handlerLogger.LogTrace("REGISTER: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
+        $regFile = [System.IO.Path]::Combine($dscRegSavePath, "$($AgentId).json")
+        $regInfo = $Details | ConvertTo-Json -Depth 10
+    }
 
-    $handlerLogger.LogTrace("REGISTER: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
+    PROCESS {
 
-    $regPath = [System.IO.Path]::Combine($dscRegSavePath, "$($AgentId).json")
-    $regInfo = $Details | ConvertTo-Json -Depth 10
-    
-    #New Registration
-    if (!(Test-Path $regPath)) {
-        $handlerLogger.LogDebug("Saving node reg details [$regPath]: $regInfo")
-        Set-Content -Path $regPath -Value $regInfo
-        }
-    
-    #Update existing registration
-    else {
-        set-content -path "$dscRegSavePath\Temp.json" -value $reginfo
-        if ((compare-object -referenceObject (get-content $regPath) -differenceObject (get-content "$dscRegSavePath\Temp.json")) -ne $Null) {
-            $handlerLogger.LogDebug("Updating node reg details [$regPath]: $regInfo")
-            Set-Content -Path $regPath -Value $regInfo
+        #New Registration
+        if (!(Test-Path $regFile)) {
+            $handlerLogger.LogDebug("Saving node reg details [$regFile]: $regInfo")
+            Set-Content -Path $regFile -Value $regInfo
             }
+    
+        #Update existing registration
         else {
+            $TempFile = "$dscRegSavePath\Temp$($AgentID).json"
+            set-content -path $TempFile -value $reginfo
+            if ((compare-object -referenceObject (get-content $regFile) -differenceObject (get-content $TempFile)) -ne $Null) {
+                $handlerLogger.LogDebug("Updating node reg details [$regFile]: $regInfo")
+                remove-item -path $regFile -force
+                rename-item -path $tempFile -newName $regFile
+                }
+            else {
    
-        #Registration information is current
+            #Registration information is current
             $handlerLogger.logDebug("Node registration details are current.  No changes necessary.")
+            remove-item -path $tempFile -force
+            }
         }
-        remove-item -path "$dscRegSavePath\Temp.json"
     }
 }
 
