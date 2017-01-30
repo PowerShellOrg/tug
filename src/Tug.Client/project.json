@@ -1,8 +1,10 @@
 {
-  "name": "Tug.Client",
-  "version": "0.5.1-*",
-  "copyright": "Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.",
-  "title": "Tug Client",
+  // Assembly Manifest Details are defined in
+  // AssemblyInfo.cs and SharedAssemblyInfo.cs
+
+  "authors": [
+    "github.com/PowerShellOrg/tug/graphs/contributors"
+  ],
   "language": "en-US",
 
   "buildOptions": {
@@ -12,7 +14,15 @@
     "nowarn": [
       "CS0169", // The field 'X' is never used
       "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
-    ]
+    ],
+
+    "compile": {
+      "includeFiles": [
+        // Include in the shared assembly manifest details
+        "../shared/SharedAssemblyInfo.cs",
+        "../shared/SharedAssemblyVersionInfo.cs"
+      ]
+    }
   },
 
   "dependencies": {
