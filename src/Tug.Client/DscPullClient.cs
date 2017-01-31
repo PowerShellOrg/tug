@@ -96,6 +96,19 @@ namespace Tug.Client
         public bool IsDisposed
         { get; private set; }
 
+        /// <summary>
+        /// This flag ensures that the <see cref="Model.SendReportBody#AdditionalData"
+        /// >Additional Data</see> element is removed from any report payload, which is
+        /// necessary when targetting a DSC Pull Service running on WMF 5.0 which does
+        /// not support this element.
+        /// </summary>
+        /// <remarks>
+        /// See for more details about this issue:
+        ///    https://github.com/PowerShell/PowerShell/issues/2921
+        /// </remarks>
+        public bool DisableReportAdditionalData
+        { get; set; }
+
         protected void AssertInit()
         {
             if (!IsInitialized)
@@ -415,6 +428,8 @@ namespace Tug.Client
                 if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.EndTime)
                     body.EndTime = now;
 
+                if (DisableReportAdditionalData)
+                    body.AdditionalData = null;
             }
 
             var dscRequ = new SendReportRequest

@@ -34,11 +34,20 @@ namespace Tug.Client
             // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
             public string proxy_url
             { get; set; } = null; // "http://localhost:8888"; // 
+
+            // Flag that enables some kludges for latest Classic DSC Pull Server on WMF 5.0 platforms
+            //    See:  https://github.com/PowerShell/PowerShell/issues/2921
+            // We leave the default enabled to support the CI server builds, but disable on
+            // local development environments where we're normally testing against Win2016
+            public bool adjust_for_wmf_50
+            { get; set; } = true;
         }
 
         // This is the date format that appears to be what the Classic DSC Pull Server
         // is using to parse and store the report dates, so we need to test against this
         public const string CLASSIC_SERVER_REPORT_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff";
+        // On WMF 5.0, DscService formats its dates differently
+        public const string CLASSIC_SERVER_REPORT_DATE_FORMAT_ALT = "MM/dd/yyyy HH:mm:ss";
 
         private static TestConfig _testConfig = new TestConfig();
 
@@ -451,6 +460,7 @@ namespace Tug.Client
             var config = BuildConfig(newAgentId: true);
             using (var client = new DscPullClient(config))
             {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
                 client.RegisterDscAgent().Wait();
                 client.SendReport("SimpleInventoryDefaults",
                         overrides: new Model.SendReportBody
@@ -471,6 +481,7 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
@@ -489,6 +500,7 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
@@ -516,6 +528,7 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
                             ex.InnerException is HttpRequestException
@@ -531,6 +544,10 @@ namespace Tug.Client
         [TestMethod]
         public void TestGetReports_Single()
         {
+            var reportDateFormat = CLASSIC_SERVER_REPORT_DATE_FORMAT;
+            if (_testConfig.adjust_for_wmf_50)
+                reportDateFormat = CLASSIC_SERVER_REPORT_DATE_FORMAT_ALT;
+
             var config = BuildConfig(newAgentId: true);
             var report = new Model.SendReportBody
             {
@@ -541,9 +558,9 @@ namespace Tug.Client
                 ReportFormatVersion = "Spooky",
                 ConfigurationVersion = "Scary",
               //StartTime = DateTime.Now.ToString(Model.SendReportBody.REPORT_DATE_FORMAT),
-                StartTime = DateTime.Now.ToString(CLASSIC_SERVER_REPORT_DATE_FORMAT),
+                StartTime = DateTime.Now.ToString(reportDateFormat),
               //EndTime = DateTime.Now.ToString(Model.SendReportBody.REPORT_DATE_FORMAT),
-                EndTime = DateTime.Now.ToString(CLASSIC_SERVER_REPORT_DATE_FORMAT),
+                EndTime = DateTime.Now.ToString(reportDateFormat),
                 RebootRequested = Model.DscTrueFalse.False,
                 StatusData = new[] { "STATUS-DATA" },
                 Errors = new[] { "ERRORS" },
@@ -556,6 +573,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
                 client.RegisterDscAgent().Wait();
                 client.SendReport(report).Wait();
 
@@ -563,6 +581,11 @@ namespace Tug.Client
                 Assert.IsNotNull(sr, "Reports not null");
                 var srArr = sr.ToArray();
                 Assert.AreEqual(1, srArr.Length, "Reports length is exactly 1");
+
+                // Unfortunate kludge to deal with broken DscService on WMF 5.1
+                //    See https://github.com/PowerShell/PowerShell/issues/2921
+                if (_testConfig.adjust_for_wmf_50)
+                    report.AdditionalData = Model.SendReportBody.AdditionalDataItem.EMPTY_ITEMS;
 
                 var ser1 = JsonConvert.SerializeObject(report);
                 var ser2 = JsonConvert.SerializeObject(srArr[0]);
@@ -586,6 +609,7 @@ namespace Tug.Client
             var config = BuildConfig(newAgentId: true);
             using (var client = new DscPullClient(config))
             {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
                 client.RegisterDscAgent().Wait();
                 client.SendReport(operationType: "1", statusData: strArr1).Wait();
                 client.SendReport(operationType: "2", statusData: strArr2).Wait();

@@ -5,6 +5,6 @@
 @ECHO THIS=%THIS%
 @ECHO THIS_DIR=%THIS_DIR%
 
-dotnet test %THIS_DIR% %* -- /proxy_url="http://localhost:8888" -- /adjust_for_wmf_50=false
+dotnet test %THIS_DIR% %* -- /adjust_for_wmf_50=false
 
 @ENDLOCAL
