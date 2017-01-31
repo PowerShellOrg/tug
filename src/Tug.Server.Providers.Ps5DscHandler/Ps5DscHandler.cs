@@ -144,16 +144,17 @@ namespace Tug.Server.Providers
             return result;
         }
 
-        public void SendReport(Guid agentId, SendReportRequestBody detail)
+        public void SendReport(Guid agentId, SendReportBody detail)
         {
             ThreadSafeInvokeNoResult("New-TugNodeReport", agentId, detail);
         }
 
-        public Stream GetReports(Guid agentId)
+        public IEnumerable<SendReportBody> GetReports(Guid agentId, Guid? jobId)
         {
-            // TODO:  this interface is not definitive yet
-            var result = ThreadSafeInvokeSingleResult<Stream>("Get-TugNodeReports",
+            var result = ThreadSafeInvoke<SendReportBody>("Get-TugNodeReports",
                     agentId);
+
+            // TODO:  any additional checks or translations?
 
             return result;
         }
@@ -255,7 +256,7 @@ namespace Tug.Server.Providers
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion -- IDisposable Support --
 
+        #endregion -- IDisposable Support --
     }
 }

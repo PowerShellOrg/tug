@@ -17,8 +17,8 @@
     "compile": {
       "includeFiles": [
         // Include in the shared assembly manifest details
-        "../shared/SharedAssemblyInfo.cs",
-        "../shared/SharedAssemblyVersionInfo.cs"
+        "../../shared/SharedAssemblyInfo.cs",
+        "../../shared/SharedAssemblyVersionInfo.cs"
       ]
     }
   },
