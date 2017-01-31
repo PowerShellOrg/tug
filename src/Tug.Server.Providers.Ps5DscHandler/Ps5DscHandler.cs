@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tug.Model;
@@ -28,6 +29,7 @@ namespace Tug.Server.Providers
 
         private string _bootstrapFullpath;
         private PowerShell _posh;
+        private Mutex _poshLock = new Mutex();
 
         public bool IsDisposed
         { get; private set; }
