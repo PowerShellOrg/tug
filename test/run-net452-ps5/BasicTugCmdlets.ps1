@@ -67,11 +67,11 @@ The registration details received from the LCM / Tug Server.
 [cmdletbinding()]
     param(
         [Parameter(Mandatory=$True)]
-        [ValidateCount(1)]
+        #[ValidateCount(1)]
         [guid]$AgentId,
         
         [Parameter(Mandatory=$True)]
-        [ValidateCount(1)]
+        #[ValidateCount(1)]
         [Tug.Model.RegisterDscAgentRequestBody]$Details
     )
     
