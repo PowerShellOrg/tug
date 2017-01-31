@@ -21,6 +21,7 @@ namespace Tug.Server.Providers
         {
             new ProviderParameterInfo(nameof(Ps5DscHandler.BootstrapPath)),
             new ProviderParameterInfo(nameof(Ps5DscHandler.BootstrapScript)),
+            new ProviderParameterInfo(nameof(Ps5DscHandler.BootstrapWatch)),
         };
 
         private ILogger<Ps5DscHandlerProvider> _pLogger;
