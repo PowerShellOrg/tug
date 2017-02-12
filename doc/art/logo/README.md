@@ -28,9 +28,9 @@ Vectors by [Vecteezy.com](http://www.Vecteezy.com/)
 
 ## Embed Example
 
-v1 | v2
----|---
-` 75` - ![tug logo](tug-logo-trans-75.png)  | ` 75` - ![tug logo](tug-logo-trans-75b.png)
-`150` - ![tug logo](tug-logo-trans-150.png) | ` 75` - ![tug logo](tug-logo-trans-150b.png)
-`300` - ![tug logo](tug-logo-trans-300.png) | ` 75` - ![tug logo](tug-logo-trans-300b.png)
-`600` - ![tug logo](tug-logo-trans-600.png) | ` 75` - ![tug logo](tug-logo-trans-600b.png)
+width | v1 | v2
+------|----|----
+` 75` | ![tug logo](tug-logo-trans-75.png)  | ![tug logo](tug-logo-trans-75b.png)
+`150` | ![tug logo](tug-logo-trans-150.png) | ![tug logo](tug-logo-trans-150b.png)
+`300` | ![tug logo](tug-logo-trans-300.png) | ![tug logo](tug-logo-trans-300b.png)
+`600` | ![tug logo](tug-logo-trans-600.png) | ![tug logo](tug-logo-trans-600b.png)
