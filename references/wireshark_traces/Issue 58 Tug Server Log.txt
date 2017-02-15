@@ -1,0 +1,470 @@
+2017-02-15 13:31:26.1649|0|Tug.Server.Startup|INFO|Commencing runtime logging 
+2017-02-15 13:31:26.3212|0|Tug.Server.Startup|INFO|Configuring services registry 
+2017-02-15 13:31:26.3212|0|Tug.Server.Startup|INFO|Adding MVC services 
+2017-02-15 13:31:26.7743|0|Tug.ChecksumAlgorithmManager|INFO|Adding BUILTINS 
+2017-02-15 13:31:26.7899|0|Tug.ChecksumAlgorithmManager|INFO|Adding [96] resolved Search Assemblies 
+2017-02-15 13:31:26.7899|0|Tug.Server.Util.ChecksumHelper|INFO|resolved the following Checksum Providers: 
+2017-02-15 13:31:26.7899|0|Tug.ChecksumAlgorithmManager|INFO|providers have not yet been resolved -- resolving 
+2017-02-15 13:31:26.8211|0|Tug.ChecksumAlgorithmManager|INFO|resolving providers 
+2017-02-15 13:31:27.8437|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Tug.IChecksumAlgorithmProvider[]] 
+2017-02-15 13:31:27.8437|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|No DI service found for contractType=[Tug.IChecksumAlgorithmProvider[]] 
+2017-02-15 13:31:27.8594|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Tug.IChecksumAlgorithmProvider] 
+2017-02-15 13:31:27.8750|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|No DI service found for contractType=[Tug.IChecksumAlgorithmProvider] 
+2017-02-15 13:31:27.9062|0|Tug.Server.Util.ChecksumHelper|INFO|  * [SHA-256] 
+2017-02-15 13:31:27.9219|0|Tug.Server.Util.ChecksumHelper|INFO|resolving default Checksum Algorithm: 
+2017-02-15 13:31:27.9375|0|Tug.Server.Util.ChecksumHelper|INFO|    resolved as [SHA-256] 
+2017-02-15 13:31:27.9531|0|Tug.Server.DscHandlerManager|INFO|Adding Search Paths 
+2017-02-15 13:31:27.9531|0|Tug.Server.DscHandlerManager|DEBUG|  * [C:\program files\Tug\Server\bin\ext] 
+2017-02-15 13:31:27.9531|0|Tug.Server.DscHandlerManager|INFO|Adding BUILTINS 
+2017-02-15 13:31:27.9687|0|Tug.Server.DscHandlerManager|INFO|Adding [129] resolved Search Assemblies 
+2017-02-15 13:31:27.9687|0|Tug.Server.Util.DscHandlerHelper|INFO|resolved the following DSC Handler Providers: 
+2017-02-15 13:31:27.9687|0|Tug.Server.DscHandlerManager|INFO|providers have not yet been resolved -- resolving 
+2017-02-15 13:31:28.0000|0|Tug.Server.DscHandlerManager|INFO|resolving providers 
+2017-02-15 13:31:29.0000|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Tug.Server.IDscHandlerProvider[]] 
+2017-02-15 13:31:29.0156|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|No DI service found for contractType=[Tug.Server.IDscHandlerProvider[]] 
+2017-02-15 13:31:29.0156|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Tug.Server.IDscHandlerProvider] 
+2017-02-15 13:31:29.0156|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|No DI service found for contractType=[Tug.Server.IDscHandlerProvider] 
+2017-02-15 13:31:29.0312|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.BasicDscHandlerProvider, Tug.Server, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] 
+2017-02-15 13:31:29.0312|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.BasicDscHandlerProvider, Tug.Server, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] service=[Microsoft.Extensions.Logging.Logger`1[Tug.Server.Providers.BasicDscHandlerProvider]] 
+2017-02-15 13:31:29.0312|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.BasicDscHandler, Tug.Server, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] 
+2017-02-15 13:31:29.0312|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.BasicDscHandler, Tug.Server, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] service=[Microsoft.Extensions.Logging.Logger`1[Tug.Server.Providers.BasicDscHandler]] 
+2017-02-15 13:31:29.0469|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Tug.ChecksumAlgorithmManager] 
+2017-02-15 13:31:29.0469|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Tug.ChecksumAlgorithmManager] service=[Tug.ChecksumAlgorithmManager] 
+2017-02-15 13:31:29.0469|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Tug.Server.Util.ChecksumHelper] 
+2017-02-15 13:31:29.0469|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Tug.Server.Util.ChecksumHelper] service=[Tug.Server.Util.ChecksumHelper] 
+2017-02-15 13:31:29.0469|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.Ps5DscHandlerProvider, Tug.Server.Providers.Ps5DscHandler, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] 
+2017-02-15 13:31:29.0781|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.Ps5DscHandlerProvider, Tug.Server.Providers.Ps5DscHandler, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] service=[Microsoft.Extensions.Logging.Logger`1[Tug.Server.Providers.Ps5DscHandlerProvider]] 
+2017-02-15 13:31:29.0781|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.Ps5DscHandler, Tug.Server.Providers.Ps5DscHandler, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] 
+2017-02-15 13:31:29.0781|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Microsoft.Extensions.Logging.ILogger`1[[Tug.Server.Providers.Ps5DscHandler, Tug.Server.Providers.Ps5DscHandler, Version=0.5.1.0, Culture=neutral, PublicKeyToken=null]]] service=[Microsoft.Extensions.Logging.Logger`1[Tug.Server.Providers.Ps5DscHandler]] 
+2017-02-15 13:31:29.0937|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Getting Export Descriptors: contractName=[] contractType=[Microsoft.Extensions.Configuration.IConfiguration] 
+2017-02-15 13:31:29.0937|0|Tug.Ext.Util.ServiceProviderExportDescriptorProvider|DEBUG|Resolved DI service for contractType=[Microsoft.Extensions.Configuration.IConfiguration] service=[Microsoft.Extensions.Configuration.ConfigurationSection] 
+2017-02-15 13:31:29.0937|0|Tug.Server.Providers.BasicDscHandlerProvider|INFO|Provider Created 
+2017-02-15 13:31:29.1094|0|Tug.Server.Util.DscHandlerHelper|INFO|  * [basic] 
+2017-02-15 13:31:29.1094|0|Tug.Server.Util.DscHandlerHelper|INFO|  * [ps5] 
+2017-02-15 13:31:29.1094|0|Tug.Server.Util.DscHandlerHelper|INFO|resolving target Provider 
+2017-02-15 13:31:29.1406|0|Tug.Server.Util.DscHandlerHelper|INFO|applying optional DSC Handler parameters 
+2017-02-15 13:31:29.1406|0|Tug.Server.Util.DscHandlerHelper|INFO|producing DSC Handler 
+2017-02-15 13:31:29.1562|0|Tug.Server.Providers.Ps5DscHandlerProvider|DEBUG|Resolving handler 
+2017-02-15 13:31:29.1562|0|Tug.Server.Providers.Ps5DscHandlerProvider|INFO|Handler Constructed 
+2017-02-15 13:31:29.1562|0|Tug.Server.Providers.Ps5DscHandlerProvider|INFO|Applying parameters: 
+2017-02-15 13:31:29.1719|0|Tug.Server.Providers.Ps5DscHandlerProvider|INFO|  * Setting parameter:  [BootstrapPath] 
+2017-02-15 13:31:29.1719|0|Tug.Server.Providers.Ps5DscHandlerProvider|INFO|  * Setting parameter:  [BootstrapScript] 
+2017-02-15 13:31:29.1719|0|Tug.Server.Providers.Ps5DscHandler|INFO|Resolving Boostrap Full Path from Path=[./var] 
+2017-02-15 13:31:29.2031|0|Tug.Server.Providers.Ps5DscHandler|INFO|Resolved Bootstrap Full Path as [C:\program files\Tug\Server\./var] 
+2017-02-15 13:31:29.2031|0|Tug.Server.Providers.Ps5DscHandler|INFO|Constructed PowerShell execution context 
+2017-02-15 13:31:29.4531|0|Tug.Server.Providers.Ps5DscHandler|INFO|Relocated PWD for current execution context >>>>>>>>>>>>>> 
+2017-02-15 13:31:29.4531|0|Tug.Server.Providers.Ps5DscHandler|INFO|Bootstrap Script found 
+2017-02-15 13:31:29.4687|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|--8<--------------------------------- 
+2017-02-15 13:31:29.4687|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|$basic = [System.IO.Path]::GetFullPath("..\BasicTugCmdlets.ps1")
+echo "Loading BASIC from [$basic]"
+. ..\BasicTugCmdlets.ps1 
+2017-02-15 13:31:29.4844|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|--------------------------------->8-- 
+2017-02-15 13:31:29.5625|0|Tug.Server.Providers.Ps5DscHandler|INFO|Loading BASIC Tug Cmdlets... 
+2017-02-15 13:31:29.5781|0|Tug.Server.Providers.Ps5DscHandler|INFO|* Got Logger:  Tug.Server.Providers.PsLogger 
+2017-02-15 13:31:29.5937|0|Tug.Server.Providers.Ps5DscHandler|INFO|* Got Config:  Tug.Util.ReadOnlyConfiguration 
+2017-02-15 13:31:29.6094|0|Tug.Server.Providers.Ps5DscHandler|INFO|Resolved App Settings: 
+2017-02-15 13:31:29.6094|0|Tug.Server.Providers.Ps5DscHandler|INFO|  * dscRegSavePath = [C:\program files\Tug\Server\var\DscService\Registrations] 
+2017-02-15 13:31:29.6406|0|Tug.Server.Providers.Ps5DscHandler|INFO|  * dscConfigPath  = [C:\program files\Tug\Server\var\DscService\Configuration] 
+2017-02-15 13:31:29.6562|0|Tug.Server.Providers.Ps5DscHandler|INFO|  * dscModulePath  = [C:\program files\Tug\Server\var\DscService\Modules] 
+2017-02-15 13:31:29.6719|0|Tug.Server.Providers.Ps5DscHandler|INFO|Bootstrap Script executed 
+2017-02-15 13:31:29.6719|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|--8<--------------------------------- 
+2017-02-15 13:31:29.6875|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|>> Loading BASIC from [C:\program files\Tug\BasicTugCmdlets.ps1] 
+2017-02-15 13:31:29.7187|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|>> All BASIC Tug Cmdlets are defined 
+2017-02-15 13:31:29.7187|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|--------------------------------->8-- 
+2017-02-15 13:31:29.7344|3|Microsoft.AspNetCore.Hosting.Internal.WebHost|DEBUG|Hosting starting 
+2017-02-15 13:31:29.8594|4|Microsoft.AspNetCore.Hosting.Internal.WebHost|DEBUG|Hosting started 
+2017-02-15 13:33:27.2206|1|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF5" started. 
+2017-02-15 13:33:27.3769|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 PUT http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820') application/json; charset=utf-8 666 
+2017-02-15 13:33:27.5956|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'RegisterDscAgentRequest' and template 'Nodes(AgentId='{AgentId}')'. 
+2017-02-15 13:33:27.6894|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|resolved reg key file path as [C:\program files\Tug\Server\var\DscService\Authz\RegistrationKeys.txt] 
+2017-02-15 13:33:27.6894|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|resolved reg save path as [C:\program files\Tug\Server\var\DscService\Authz\Registrations] 
+2017-02-15 13:33:27.7206|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) 
+2017-02-15 13:33:27.7519|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received authorization header [Shared f55ueiOtlRh9zV+fzr9p8zuN2JilLXdOCOa2Zv8bDNU=] 
+2017-02-15 13:33:27.7675|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received x-ms-date header [2017-02-15T20:33:27.1427851Z] 
+2017-02-15 13:33:27.9394|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 13:33:28.2987|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration key to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.regkey] 
+2017-02-15 13:33:28.2987|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration details to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 13:33:28.3144|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) with arguments (Tug.Messages.RegisterDscAgentRequest) - ModelState is Valid 
+2017-02-15 13:33:28.3300|0|Tug.Server.Controllers.DscController|TRACE|RegisterDscAgent:  PUT 
+2017-02-15 13:33:28.3300|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 13:33:28.4550|0|Tug.Server.Providers.Ps5DscHandler|TRACE|REGISTER: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Details":  {
+                    "AgentInformation":  {
+                                             "LCMVersion":  "2.0",
+                                             "NodeName":  "TGTTUG",
+                                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                                         },
+                    "ConfigurationNames":  [
+                                               "TimeZoneConfig"
+                                           ],
+                    "RegistrationInformation":  {
+                                                    "CertificateInformation":  {
+                                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                                   "Subject":  "CN=http://tug:5000",
+                                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                                   "Version":  3
+                                                                               },
+                                                    "RegistrationMessageType":  "ConfigurationRepository"
+                                                }
+                }
+} 
+2017-02-15 13:33:28.5175|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|Updating node reg details [C:\program files\Tug\Server\var\DscService\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json]: {
+    "AgentInformation":  {
+                             "LCMVersion":  "2.0",
+                             "NodeName":  "TGTTUG",
+                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                         },
+    "ConfigurationNames":  [
+                               "TimeZoneConfig"
+                           ],
+    "RegistrationInformation":  {
+                                    "CertificateInformation":  {
+                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                   "Subject":  "CN=http://tug:5000",
+                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                   "Version":  3
+                                                               },
+                                    "RegistrationMessageType":  "ConfigurationRepository"
+                                }
+} 
+2017-02-15 13:33:28.5487|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Register-TugNode) >>>>>>>>>>>> 
+2017-02-15 13:33:28.5644|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  (NULL/EMPTY result) 
+2017-02-15 13:33:28.5644|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 13:33:28.5800|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server), returned result Microsoft.AspNetCore.Mvc.NoContentResult. 
+2017-02-15 13:33:28.6112|1|Microsoft.AspNetCore.Mvc.StatusCodeResult|INFO|Executing HttpStatusCodeResult, setting HTTP status code 204 
+2017-02-15 13:33:28.6269|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) in 888.1483ms 
+2017-02-15 13:33:28.6894|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF5" completed keep alive response. 
+2017-02-15 13:33:28.7050|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 1353.5886ms 204  
+2017-02-15 13:33:28.7363|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 PUT http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820') application/json; charset=utf-8 621 
+2017-02-15 13:33:28.7519|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'RegisterDscAgentRequest' and template 'Nodes(AgentId='{AgentId}')'. 
+2017-02-15 13:33:28.7519|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) 
+2017-02-15 13:33:28.7519|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received authorization header [Shared JwLHW7xcYrZgaocnxWLVD05P+2ZbyOTB/Rl66psp7ro=] 
+2017-02-15 13:33:28.7831|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received x-ms-date header [2017-02-15T20:33:28.7130046Z] 
+2017-02-15 13:33:28.8144|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 13:33:28.8309|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration key to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.regkey] 
+2017-02-15 13:33:28.8309|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration details to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 13:33:28.8456|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) with arguments (Tug.Messages.RegisterDscAgentRequest) - ModelState is Valid 
+2017-02-15 13:33:28.8612|0|Tug.Server.Controllers.DscController|TRACE|RegisterDscAgent:  PUT 
+2017-02-15 13:33:28.8769|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 13:33:28.8769|0|Tug.Server.Providers.Ps5DscHandler|TRACE|REGISTER: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Details":  {
+                    "AgentInformation":  {
+                                             "LCMVersion":  "2.0",
+                                             "NodeName":  "TGTTUG",
+                                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                                         },
+                    "ConfigurationNames":  null,
+                    "RegistrationInformation":  {
+                                                    "CertificateInformation":  {
+                                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                                   "Subject":  "CN=http://tug:5000",
+                                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                                   "Version":  3
+                                                                               },
+                                                    "RegistrationMessageType":  "ResourceRepository"
+                                                }
+                }
+} 
+2017-02-15 13:33:28.8925|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|Updating node reg details [C:\program files\Tug\Server\var\DscService\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json]: {
+    "AgentInformation":  {
+                             "LCMVersion":  "2.0",
+                             "NodeName":  "TGTTUG",
+                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                         },
+    "ConfigurationNames":  null,
+    "RegistrationInformation":  {
+                                    "CertificateInformation":  {
+                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                   "Subject":  "CN=http://tug:5000",
+                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                   "Version":  3
+                                                               },
+                                    "RegistrationMessageType":  "ResourceRepository"
+                                }
+} 
+2017-02-15 13:33:28.9237|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Register-TugNode) >>>>>>>>>>>> 
+2017-02-15 13:33:28.9394|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  (NULL/EMPTY result) 
+2017-02-15 13:33:28.9394|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 13:33:28.9550|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server), returned result Microsoft.AspNetCore.Mvc.NoContentResult. 
+2017-02-15 13:33:28.9550|1|Microsoft.AspNetCore.Mvc.StatusCodeResult|INFO|Executing HttpStatusCodeResult, setting HTTP status code 204 
+2017-02-15 13:33:28.9550|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) in 201.2762ms 
+2017-02-15 13:33:28.9706|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF5" completed keep alive response. 
+2017-02-15 13:33:28.9862|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 256.9536ms 204  
+2017-02-15 13:34:50.8074|19|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF5" reset. 
+2017-02-15 13:34:50.8218|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF5" disconnecting. 
+2017-02-15 13:34:50.8531|2|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF5" stopped. 
+2017-02-15 13:36:42.7876|1|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" started. 
+2017-02-15 13:36:42.7876|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 POST http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820')/GetDscAction application/json; charset=utf-8 128 
+2017-02-15 13:36:42.7876|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'GetDscActionRequest' and template 'Nodes(AgentId='{AgentId}')/GetDscAction'. 
+2017-02-15 13:36:42.8032|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) 
+2017-02-15 13:36:43.7956|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 13:36:43.8111|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|looking for registration details at [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 13:36:43.8423|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|reg key validation for Agent ID [3c4ea76d-e182-11e6-8748-00155d7cc820] = [True] 
+2017-02-15 13:36:43.8579|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) with arguments (Tug.Messages.GetDscActionRequest) - ModelState is Valid 
+2017-02-15 13:36:43.8579|0|Tug.Server.Controllers.DscController|TRACE|GetDscAction:  POST 
+2017-02-15 13:36:43.8736|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 13:36:43.9204|0|Tug.Server.Providers.Ps5DscHandler|TRACE|GET-ACTION: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Detail":  {
+                   "ClientStatus":  [
+                                        {
+                                            "ConfigurationName":  null,
+                                            "Checksum":  "b7f5b20c6be2efc3ef754ad2789462be9eff3952d9490ee95e73f265a70eed39",
+                                            "ChecksumAlgorithm":  "SHA-256"
+                                        }
+                                    ]
+               }
+} 
+2017-02-15 13:36:43.9673|0|Tug.Server.Providers.Ps5DscHandler|TRACE|Resolved requested configuration name as [] 
+2017-02-15 13:36:43.9829|0|Tug.Server.Providers.Ps5DscHandler|WARN|No configuration name specified for agent [3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 13:36:44.0298|0|Tug.Server.Providers.Ps5DscHandler|TRACE|Returning status: Tug.Server.ActionStatus 
+2017-02-15 13:36:44.0454|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Get-TugNodeAction) >>>>>>>>>>>> 
+2017-02-15 13:36:44.0611|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  >> Tug.Server.ActionStatus 
+2017-02-15 13:36:44.0611|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 13:36:44.0611|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.GetDscAction (Tug.Server), returned result Microsoft.AspNetCore.Mvc.JsonResult. 
+2017-02-15 13:36:44.0923|1|Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor|INFO|Executing JsonResult, writing value Tug.Model.GetDscActionResponseBody. 
+2017-02-15 13:36:44.1236|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) in 1317.2164ms 
+2017-02-15 13:36:44.1236|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" completed keep alive response. 
+2017-02-15 13:36:44.1548|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 1373.7857ms 200 application/json; charset=utf-8 
+2017-02-15 13:38:08.2999|19|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" reset. 
+2017-02-15 13:38:08.3153|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" disconnecting. 
+2017-02-15 13:38:08.3309|7|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" sending FIN. 
+2017-02-15 13:38:08.3309|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" disconnecting. 
+2017-02-15 13:38:08.3465|8|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" sent FIN with status "0". 
+2017-02-15 13:38:08.3621|2|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF6" stopped. 
+2017-02-15 14:07:29.9270|1|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" started. 
+2017-02-15 14:07:29.9583|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 POST http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820')/GetDscAction application/json; charset=utf-8 128 
+2017-02-15 14:07:29.9781|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'GetDscActionRequest' and template 'Nodes(AgentId='{AgentId}')/GetDscAction'. 
+2017-02-15 14:07:30.0093|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) 
+2017-02-15 14:07:30.9652|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 14:07:30.9999|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|looking for registration details at [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 14:07:31.0155|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|reg key validation for Agent ID [3c4ea76d-e182-11e6-8748-00155d7cc820] = [True] 
+2017-02-15 14:07:31.0467|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) with arguments (Tug.Messages.GetDscActionRequest) - ModelState is Valid 
+2017-02-15 14:07:31.0624|0|Tug.Server.Controllers.DscController|TRACE|GetDscAction:  POST 
+2017-02-15 14:07:31.0780|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 14:07:31.1717|0|Tug.Server.Providers.Ps5DscHandler|TRACE|GET-ACTION: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Detail":  {
+                   "ClientStatus":  [
+                                        {
+                                            "ConfigurationName":  null,
+                                            "Checksum":  "b7f5b20c6be2efc3ef754ad2789462be9eff3952d9490ee95e73f265a70eed39",
+                                            "ChecksumAlgorithm":  "SHA-256"
+                                        }
+                                    ]
+               }
+} 
+2017-02-15 14:07:31.2655|0|Tug.Server.Providers.Ps5DscHandler|TRACE|Resolved requested configuration name as [] 
+2017-02-15 14:07:31.2967|0|Tug.Server.Providers.Ps5DscHandler|WARN|No configuration name specified for agent [3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 14:07:31.3124|0|Tug.Server.Providers.Ps5DscHandler|TRACE|Returning status: Tug.Server.ActionStatus 
+2017-02-15 14:07:31.3281|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Get-TugNodeAction) >>>>>>>>>>>> 
+2017-02-15 14:07:31.3592|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  >> Tug.Server.ActionStatus 
+2017-02-15 14:07:31.3749|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 14:07:31.3749|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.GetDscAction (Tug.Server), returned result Microsoft.AspNetCore.Mvc.JsonResult. 
+2017-02-15 14:07:31.3905|1|Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor|INFO|Executing JsonResult, writing value Tug.Model.GetDscActionResponseBody. 
+2017-02-15 14:07:31.3905|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) in 1386.8856ms 
+2017-02-15 14:07:31.4217|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" completed keep alive response. 
+2017-02-15 14:07:31.4217|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 1467.2483ms 200 application/json; charset=utf-8 
+2017-02-15 14:08:56.4275|19|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" reset. 
+2017-02-15 14:08:56.4389|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" disconnecting. 
+2017-02-15 14:08:56.4389|7|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" sending FIN. 
+2017-02-15 14:08:56.4389|8|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" sent FIN with status "0". 
+2017-02-15 14:08:56.4546|2|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" stopped. 
+2017-02-15 14:08:56.4389|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" disconnecting. 
+2017-02-15 14:08:56.4858|15|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF7" write of "0" bytes to disconnected client. 
+2017-02-15 14:24:46.1345|1|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" started. 
+2017-02-15 14:24:46.1502|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 PUT http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820') application/json; charset=utf-8 666 
+2017-02-15 14:24:46.1670|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'RegisterDscAgentRequest' and template 'Nodes(AgentId='{AgentId}')'. 
+2017-02-15 14:24:46.2752|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) 
+2017-02-15 14:24:46.3689|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received authorization header [Shared ZzDquxzFXNaOWN2zhp/kT5/nwhzRNsTFbsZVTkoQNQY=] 
+2017-02-15 14:24:46.4002|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received x-ms-date header [2017-02-15T21:24:46.0939878Z] 
+2017-02-15 14:24:47.1668|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 14:24:47.1824|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration key to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.regkey] 
+2017-02-15 14:24:47.1824|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration details to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 14:24:47.1981|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) with arguments (Tug.Messages.RegisterDscAgentRequest) - ModelState is Valid 
+2017-02-15 14:24:47.2137|0|Tug.Server.Controllers.DscController|TRACE|RegisterDscAgent:  PUT 
+2017-02-15 14:24:47.2137|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 14:24:47.4012|0|Tug.Server.Providers.Ps5DscHandler|TRACE|REGISTER: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Details":  {
+                    "AgentInformation":  {
+                                             "LCMVersion":  "2.0",
+                                             "NodeName":  "TGTTUG",
+                                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                                         },
+                    "ConfigurationNames":  [
+                                               "TimeZoneConfig"
+                                           ],
+                    "RegistrationInformation":  {
+                                                    "CertificateInformation":  {
+                                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                                   "Subject":  "CN=http://tug:5000",
+                                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                                   "Version":  3
+                                                                               },
+                                                    "RegistrationMessageType":  "ConfigurationRepository"
+                                                }
+                }
+} 
+2017-02-15 14:24:47.8700|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|Updating node reg details [C:\program files\Tug\Server\var\DscService\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json]: {
+    "AgentInformation":  {
+                             "LCMVersion":  "2.0",
+                             "NodeName":  "TGTTUG",
+                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                         },
+    "ConfigurationNames":  [
+                               "TimeZoneConfig"
+                           ],
+    "RegistrationInformation":  {
+                                    "CertificateInformation":  {
+                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                   "Subject":  "CN=http://tug:5000",
+                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                   "Version":  3
+                                                               },
+                                    "RegistrationMessageType":  "ConfigurationRepository"
+                                }
+} 
+2017-02-15 14:24:47.8855|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Register-TugNode) >>>>>>>>>>>> 
+2017-02-15 14:24:47.9012|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  (NULL/EMPTY result) 
+2017-02-15 14:24:47.9012|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 14:24:47.9169|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server), returned result Microsoft.AspNetCore.Mvc.NoContentResult. 
+2017-02-15 14:24:47.9324|1|Microsoft.AspNetCore.Mvc.StatusCodeResult|INFO|Executing HttpStatusCodeResult, setting HTTP status code 204 
+2017-02-15 14:24:47.9324|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) in 1559.1882ms 
+2017-02-15 14:24:47.9481|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" completed keep alive response. 
+2017-02-15 14:24:47.9637|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 1805.6425ms 204  
+2017-02-15 14:24:47.9793|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 PUT http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820') application/json; charset=utf-8 621 
+2017-02-15 14:24:47.9793|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'RegisterDscAgentRequest' and template 'Nodes(AgentId='{AgentId}')'. 
+2017-02-15 14:24:48.0731|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) 
+2017-02-15 14:24:48.1512|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received authorization header [Shared yFX3sTIc3nvq53P8dQCUiaN9VbmCswyYu6mcEoeR+Ww=] 
+2017-02-15 14:24:48.1981|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|received x-ms-date header [2017-02-15T21:24:47.9600051Z] 
+2017-02-15 14:24:48.2137|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 14:24:48.4651|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration key to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.regkey] 
+2017-02-15 14:24:48.4651|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|saved registration details to [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 14:24:48.5105|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) with arguments (Tug.Messages.RegisterDscAgentRequest) - ModelState is Valid 
+2017-02-15 14:24:48.5105|0|Tug.Server.Controllers.DscController|TRACE|RegisterDscAgent:  PUT 
+2017-02-15 14:24:48.5418|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 14:24:48.6512|0|Tug.Server.Providers.Ps5DscHandler|TRACE|REGISTER: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Details":  {
+                    "AgentInformation":  {
+                                             "LCMVersion":  "2.0",
+                                             "NodeName":  "TGTTUG",
+                                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                                         },
+                    "ConfigurationNames":  null,
+                    "RegistrationInformation":  {
+                                                    "CertificateInformation":  {
+                                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                                   "Subject":  "CN=http://tug:5000",
+                                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                                   "Version":  3
+                                                                               },
+                                                    "RegistrationMessageType":  "ResourceRepository"
+                                                }
+                }
+} 
+2017-02-15 14:24:48.8074|0|Tug.Server.Providers.Ps5DscHandler|DEBUG|Updating node reg details [C:\program files\Tug\Server\var\DscService\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json]: {
+    "AgentInformation":  {
+                             "LCMVersion":  "2.0",
+                             "NodeName":  "TGTTUG",
+                             "IPAddress":  "192.168.3.80;127.0.0.1;fe80::1851:166b:1893:e1fe%4;::2000:0:0:0;::1;::2000:0:0:0"
+                         },
+    "ConfigurationNames":  null,
+    "RegistrationInformation":  {
+                                    "CertificateInformation":  {
+                                                                   "FriendlyName":  "DSC-OaaS Client Authentication",
+                                                                   "Issuer":  "CN=http://tug:5000",
+                                                                   "NotAfter":  "2018-01-23T12:54:25.0000000-07:00",
+                                                                   "NotBefore":  "2017-01-23T19:44:25.0000000-07:00",
+                                                                   "Subject":  "CN=http://tug:5000",
+                                                                   "PublicKey":  "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+                                                                   "Thumbprint":  "B7981A1E1AB5E3432665F2165E6F268310188EB9",
+                                                                   "Version":  3
+                                                               },
+                                    "RegistrationMessageType":  "ResourceRepository"
+                                }
+} 
+2017-02-15 14:24:48.9819|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Register-TugNode) >>>>>>>>>>>> 
+2017-02-15 14:24:48.9819|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  (NULL/EMPTY result) 
+2017-02-15 14:24:49.1199|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 14:24:49.1518|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server), returned result Microsoft.AspNetCore.Mvc.NoContentResult. 
+2017-02-15 14:24:49.1518|1|Microsoft.AspNetCore.Mvc.StatusCodeResult|INFO|Executing HttpStatusCodeResult, setting HTTP status code 204 
+2017-02-15 14:24:49.1668|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.RegisterDscAgent (Tug.Server) in 1006.8005ms 
+2017-02-15 14:24:49.1668|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" completed keep alive response. 
+2017-02-15 14:24:49.1668|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 1197.4879ms 204  
+2017-02-15 14:25:57.4009|19|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" reset. 
+2017-02-15 14:25:57.4009|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" disconnecting. 
+2017-02-15 14:25:57.4165|7|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" sending FIN. 
+2017-02-15 14:25:57.4165|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" disconnecting. 
+2017-02-15 14:25:57.4165|8|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" sent FIN with status "0". 
+2017-02-15 14:25:57.4321|2|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF8" stopped. 
+2017-02-15 14:37:31.5970|1|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" started. 
+2017-02-15 14:37:31.5970|1|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request starting HTTP/1.1 POST http://tug:5000/Nodes(AgentId='3C4EA76D-E182-11E6-8748-00155D7CC820')/GetDscAction application/json; charset=utf-8 128 
+2017-02-15 14:37:31.6090|1|Microsoft.AspNetCore.Routing.Tree.TreeRouter|DEBUG|Request successfully matched the route with name 'GetDscActionRequest' and template 'Nodes(AgentId='{AgentId}')/GetDscAction'. 
+2017-02-15 14:37:31.6090|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executing action Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) 
+2017-02-15 14:37:32.6910|1|Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinder|DEBUG|Selected input formatter 'Microsoft.AspNetCore.Mvc.Formatters.JsonInputFormatter' for content type 'application/json; charset=utf-8'. 
+2017-02-15 14:37:32.6910|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|looking for registration details at [C:\program files\Tug\Server\var\DscService\Authz\Registrations\3c4ea76d-e182-11e6-8748-00155d7cc820.json] 
+2017-02-15 14:37:32.7140|0|Tug.Server.Filters.DscRegKeyAuthzFilter|DEBUG|reg key validation for Agent ID [3c4ea76d-e182-11e6-8748-00155d7cc820] = [True] 
+2017-02-15 14:37:32.8030|1|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executing action method Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) with arguments (Tug.Messages.GetDscActionRequest) - ModelState is Valid 
+2017-02-15 14:37:32.8170|0|Tug.Server.Controllers.DscController|TRACE|GetDscAction:  POST 
+2017-02-15 14:37:32.8250|0|Tug.Server.Controllers.DscController|DEBUG|AgentId=[3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 14:37:32.8550|0|Tug.Server.Providers.Ps5DscHandler|TRACE|GET-ACTION: {
+    "AgentId":  "3c4ea76d-e182-11e6-8748-00155d7cc820",
+    "Detail":  {
+                   "ClientStatus":  [
+                                        {
+                                            "ConfigurationName":  null,
+                                            "Checksum":  "b7f5b20c6be2efc3ef754ad2789462be9eff3952d9490ee95e73f265a70eed39",
+                                            "ChecksumAlgorithm":  "SHA-256"
+                                        }
+                                    ]
+               }
+} 
+2017-02-15 14:37:32.8820|0|Tug.Server.Providers.Ps5DscHandler|TRACE|Resolved requested configuration name as [] 
+2017-02-15 14:37:32.8910|0|Tug.Server.Providers.Ps5DscHandler|WARN|No configuration name specified for agent [3c4ea76d-e182-11e6-8748-00155d7cc820] 
+2017-02-15 14:37:32.9110|0|Tug.Server.Providers.Ps5DscHandler|TRACE|Returning status: Tug.Server.ActionStatus 
+2017-02-15 14:37:32.9180|0|Tug.Server.Providers.Ps5DscHandler|TRACE|ThreadSafeInvoke(Get-TugNodeAction) >>>>>>>>>>>> 
+2017-02-15 14:37:32.9180|0|Tug.Server.Providers.Ps5DscHandler|TRACE|  >> Tug.Server.ActionStatus 
+2017-02-15 14:37:32.9340|0|Tug.Server.Controllers.ModelResultExt|DEBUG|Adding Header[ProtocolVersion] replace=[False] 
+2017-02-15 14:37:32.9340|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|DEBUG|Executed action method Tug.Server.Controllers.DscController.GetDscAction (Tug.Server), returned result Microsoft.AspNetCore.Mvc.JsonResult. 
+2017-02-15 14:37:32.9340|1|Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor|INFO|Executing JsonResult, writing value Tug.Model.GetDscActionResponseBody. 
+2017-02-15 14:37:32.9500|2|Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker|INFO|Executed action Tug.Server.Controllers.DscController.GetDscAction (Tug.Server) in 1329.837ms 
+2017-02-15 14:37:32.9500|9|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" completed keep alive response. 
+2017-02-15 14:37:32.9650|2|Microsoft.AspNetCore.Hosting.Internal.WebHost|INFO|Request finished in 1361.5891ms 200 application/json; charset=utf-8 
+2017-02-15 14:38:57.0273|19|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" reset. 
+2017-02-15 14:38:57.0429|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" disconnecting. 
+2017-02-15 14:38:57.0429|7|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" sending FIN. 
+2017-02-15 14:38:57.0429|10|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" disconnecting. 
+2017-02-15 14:38:57.0585|8|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" sent FIN with status "0". 
+2017-02-15 14:38:57.0741|2|Microsoft.AspNetCore.Server.Kestrel|DEBUG|Connection id "0HL2LS7INJVF9" stopped. 
