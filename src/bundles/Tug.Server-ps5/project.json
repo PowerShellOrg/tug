@@ -27,10 +27,12 @@
     "Tug.Server": {
       "target": "project"
     }
-    // ,
-    // "Tug.Server.Providers.Ps5DscHandler": {
-    //   "target": "project"
-    // }
+    // We don't create a direct dependency and instead pull in the
+    // extension assemblies during the packaging into the EXT folder
+    //,
+    //"Tug.Server.Providers.Ps5DscHandler": {
+    //  "target": "project"
+    //}
   },
   
   "frameworks": {
