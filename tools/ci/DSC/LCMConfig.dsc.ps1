@@ -30,7 +30,8 @@ Configuration LCMConfig
 
         ConfigurationRepositoryWeb config_tug
         {
-            ServerURL = 'http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc'
+            ServerURL = 'http://localhost:5000/'
+           #ServerURL = 'http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc'
             AllowUnsecureConnection = $true
            #RegistrationKey = "4008e198-e375-46be-847c-53c3c249c899"
             RegistrationKey = "f65e1a0c-46b0-424c-a6a5-c3701aef32e5"
