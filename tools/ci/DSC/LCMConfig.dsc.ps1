@@ -21,7 +21,7 @@ Configuration LCMConfig
         {
             RefreshMode = 'Pull'
             RebootNodeIfNeeded = $false
-            ConfigurationMode = 'ApplyOnly'
+            ConfigurationMode = 'ApplyAndMonitor'
             DebugMode = 'All'
             AllowModuleOverwrite = $false
             RefreshFrequencyMins = 30
@@ -38,19 +38,21 @@ Configuration LCMConfig
             ConfigurationNames = @("TestConfig1")
         }
 
-        #ResourceRepositoryWeb resource_tug
-        #{
-        #    ServerURL = 'http://127.0.0.1:5000/'
-        #    AllowUnsecureConnection = $true
-        #    #RegistrationKey = "FOO"
-        #}
+        ResourceRepositoryWeb resource_tug
+        {
+            ServerURL = 'http://localhost:5000/'
+            AllowUnsecureConnection = $true
+           #RegistrationKey = "4008e198-e375-46be-847c-53c3c249c899"
+            RegistrationKey = "f65e1a0c-46b0-424c-a6a5-c3701aef32e5"
+        }
 
-        #ReportServerWeb report_tug
-        #{
-        #    ServerURL = 'https://127.0.0.1:5000/'
-        #    AllowUnsecureConnection = $true
-        #    RegistrationKey = "FOO"
-        #}
+        ReportServerWeb report_tug
+        {
+            ServerURL = 'http://localhost:5000/'
+            AllowUnsecureConnection = $true
+           #RegistrationKey = "4008e198-e375-46be-847c-53c3c249c899"
+            RegistrationKey = "f65e1a0c-46b0-424c-a6a5-c3701aef32e5"
+        }
     }
 }
 
