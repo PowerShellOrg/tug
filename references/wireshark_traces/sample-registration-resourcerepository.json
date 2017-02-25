@@ -1,0 +1,30 @@
+// PUT /Nodes(AgentId='1AD901EB-C7C6-11E6-A94A-12E41D782BFC') HTTP/1.1 
+// Accept: application/json 
+// x-ms-date: 2017-02-25T12:46:54.4196460Z 
+// Authorization: Shared 5MPzNanupLYK15FRl1I+zxxh40+yyOmro5PW9GtPLwQ= 
+// ProtocolVersion: 2.0 
+// Content-Type: application/json; charset=utf-8 
+// Host: 10.50.1.5:5000 
+// Content-Length: 639 
+// Expect: 100-continue 
+ 
+{
+    "AgentInformation": {
+        "LCMVersion": "2.0",
+        "NodeName": "EC2AMAZ-VT1I874",
+        "IPAddress": "10.50.1.9;127.0.0.1;fe80::288e:6e98:1555:55e9%6;::2000:0:0:0;::1;::2000:0:0:0"
+    },
+    "RegistrationInformation": {
+        "CertificateInformation": {
+            "FriendlyName": "DSC-OaaS Client Authentication",
+            "Issuer": "CN=http://10.50.1.5:5000",
+            "NotAfter": "2018-02-24T10:42:01.0000000-05:00",
+            "NotBefore": "2017-02-24T15:32:02.0000000-05:00",
+            "Subject": "CN=http://10.50.1.5:5000",
+            "PublicKey": "U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==",
+            "Thumbprint": "FFB21C9308069E3C4E3267FA3E8DE38E7A5FBE07",
+            "Version": 3
+        },
+        "RegistrationMessageType": "ResourceRepository"
+    }
+}
