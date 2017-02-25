@@ -62,7 +62,14 @@ function Register-TugNode {
 .SYNOPSIS
 Save node registration information.
 .DESCRIPTION
-Register-TugNode will register a node with the Tug Server, saving the node-specifie information in a JSON file for later use.  It will update registration information if a change in registration information is detected.
+Register-TugNode will register a node with the Tug Server, saving the node-specific information in a JSON file for later use.  It will update registration information if a change in registration information is detected.
+Because a node can register itself multiple times, once for each type of supported DSC service
+endpoint and because the details of each registration may differ, we need to capture the details
+of each registration type individually, distinguished by the value of the JSON payload at the path
+`RegistrationInformation.RegistrationMessageType`, which can have one of 3 values:
+* ConfigurationRepository
+* ResourceRepository
+* ReportServer
 .PARAMETER AgentID
 The node's calculated AgentID from the LCM.
 .PARAMETER Details
@@ -85,8 +92,13 @@ an exception that will surface to the calling client as an unexpected error.
     
     BEGIN {
         $handlerLogger.LogTrace("REGISTER: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
-        $regFile = [System.IO.Path]::Combine($dscRegSavePath, "$($AgentId).json")
         $regInfo = $Details | ConvertTo-Json -Depth 10
+        $regType = $Details.RegistrationInformation.RegistrationMessageType
+        ## Default to ConfigRepo reg type file
+        $regFile = [System.IO.Path]::Combine($dscRegSavePath, "$($AgentId).json")
+        if ($regType -ne [Tug.Model.CommonRegistrationMessageTypes]::ConfigurationRepository) {
+            $regFile = [System.IO.Path]::Combine($dscRegSavePath, "$($AgentId)_$($regType).json")
+        }
     }
 
     PROCESS {

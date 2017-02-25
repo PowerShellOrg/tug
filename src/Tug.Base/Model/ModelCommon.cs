@@ -55,4 +55,11 @@ namespace Tug.Model
         GetConfiguration,
         UpdateMetaConfiguration,
     }
+
+    public static class CommonRegistrationMessageTypes
+    {
+        public const string ConfigurationRepository = "ConfigurationRepository";
+        public const string ResourceRepository = "ResourceRepository";
+        public const string ReportServer = "ReportServer";
+    }
 }
