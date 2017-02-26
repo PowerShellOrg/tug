@@ -22,7 +22,6 @@ namespace Tug.Server.Controllers
     public class DscController : Controller
     {
         private ILogger<DscController> _logger;
-        //private DscHandlerManager _dscHandlerManager;
         private DscHandlerHelper _dscHelper;
         private IDscHandler _dscHandler;
 

@@ -28,4 +28,7 @@ dotnet publish %THIS_DIR%                                         -o %PUBLISH_DI
 @REM doc files exactly as they are
 xcopy %THIS_DIR%posh-res %PUBLISH_DIR%\ /E
 
+@REM Copy over the Basic Tug PS cmdlets over from the test folder
+copy %THIS_DIR%..\..\..\test\run-net452-ps5\BasicTugCmdlets.ps1 %PUBLISH_DIR%\samples
+
 @ENDLOCAL

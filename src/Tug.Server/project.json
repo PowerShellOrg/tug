@@ -1,9 +1,10 @@
 {
-  "name": "Tug.Server",
-  "version": "0.5.1-*",
-  "copyright": "Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.",
-  "title": "Tug Server Implementation",
-  "authors": ["Don Jones"],
+  // Assembly Manifest Details are defined in
+  // AssemblyInfo.cs and SharedAssemblyInfo.cs
+
+  "authors": [
+    "github.com/PowerShellOrg/tug/graphs/contributors"
+  ],
   "language": "en-US",
 
   "buildOptions": {
@@ -12,12 +13,20 @@
     "nowarn": [
       "CS0169", // The field 'X' is never used
       "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
-    ]
+    ],
 
-    // TODO:  Temporarily disabled because it causes an error at build "The given key
-    // was not present in the dictionary." when we added a project dependency to
-    // Tug.Core; this may not be needed if we don't adding Razor views to
-    // our project (needed for runtime compilation)
+    "compile": {
+      "includeFiles": [
+        // Include in the shared assembly manifest details
+        "../shared/SharedAssemblyInfo.cs",
+        "../shared/SharedAssemblyVersionInfo.cs"
+      ]
+    }
+
+    // TODO:  Temporarily disabled because it causes an error at build
+    // "The given key was not present in the dictionary." when we added
+    // a project dependency to Tug.Core; this may not be needed if we do
+    // not add Razor views to our project (needed for runtime compilation)
     //,
     //"preserveCompilationContext": true
   },
@@ -65,7 +74,7 @@
 
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.Routing": "1.1.0",
-    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Mvc": "1.1.1",
 
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",

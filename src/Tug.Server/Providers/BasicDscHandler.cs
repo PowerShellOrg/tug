@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tug.Model;
@@ -39,6 +40,9 @@ namespace Tug.Server.Providers
         
         public string ModulePath
         { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Modules";
+        
+        public string ReportsPath
+        { get; set; } = $"{DEFAULT_WORK_FOLDER}\\Reports";
 
         public bool IsDisposed
         { get; private set; }
@@ -58,6 +62,7 @@ namespace Tug.Server.Providers
             Directory.CreateDirectory(RegistrationSavePath);
             Directory.CreateDirectory(ConfigurationPath);
             Directory.CreateDirectory(ModulePath);
+            Directory.CreateDirectory(ReportsPath);
             Logger.LogInformation("All Directories Created/Confirmed");
         }
 
@@ -294,14 +299,36 @@ namespace Tug.Server.Providers
             }
         }
 
-        public virtual void SendReport(Guid agentId, SendReportRequestBody reserved)
+        public virtual void SendReport(Guid agentId, SendReportBody report)
         {
-            throw new NotImplementedException();
+            var reportsDir = Path.Combine(ReportsPath, agentId.ToString());
+            var reportPath = Path.Combine(ReportsPath, $"{agentId}/{report.JobId}.json");
+
+            Directory.CreateDirectory(reportsDir);
+            File.WriteAllText(reportPath, JsonConvert.SerializeObject(report));
         }
 
-        public virtual Stream GetReports(Guid agentId)
+        public virtual IEnumerable<SendReportBody> GetReports(Guid agentId, Guid? jobId)
         {
-            throw new NotImplementedException();
+            var reportsDir = Path.Combine(ReportsPath, agentId.ToString());
+            var reportPath = Path.Combine(ReportsPath, $"{agentId}/{jobId}.json");
+
+            if (jobId != null)
+            {
+                if (!File.Exists(reportPath))
+                    return null;
+                
+                return new[] { JsonConvert.DeserializeObject<SendReportBody>(
+                        File.ReadAllText(reportPath)) };
+            }
+            else
+            {
+                if (!Directory.Exists(reportsDir))
+                    return null;
+                
+                return Directory.EnumerateFiles(reportsDir).Select(x =>
+                        JsonConvert.DeserializeObject<SendReportBody>(File.ReadAllText(x)));
+            }
         }
 
 

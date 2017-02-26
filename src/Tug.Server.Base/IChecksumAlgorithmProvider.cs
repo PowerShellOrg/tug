@@ -45,9 +45,15 @@ namespace Tug
                 AddSearchAssemblies(
                     extAssms.Select(x =>
                     {
+                        if (logger.IsEnabled(LogLevel.Debug))
+                            logger.LogDebug($"  * Adding [{x}]");
+
                         var an = GetAssemblyName(x);
                         if (an == null)
                             throw new ArgumentException("invalid assembly name");
+
+                        if (logger.IsEnabled(LogLevel.Debug))
+                            logger.LogDebug($"    o Resolved as AsmName [{an}]{Directory.GetCurrentDirectory()}:{an}");
                         return an;
                     }).Select(x =>
                     {
@@ -56,7 +62,7 @@ namespace Tug
                             throw new InvalidOperationException("unable to resolve assembly from name");
                         
                         if (logger.IsEnabled(LogLevel.Debug))
-                            logger.LogDebug($"  * [{x.FullName}]");
+                            logger.LogDebug($"    o [{x.FullName}]");
 
                         return asm;
                     }));

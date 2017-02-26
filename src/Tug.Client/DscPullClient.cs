@@ -22,6 +22,9 @@ using Tug.Messages;
 using Tug.Messages.ModelBinding;
 using Tug.Model;
 using Tug.Client.Configuration;
+using Tug.Util;
+using Newtonsoft.Json.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tug.Client
 {
@@ -29,7 +32,23 @@ namespace Tug.Client
     {
         private static readonly ILogger LOG = AppLog.Create<DscPullClient>();
 
+        public const string COMPUTE_MS_DATE_HEADER = "%NOW%";
+
         public const string REGISTRATION_MESSAGE_TYPE_CONFIGURATION_REPOSITORY = "ConfigurationRepository";
+
+        public static readonly SendReportBody SendReportRequestBodyDefault =
+                new SendReportBody
+                {
+                    OperationType = "Consistency",
+                    RefreshMode = DscRefreshMode.Pull,
+                    Status = "Success",
+                    ReportFormatVersion = "2.0",
+                    ConfigurationVersion = "2.0",
+                    StartTime = DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN,
+                    EndTime = DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN,
+                    RebootRequested = DscTrueFalse.False,
+                };
+
 
         private JsonSerializerSettings _jsonSerSettings;
 
@@ -77,6 +96,19 @@ namespace Tug.Client
         public bool IsDisposed
         { get; private set; }
 
+        /// <summary>
+        /// This flag ensures that the <see cref="Model.SendReportBody#AdditionalData"
+        /// >Additional Data</see> element is removed from any report payload, which is
+        /// necessary when targetting a DSC Pull Service running on WMF 5.0 which does
+        /// not support this element.
+        /// </summary>
+        /// <remarks>
+        /// See for more details about this issue:
+        ///    https://github.com/PowerShell/PowerShell/issues/2921
+        /// </remarks>
+        public bool DisableReportAdditionalData
+        { get; set; }
+
         protected void AssertInit()
         {
             if (!IsInitialized)
@@ -98,16 +130,10 @@ namespace Tug.Client
                     /*SR*/"missing server URL configuration");
         }
 
-        // TODO:
-        // public void Run(int refreshFrequencySecs = 30 * 60)
-        // {
-
-        // }
-
-        public async Task RegisterDscAgentAsync()
+        public async Task RegisterDscAgent()
         {
             if (LOG.IsEnabled(LogLevel.Trace))
-                LOG.LogTrace(nameof(RegisterDscAgentAsync));
+                LOG.LogTrace(nameof(RegisterDscAgent));
 
             AssertInit();
 
@@ -118,6 +144,7 @@ namespace Tug.Client
             {
                 AgentId = Configuration.AgentId,
                 ContentTypeHeader = DscContentTypes.JSON,
+                MsDateHeader = COMPUTE_MS_DATE_HEADER,
                 Body = new RegisterDscAgentRequestBody
                 {
                     ConfigurationNames = Configuration.ConfigurationNames.ToArray(),
@@ -134,10 +161,10 @@ namespace Tug.Client
                     RegisterDscAgentRequest.ROUTE, dscRequ);
         }
 
-        public async Task<IEnumerable<ActionDetailsItem>> GetDscActionAsync(IEnumerable<ClientStatusItem> clientStatus = null)
+        public async Task<IEnumerable<ActionDetailsItem>> GetDscAction(IEnumerable<ClientStatusItem> clientStatus = null)
         {
             if (LOG.IsEnabled(LogLevel.Trace))
-                LOG.LogTrace(nameof(GetDscActionAsync));
+                LOG.LogTrace(nameof(GetDscAction));
             
             AssertInit();
 
@@ -278,6 +305,181 @@ namespace Tug.Client
             }
         }
 
+        /// <summary>
+        /// Submits a <c>SendReport</c> message request which the body payload
+        /// of the request defined as the JSON-serialized form of the resultant
+        /// combination of the argument provided.
+        /// </summary>
+        /// <param name="defaultsProfile">optionally, the name of a profile of <c>SendReport</c>
+        ///    body payload elements; these must be defined in the configuration</param>
+        /// <param name="overrides">optionally, a set of element overrides of <c>SendReport</c>
+        ///    body payload elements</param>
+        /// <param name="statusData">optionally, an array of status data to override
+        ///    in the body payload</param>
+        /// <param name="errors">optionally, an array of errors to override
+        ///    in the body payload</param>
+        /// <param name="additionalData">optionally, a collection of additional, named
+        ///    data elements to override the body payload</param>
+        /// <remarks>
+        /// <p>This method starts with a base payload defined by the
+        /// <see cref="DscPullConfig.SendReportConfig.CommonDefaults"/> settings.
+        /// If specified, a profile of elements is then merged next.
+        /// Then if specified, the elements defined by the overrides.
+        /// Finally, if any of the additional individual elemnents of <c>statusData</c>
+        /// <c>errors</c> or <c>additionalData</c> are specified, they will replace
+        /// the current elements respectively to produce a final resultant payload.
+        /// </p>
+        /// </remarks>
+        public async Task SendReport(
+                string defaultsProfile = null,
+                SendReportBody overrides = null,
+                string operationType = null,
+                string[] statusData = null,
+                string[] errors = null,
+                IDictionary<string, string> additionalData = null)
+        {
+            List<string> jsons = new List<string>();
+
+            var common = Configuration?.SendReport?.CommonDefaults;
+            if (common != null)
+            {
+                jsons.Add(JsonConvert.SerializeObject(common));
+            }
+            else
+            {
+                jsons.Add(JsonConvert.SerializeObject(SendReportRequestBodyDefault));
+            }
+
+            if (defaultsProfile != null)
+            {
+                if (!(Configuration?.SendReport?.Profiles?.ContainsKey(
+                        defaultsProfile)).GetValueOrDefault())
+                {
+                    throw new ArgumentException("invalid or missing defaults profile specified")
+                            .WithData(nameof(defaultsProfile), defaultsProfile);
+                }
+
+                var profile = Configuration.SendReport.Profiles[defaultsProfile];
+                jsons.Add(JsonConvert.SerializeObject(profile));
+            }
+
+            if (overrides != null)
+            {
+                jsons.Add(JsonConvert.SerializeObject(overrides));
+            }
+
+            JObject merged = null;
+            foreach (var j in jsons)
+            {
+                if (j == null)
+                    continue;
+
+                if (merged == null)
+                    merged = JObject.Parse(j);
+                else
+                    merged.Merge(JObject.Parse(j));
+            }
+
+            var body = merged.ToObject<SendReportBody>();
+
+            if (operationType != null)
+                body.OperationType = operationType;
+            if (statusData != null)
+                body.StatusData = statusData;
+            if (errors != null)
+                body.Errors = errors;
+            if (additionalData != null)
+                body.AdditionalData = additionalData.Select(
+                        x => new Model.SendReportBody.AdditionalDataItem
+                        {
+                            Key = x.Key,
+                            Value = x.Value,
+                        }).ToArray();
+
+            await SendReport(body);
+        }
+        
+        /// <summary>
+        /// Submits a <c>SendReport</c> message request which the body payload
+        /// of the request defined as the JSON-serialized form of the argument.
+        /// </summary>
+        /// <param name="body"></param>
+        public async Task SendReport(SendReportBody body)
+        {
+            if (LOG.IsEnabled(LogLevel.Trace))
+                LOG.LogTrace(nameof(SendReport));
+            
+            AssertInit();
+
+            var serverConfig = Configuration.ReportServer;
+            AssertServerConfig(serverConfig);
+
+            if (body != null)
+            {
+                var now = DateTime.Now.ToString(SendReportBody.REPORT_DATE_FORMAT);
+                var jobId = Guid.NewGuid();
+
+                if (Guid.Empty == body.JobId)
+                    body.JobId = jobId;
+
+                if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.StartTime)
+                    body.StartTime = now;
+                
+                if (DscPullConfig.SendReportConfig.DATETIME_NOW_TOKEN == body.EndTime)
+                    body.EndTime = now;
+
+                if (DisableReportAdditionalData)
+                    body.AdditionalData = null;
+            }
+
+            var dscRequ = new SendReportRequest
+            {
+                AgentId = Configuration.AgentId,
+                AcceptHeader = DscContentTypes.JSON,
+                Body = body,
+                ContentTypeHeader = DscContentTypes.JSON,
+            };
+
+            await SendDscAsync(serverConfig, SendReportRequest.VERB,
+                    SendReportRequest.ROUTE, dscRequ);
+        }
+
+        public async Task<IEnumerable<SendReportBody>> GetReports(Guid? jobId = null)
+        {
+            if (LOG.IsEnabled(LogLevel.Trace))
+                LOG.LogTrace(nameof(GetReports));
+            
+            AssertInit();
+
+            var serverConfig = Configuration.ReportServer;
+            AssertServerConfig(serverConfig);
+
+            var dscRequ = new GetReportsRequest
+            {
+                AgentId = Configuration.AgentId,
+                JobId = jobId,
+            };
+
+            if (jobId == null)
+            {
+                var dscResp = new GetReportsAllResponse();
+
+                await SendDscAsync(serverConfig, GetReportsRequest.VERB,
+                        GetReportsRequest.ROUTE_ALL, dscRequ, dscResp);
+                
+                return dscResp.Body.Value;
+            }
+            else
+            {
+                var dscResp = new GetReportsSingleResponse();
+
+                await SendDscAsync(serverConfig, GetReportsRequest.VERB,
+                        GetReportsRequest.ROUTE_SINGLE, dscRequ, dscResp);
+                
+                return new[] { dscResp.Body };
+            }
+        }
+
         protected async Task SendDscAsync(DscPullConfig.ServerConfig server, HttpMethod verb, string route,
                 DscRequest dscRequ)
         {
@@ -327,11 +529,13 @@ namespace Tug.Client
                 contentType = DscContentTypes.JSON;
             requMessage.Headers.Accept.Clear();
             requMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
-
+            
             ExtractFromRequestModel(dscRequ, requMessage);
 
             // See if we need to add RegKey authorization data
-            if (!string.IsNullOrEmpty(server.RegistrationKey) && requMessage.Content != null)
+            if (!string.IsNullOrEmpty(server.RegistrationKey)
+                    && dscRequ.MsDateHeader == COMPUTE_MS_DATE_HEADER
+                    && requMessage.Content != null)
             {
                 LOG.LogInformation("Computing RegKey Authorization");
 
@@ -339,7 +543,9 @@ namespace Tug.Client
                 // Authorization challenge when using Reg Key Authentication
                 // Details can be found at /references/regkey-authorization.md
                 var msDate = DateTime.UtcNow.ToString(DscRequest.X_MS_DATE_FORMAT);
+                requMessage.Headers.Remove(DscRequest.X_MS_DATE_HEADER);
                 requMessage.Headers.Add(DscRequest.X_MS_DATE_HEADER, msDate);
+                dscRequ.MsDateHeader = null;
 
                 var macKey = Encoding.UTF8.GetBytes(server.RegistrationKey);
 
@@ -414,11 +620,16 @@ namespace Tug.Client
                         value = ConvertTo<string>(value);
 
                     if (LOG.IsEnabled(LogLevel.Debug))
-                        LOG.LogDebug("Extracting request header [{name}] from property [{property}]", name, pi.Name);
+                        LOG.LogDebug("Extracting request header [{name}] from property [{property}]",
+                                name, pi.Name);
 
                     if (!(TryAddHeader(requMessage.Headers, name, (string)value, replace: true)))
-                        if (!(TryAddHeader(requMessage.Content?.Headers, name, (string)value, replace: true)))
-                            throw new Exception("Unable to add header anywhere to request message");
+                        if (!(TryAddHeader(requMessage.Content?.Headers, name, (string)value,
+                                replace: true)))
+                            throw new Exception(
+                                    /*SR*/"unable to add header anywhere to request message")
+                                    .WithData(nameof(name), name)
+                                    .WithData(nameof(value), value);
                         else if (LOG.IsEnabled(LogLevel.Debug))
                             LOG.LogDebug("    added as CONTENT header");
                     else if (LOG.IsEnabled(LogLevel.Debug))
@@ -495,6 +706,9 @@ namespace Tug.Client
                 // We test for a few principal property types that we can send directly as body,
                 // content and otherwise we assume a custom model object that we serialize via JSON
 
+                var required = fromBodyProperty.GetCustomAttribute(typeof(RequiredAttribute))
+                        as RequiredAttribute;
+
                 if (typeof(string).IsAssignableFrom(fromBodyProperty.PropertyType))
                 {
                     var body = (string)fromBodyProperty.GetValue(dscRequ);
@@ -520,6 +734,10 @@ namespace Tug.Client
                     {
                         var bodySer = JsonConvert.SerializeObject(body, _jsonSerSettings);
                         content = new StringContent(bodySer);
+                    }
+                    else if ((bool)required?.AllowEmptyStrings)
+                    {
+                        content = new StringContent(string.Empty);
                     }
                 }
             }

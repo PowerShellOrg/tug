@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -7,6 +8,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using Tug.Client.Configuration;
 using Tug.UnitTesting;
 
@@ -32,7 +34,20 @@ namespace Tug.Client
             // Only for debugging/testing in DEV (i.e. with Fiddler) -- can't be const because of compile warning
             public string proxy_url
             { get; set; } = null; // "http://localhost:8888"; // 
+
+            // Flag that enables some kludges for latest Classic DSC Pull Server on WMF 5.0 platforms
+            //    See:  https://github.com/PowerShell/PowerShell/issues/2921
+            // We leave the default enabled to support the CI server builds, but disable on
+            // local development environments where we're normally testing against Win2016
+            public bool adjust_for_wmf_50
+            { get; set; } = true;
         }
+
+        // This is the date format that appears to be what the Classic DSC Pull Server
+        // is using to parse and store the report dates, so we need to test against this
+        public const string CLASSIC_SERVER_REPORT_DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff";
+        // On WMF 5.0, DscService formats its dates differently
+        public const string CLASSIC_SERVER_REPORT_DATE_FORMAT_ALT = "MM/dd/yyyy HH:mm:ss";
 
         private static TestConfig _testConfig = new TestConfig();
 
@@ -51,14 +66,13 @@ namespace Tug.Client
                 .Bind(_testConfig);
         }
 
-
         [TestMethod]
-        public void TestRegisterDscAgent() 
+        public void TestRegisterDscAgent()
         {
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
             }
         }
 
@@ -78,7 +92,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for bad request (400)");
             }
@@ -100,7 +114,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for bad request (400)");
             }
@@ -122,7 +136,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 401 (Unauthorized)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -144,7 +158,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 401 (Unauthorized)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -176,7 +190,7 @@ namespace Tug.Client
                                 || ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for internal server error (500)");
             }
@@ -199,7 +213,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -228,7 +242,7 @@ namespace Tug.Client
                                 || ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)")),
                         action: () =>
-                            client.RegisterDscAgentAsync().Wait(),
+                            client.RegisterDscAgent().Wait(),
                         message:
                             "Throws HTTP exception for unauthorized (401)");
             }
@@ -240,9 +254,9 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
-                var actionResult = client.GetDscActionAsync().Result;
+                var actionResult = client.GetDscAction().Result;
                 Assert.IsNotNull(actionResult, "Action result is not null");
 
                 var resultArr = actionResult.ToArray();
@@ -268,7 +282,7 @@ namespace Tug.Client
                 // Inject one unexpected property
                 statusItems[0]["foo"] = "bar";
 
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
                 TugAssert.ThrowsExceptionWhen<AggregateException>(
                         condition: (ex) =>
@@ -276,7 +290,7 @@ namespace Tug.Client
                             && ex.InnerException.Message.Contains(
                                     "Response status code does not indicate success: 400 (Bad Request)"),
                         action: () =>
-                            client.GetDscActionAsync(statusItems).Wait(),
+                            client.GetDscAction(statusItems).Wait(),
                         message:
                             "Throws HTTP exception for bad request (400)");
             }
@@ -292,9 +306,9 @@ namespace Tug.Client
             {
                 try
                 {
-                    client.RegisterDscAgentAsync().Wait();
+                    client.RegisterDscAgent().Wait();
 
-                    var actionResult = client.GetDscActionAsync(new[]
+                    var actionResult = client.GetDscAction(new[]
                     {
                         new Model.ClientStatusItem
                         {
@@ -330,9 +344,9 @@ namespace Tug.Client
             var config = BuildConfig();
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
-                var actionResult = client.GetDscActionAsync(new[]
+                var actionResult = client.GetDscAction(new[]
                 {
                     new Model.ClientStatusItem
                     {
@@ -374,9 +388,9 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
 
-                var actionResult = client.GetDscActionAsync(new[]
+                var actionResult = client.GetDscAction(new[]
                 {
                     new Model.ClientStatusItem
                     {
@@ -428,7 +442,7 @@ namespace Tug.Client
 
             using (var client = new DscPullClient(config))
             {
-                client.RegisterDscAgentAsync().Wait();
+                client.RegisterDscAgent().Wait();
                 
                 var moduleResult = client.GetModule(modName, modVers).Result;
                 Assert.IsNotNull(moduleResult?.Content, "Module content not null");
@@ -437,6 +451,181 @@ namespace Tug.Client
                 Assert.AreEqual(csumBody, moduleResult.Checksum, "Expected module checksum");
 
                 CollectionAssert.AreEqual(modBody, moduleResult.Content, "Expected MOF config content");
+            }
+        }
+
+        [TestMethod]
+        public void TestSendReport()
+        {
+            var config = BuildConfig(newAgentId: true);
+            using (var client = new DscPullClient(config))
+            {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
+                client.RegisterDscAgent().Wait();
+                client.SendReport("SimpleInventoryDefaults",
+                        overrides: new Model.SendReportBody
+                        {
+                            NodeName = "MY_NAME",
+                            IpAddress = "::1;127.0.01",
+                        }).Wait();
+                client.SendReport("DetailedStatusDefaults",
+                        statusData: new[] { "STATUS" }).Wait();
+                client.SendReport("ErrorDefaults",
+                        errors: new[] { "ERROR" }).Wait();
+            }
+        }
+
+        [TestMethod]
+        public void TestSendReport_BadEmptyBody()
+        {
+            var config = BuildConfig();
+            using (var client = new DscPullClient(config))
+            {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.SendReport(null).Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
+            }
+        }
+
+        [TestMethod]
+        public void TestSendReport_BadMissingJobId()
+        {
+            var config = BuildConfig();
+            using (var client = new DscPullClient(config))
+            {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 400 (Bad Request)"),
+                        action: () =>
+                            client.SendReport(new BadSendReportBody()).Wait(),
+                        message:
+                            "Throws HTTP exception for bad request (400)");
+            }
+        }
+
+        [TestMethod]
+        public void TestSendReport_BadDateFormat()
+        {
+            var report = new Model.SendReportBody
+            {
+                JobId = Guid.NewGuid(),
+                StartTime = "NOW",
+                EndTime = "THEN",
+                OperationType = "FOO",
+                ReportFormatVersion = "BAR",
+            };
+            
+            var config = BuildConfig();
+            using (var client = new DscPullClient(config))
+            {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
+                TugAssert.ThrowsExceptionWhen<AggregateException>(
+                        condition: (ex) =>
+                            ex.InnerException is HttpRequestException
+                            && ex.InnerException.Message.Contains(
+                                    "Response status code does not indicate success: 500 (Internal Server Error)"),
+                        action: () =>
+                            client.SendReport(report).Wait(),
+                        message:
+                            "Throws HTTP exception for internal server error (500)");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetReports_Single()
+        {
+            var reportDateFormat = CLASSIC_SERVER_REPORT_DATE_FORMAT;
+            if (_testConfig.adjust_for_wmf_50)
+                reportDateFormat = CLASSIC_SERVER_REPORT_DATE_FORMAT_ALT;
+
+            var config = BuildConfig(newAgentId: true);
+            var report = new Model.SendReportBody
+            {
+                JobId = Guid.NewGuid(),
+                OperationType = "FOO",
+                RefreshMode = Model.DscRefreshMode.Pull,
+                Status = "BAR",
+                ReportFormatVersion = "Spooky",
+                ConfigurationVersion = "Scary",
+              //StartTime = DateTime.Now.ToString(Model.SendReportBody.REPORT_DATE_FORMAT),
+                StartTime = DateTime.Now.ToString(reportDateFormat),
+              //EndTime = DateTime.Now.ToString(Model.SendReportBody.REPORT_DATE_FORMAT),
+                EndTime = DateTime.Now.ToString(reportDateFormat),
+                RebootRequested = Model.DscTrueFalse.False,
+                StatusData = new[] { "STATUS-DATA" },
+                Errors = new[] { "ERRORS" },
+                AdditionalData = new[]
+                {
+                    new Model.SendReportBody.AdditionalDataItem { Key = "1", Value = "ONE", },
+                    new Model.SendReportBody.AdditionalDataItem { Key = "2", Value = "TWO", },
+                },
+            };
+
+            using (var client = new DscPullClient(config))
+            {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
+                client.RegisterDscAgent().Wait();
+                client.SendReport(report).Wait();
+
+                var sr = client.GetReports().Result;
+                Assert.IsNotNull(sr, "Reports not null");
+                var srArr = sr.ToArray();
+                Assert.AreEqual(1, srArr.Length, "Reports length is exactly 1");
+
+                // Unfortunate kludge to deal with broken DscService on WMF 5.1
+                //    See https://github.com/PowerShell/PowerShell/issues/2921
+                if (_testConfig.adjust_for_wmf_50)
+                    report.AdditionalData = Model.SendReportBody.AdditionalDataItem.EMPTY_ITEMS;
+
+                var ser1 = JsonConvert.SerializeObject(report);
+                var ser2 = JsonConvert.SerializeObject(srArr[0]);
+                Assert.AreEqual(ser1, ser2, "Submitted and retrieved reports are the same");
+
+                sr = client.GetReports().Result;
+                Assert.IsNotNull(sr, "All reports not null");
+                srArr = sr.ToArray();
+                Assert.AreEqual(1, srArr.Length, "All reports length is exactly 1");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetReports_Multi()
+        {
+            var strArr1 = new[] { "STATUS-1" };
+            var strArr2 = new[] { "STATUS-2" };
+            var strArr3 = new[] { "ERROR-1" };
+            var strArr4 = new[] { "ERROR-2" };
+
+            var config = BuildConfig(newAgentId: true);
+            using (var client = new DscPullClient(config))
+            {
+                client.DisableReportAdditionalData = _testConfig.adjust_for_wmf_50;
+                client.RegisterDscAgent().Wait();
+                client.SendReport(operationType: "1", statusData: strArr1).Wait();
+                client.SendReport(operationType: "2", statusData: strArr2).Wait();
+                client.SendReport(operationType: "3", errors: strArr3).Wait();
+                client.SendReport(operationType: "4", errors: strArr4).Wait();
+
+                var sr = client.GetReports().Result;
+                Assert.IsNotNull(sr, "All reports not null");
+                var srArr = sr.ToArray();
+                Assert.AreEqual(4, srArr.Length, "All reports length");
+
+                var srArrOrd = srArr.OrderBy(x => x.OperationType).ToArray();
+                CollectionAssert.AreEqual(strArr1, srArrOrd[0].StatusData);
+                CollectionAssert.AreEqual(strArr2, srArrOrd[1].StatusData);
+                CollectionAssert.AreEqual(strArr3, srArrOrd[2].Errors);
+                CollectionAssert.AreEqual(strArr4, srArrOrd[3].Errors);
             }
         }
 
@@ -470,14 +659,56 @@ namespace Tug.Client
                 RegistrationKey = _testConfig.reg_key,
             };
 
-            
             // Only for debugging/testing in DEV (i.e. with Fiddler)
             if (!string.IsNullOrEmpty(_testConfig.proxy_url))
                 config.ConfigurationRepositoryServer.Proxy =
                         new Util.BasicWebProxy(_testConfig.proxy_url);
 
-            // Resource Server endpoint URL same as Config Server endpoint URL
+            // Resource & Reporting Server endpoint URLs same as Config Server endpoint URL
             config.ResourceRepositoryServer = config.ConfigurationRepositoryServer;
+            config.ReportServer = config.ConfigurationRepositoryServer;
+
+            config.SendReport = new DscPullConfig.SendReportConfig
+            {
+                CommonDefaults = new Model.SendReportBody
+                {
+                    OperationType = "Consistency",
+                    ReportFormatVersion = "2.0",
+                    StartTime = "%NOW%",
+                    AdditionalData = new[]
+                    {
+                        new Model.SendReportBody.AdditionalDataItem
+                        {
+                            Key = "OSVersion",
+                            Value = "{\"VersionString\":\"Microsoft Windows NT 10.0.14393.0\",\"ServicePack\":\"\",\"Platform\":\"Win32NT\"}"
+                        },
+                        new Model.SendReportBody.AdditionalDataItem
+                        {
+                            Key = "PSVersion",
+                            Value = "{\"CLRVersion\":\"4.0.30319.42000\",\"PSVersion\":\"5.1.14393.576\",\"BuildVersion\":\"10.0.14393.576\"}"
+                        },
+                    }
+                },
+                Profiles = new Dictionary<string, Model.SendReportBody>
+                {
+                    ["SimpleInventoryDefaults"] = new Model.SendReportBody
+                    {
+                        NodeName = "HOST_NAME",
+                        IpAddress = "127.0.0.1;::1",
+                        LCMVersion = "2.0",
+                    },
+                    ["DetailedStatusDefaults"] = new Model.SendReportBody
+                    {
+                        RefreshMode = Model.DscRefreshMode.Pull,
+                        Status = "Success",
+                        EndTime = "%NOW%",
+                        ConfigurationVersion = "2.0",
+                        RebootRequested = Model.DscTrueFalse.False,
+                    },
+                    ["ErrorDefaults"] = new Model.SendReportBody
+                    { },
+                },
+            };
 
             return config;
         }
@@ -529,6 +760,36 @@ namespace Tug.Client
             // Redefining this field forces it to
             // go to the top of serialization order
             public new int Version { get; set; }
+        }
+
+        public class BadSendReportBody : Model.SendReportBody
+        {
+            public new string JobId
+            { get; set; }
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public new string OperationType
+            { get; set; }
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public new string ReportFormatVersion
+            { get; set; }
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public new string StartTime
+            { get; set; }
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public new string Errors
+            { get; set; }
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public new string StatusData
+            { get; set; }
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public new string AdditionalData
+            { get; set; }
         }
     }
 }

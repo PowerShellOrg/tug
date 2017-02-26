@@ -104,7 +104,7 @@ namespace Tug.Ext.Util
             {
                 if (!paramValues.ContainsKey(p.Name))
                 {
-                    if (requiredEnforced)
+                    if (requiredEnforced && p.IsRequired)
                         missingParams.Add(p.Name);
                     continue;
                 }

@@ -101,6 +101,14 @@ configuration elements which you can customize in the section
   the mechanism to define those cmdlets within the Runsapce or import
   other resources that define them.
   This file must be readable by the Tug server.
+  * `BootstrapWatch` - specifies an optional list of semicolon-separated
+  files to watch for changes.  If a change is detected, the current
+  PowerShell Runspace is disposed of and a new Runspace is initialized
+  and put into effect.  This setting is very useful during initial
+  development and testing of the PowerShell scripts that are used to
+  drive the behavior of the Pull Service, as the script is frequently
+  updated and tested.  The files can be specified as relative paths
+  which are processed as relative to the resolved `BootstrapPath`. 
 
   The sample bootstrap script defines each of the DSC Pull service cmdlets
   directly and provides a good base for you to explore and customize the

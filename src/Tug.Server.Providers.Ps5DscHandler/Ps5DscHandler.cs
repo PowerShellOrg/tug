@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tug.Model;
@@ -28,6 +29,7 @@ namespace Tug.Server.Providers
 
         private string _bootstrapFullpath;
         private PowerShell _posh;
+        private Mutex _poshLock = new Mutex();
 
         public bool IsDisposed
         { get; private set; }
@@ -44,14 +46,46 @@ namespace Tug.Server.Providers
         public IEnumerable<string> BootstrapScript
         { get; set; }
 
+        public IEnumerable<string> BootstrapWatch
+        { get; set; }
+
         public void Init()
         {
             Logger.LogInformation($"Resolving Boostrap Full Path from Path=[{BootstrapPath}]");
             _bootstrapFullpath = Path.Combine(Directory.GetCurrentDirectory(), BootstrapPath);
             Logger.LogInformation($"Resolved Bootstrap Full Path as [{_bootstrapFullpath}]");
 
+            InitPowerShell();
+
+            // If one or more watch files were specified, keep an eye on these
+            if (BootstrapWatch != null)
+            {
+                // This is a temporary fix till params can support list of values
+                BootstrapWatch = BootstrapWatch.FirstOrDefault()?.Split(';');
+
+                Logger.LogInformation("Bootstrap Watch List found, watching for changes:");
+                foreach (var w in BootstrapWatch)
+                {
+                    Logger.LogInformation("  * {watchFile}", w);
+                    var filePath = Path.Combine(_bootstrapFullpath, w);
+                    if (!File.Exists(filePath))
+                    {
+                        Logger.LogWarning("Unable to resolve file to watch [{watchFile}]; SKIPPING", filePath);
+                        continue;
+                    }
+                    var file = new FileInfo(filePath);
+                    var watcher = new FileSystemWatcher(file.DirectoryName, file.Name);
+                    watcher.Changed += WatchFileChanged;
+                    watcher.EnableRaisingEvents = true;
+                }
+            }
+        }
+
+        protected void InitPowerShell()
+        {
+            Logger.LogInformation("***********************************************");
+            Logger.LogInformation("Constructing PowerShell execution context");
             _posh = PowerShell.Create();
-            Logger.LogInformation("Constructed PowerShell execution context");
             
             // Need to create our own runspace so we can pass in our own custom PSHost
             // which ties the PowerShell context to our custom handler environment
@@ -78,7 +112,7 @@ namespace Tug.Server.Providers
 
             // Set the CWD for the PowerShell cmdlets to run from
             _posh.AddCommand("Microsoft.PowerShell.Management\\Set-Location");
-            _posh.AddArgument(BootstrapPath);
+            _posh.AddArgument(_bootstrapFullpath);
             var result = _posh.Invoke();
             _posh.Commands.Clear();
             Logger.LogInformation("Relocated PWD for current execution context >>>>>>>>>>>>>>");
@@ -106,6 +140,26 @@ namespace Tug.Server.Providers
                 foreach (var r in result)
                     Logger.LogDebug(">> " + r.ToString());
                 Logger.LogDebug("--------------------------------->8--");
+            }
+        }
+
+        protected void WatchFileChanged(object sender, FileSystemEventArgs ev)
+        {
+            Logger.LogInformation("Detected file change [{watchFile}]", ev.FullPath);
+            
+            _poshLock.WaitOne();
+            try
+            {
+                Logger.LogInformation("Releasing existing PowerShell Runspace");
+                // TODO: anything else to do?  Is this the right way to do this?
+                _posh.Dispose();
+
+                Logger.LogInformation("Re-initializing new PowerShell Runspace");
+                InitPowerShell();
+            }
+            finally
+            {
+                _poshLock.ReleaseMutex();
             }
         }
 
@@ -144,16 +198,17 @@ namespace Tug.Server.Providers
             return result;
         }
 
-        public void SendReport(Guid agentId, SendReportRequestBody detail)
+        public void SendReport(Guid agentId, SendReportBody detail)
         {
             ThreadSafeInvokeNoResult("New-TugNodeReport", agentId, detail);
         }
 
-        public Stream GetReports(Guid agentId)
+        public IEnumerable<SendReportBody> GetReports(Guid agentId, Guid? jobId)
         {
-            // TODO:  this interface is not definitive yet
-            var result = ThreadSafeInvokeSingleResult<Stream>("Get-TugNodeReports",
+            var result = ThreadSafeInvoke<SendReportBody>("Get-TugNodeReports",
                     agentId);
+
+            // TODO:  any additional checks or translations?
 
             return result;
         }
@@ -196,7 +251,8 @@ namespace Tug.Server.Providers
             // around PS invocations which won't scale too well or setup a mechanism
             // to support pooling of PS contexts
 
-            lock (_posh)
+            _poshLock.WaitOne();
+            try
             {
                 _posh.Commands.Clear();
                 _posh.AddCommand(cmd);
@@ -216,6 +272,10 @@ namespace Tug.Server.Providers
                 }
 
                 return result;
+            }
+            finally
+            {
+                _poshLock.ReleaseMutex();
             }
         }
 
@@ -255,7 +315,7 @@ namespace Tug.Server.Providers
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion -- IDisposable Support --
 
+        #endregion -- IDisposable Support --
     }
 }

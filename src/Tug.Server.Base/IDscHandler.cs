@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Tug.Ext;
 using Tug.Model;
@@ -46,11 +47,11 @@ namespace Tug.Server
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt766272.aspx
         /// </summary>
-        void SendReport(Guid agentId, SendReportRequestBody detail);
+        void SendReport(Guid agentId, SendReportBody detail);
 
         /// <summary>
         /// https://msdn.microsoft.com/en-us/library/mt766283.aspx
         /// </summary>
-        Stream GetReports(Guid agentId);
+        IEnumerable<SendReportBody> GetReports(Guid agentId, Guid? jobId);
     }
 }
