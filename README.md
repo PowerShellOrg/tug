@@ -1,9 +1,3 @@
-#tug <img align="right" src="https://github.com/PowerShellOrg/tug/blob/master/doc/art/logo/tug-logo-trans-150b.png">
-Open-source, cross-platform Pull/Reporting Server for DSC
-
-#tug <img align="right" width="150" src="https://github.com/PowerShellOrg/tug/blob/master/doc/art/logo/tug-logo-trans-300b.png">
-Open-source, cross-platform Pull/Reporting Server for DSC
-
 #tug <img align="right" width="150" src="https://github.com/PowerShellOrg/tug/blob/master/doc/art/logo/tug-logo-trans-600b.png">
 Open-source, cross-platform Pull/Reporting Server for DSC
 
