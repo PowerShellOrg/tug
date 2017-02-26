@@ -1,7 +1,10 @@
 
 # Tug Server with PowerShell v5 Handler
 
+Updated for v0.6.0
+
 *(To view this file as formatted HTML, go [here](https://github.com/PowerShellOrg/tug/blob/master/src/bundles/Tug.Server-ps5/posh-res/samples/README.md))*
+
 
 ## Overview
 
