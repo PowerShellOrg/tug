@@ -1,4 +1,4 @@
-#tug <img align="right" src="https://github.com/PowerShellOrg/tug/blob/master/doc/art/logo/tug-logo-trans-150b.png">
+#tug <img align="right" width="150" src="https://github.com/PowerShellOrg/tug/blob/master/doc/art/logo/tug-logo-trans-600b.png">
 Open-source, cross-platform Pull/Reporting Server for DSC
 
 [![Build status](https://ci.appveyor.com/api/projects/status/xw3k8flvys5g37ct?svg=true)](https://ci.appveyor.com/project/ebekker/tug)
