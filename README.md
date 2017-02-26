@@ -1,4 +1,4 @@
-<table style="border:solid blue; width: 100%!" border="0" width="100%"><tr><td><img src="https://raw.githubusercontent.com/PowerShellOrg/tug/master/doc/art/logo/tug-logo-trans-75.png"></td><td><h1>tug</h1></td></tr></table>
+#tug <img align="right" src="https://github.com/PowerShellOrg/tug/blob/master/doc/art/logo/tug-logo-trans-150b.png">
 Open-source, cross-platform Pull/Reporting Server for DSC
 
 [![Build status](https://ci.appveyor.com/api/projects/status/xw3k8flvys5g37ct?svg=true)](https://ci.appveyor.com/project/ebekker/tug)
@@ -40,3 +40,5 @@ Tug is written to correspond to the [officially documented MS-DSCPM protocol](ht
 with details of that being verified from the open-source Linux LCM code and numerous WireShark
 traces of unencrypted node-server communications. Those traces are included in this project for
 reference.
+
+<table style="border:solid blue; width: 100%!" border="0" width="100%"><tr><td><img src="https://raw.githubusercontent.com/PowerShellOrg/tug/master/doc/art/logo/tug-logo-trans-75.png"></td><td><h1>tug</h1></td></tr></table>
