@@ -91,6 +91,8 @@ namespace Tug.Server
                     appSettings.GetSection(nameof(AppSettings.Handler)));
 
             // Register a single instance of each filter type we'll use down below
+            services.AddSingleton<DscRegKeyAuthzFilter.IAuthzStorageHandler,
+                    DscRegKeyAuthzFilter.LocalAuthzStorageHandler>();
             services.AddSingleton<DscRegKeyAuthzFilter>();
             services.AddSingleton<StrictInputFilter>();
             services.AddSingleton<VeryStrictInputFilter>();

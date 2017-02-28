@@ -1,3 +1,8 @@
+/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,7 +11,6 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -31,64 +35,21 @@ namespace Tug.Server.Filters
     /// </remarks>
     public class DscRegKeyAuthzFilter : IAuthorizationFilter, IActionFilter
     {
-        public const string REG_KEY_PATH = "RegistrationKeyPath";
-        public const string REG_SAVE_PATH = "RegistrationSavePath";
-
-        public const string REG_KEY_DEFAULT_FILENAME = "RegistrationKeys.txt";
-        public const char REG_KEY_FILE_COMMENT_START = '#';
-
         public const string SHARED_AUTHORIZATION_PREFIX = "Shared ";
 
         private const string HTTP_CONTEXT_ITEM_AGENT_REG_KEY = nameof(DscRegKeyAuthzFilter)
                 + ":AgentRegKey";
 
         private ILogger _logger;
-        private AuthzSettings _settings;
 
-        private string _regKeyFilePath;
-        private string _regSavePath;
+        private IAuthzStorageHandler _handler;
 
         public DscRegKeyAuthzFilter(ILogger<DscRegKeyAuthzFilter> logger,
-                IOptions<AuthzSettings> settings)
+                IAuthzStorageHandler handler)
         {
             _logger = logger;
-            _settings = settings.Value;
+            _handler = handler;
 
-            if (!(_settings.Params?.ContainsKey(REG_KEY_PATH)).GetValueOrDefault())
-                throw new InvalidOperationException(
-                        /*SR*/"missing required Registration Key Path setting");
-            if (!(_settings.Params?.ContainsKey(REG_SAVE_PATH)).GetValueOrDefault())
-                throw new InvalidOperationException(
-                        /*SR*/"missing required Registration Save Path setting");
-
-            _regKeyFilePath = Path.GetFullPath(_settings.Params[REG_KEY_PATH].ToString());
-            _regSavePath = Path.GetFullPath(_settings.Params[REG_SAVE_PATH].ToString());
-
-            if (!File.Exists(_regKeyFilePath) && Directory.Exists(_regKeyFilePath))
-            {
-                _regKeyFilePath = Path.Combine(_regKeyFilePath, REG_KEY_DEFAULT_FILENAME);
-            }
-
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug("resolved reg key file path as [{regKeyFilePath}]", _regKeyFilePath);
-                _logger.LogDebug("resolved reg save path as [{regSavePath}]", _regSavePath);
-            }
-
-            if (!File.Exists(_regKeyFilePath))
-                throw new InvalidOperationException(
-                        /*SR*/"could not find registration key file")
-                        .WithData(nameof(_regKeyFilePath), _regKeyFilePath);
-
-            if (!Directory.Exists(_regSavePath))
-            {
-                _logger.LogInformation("registartion save path not found, trying to create");
-                var dirInfo = Directory.CreateDirectory(_regSavePath);
-                if (!dirInfo.Exists)
-                    throw new InvalidOperationException(
-                            /*SR*/"could not create registration save directory")
-                            .WithData(nameof(_regSavePath), _regSavePath);
-            }
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -121,7 +82,7 @@ namespace Tug.Server.Filters
                     _logger.LogDebug("received authorization header [{authzHeader}]", authzHeader);
                     _logger.LogDebug("received x-ms-date header [{msDateHeader}]", msDateHeader);
                 }
-                
+
                 if (string.IsNullOrEmpty(authzHeader))
                 {
                     _logger.LogError("agent registration request did not provide an authorization header");
@@ -152,19 +113,13 @@ namespace Tug.Server.Filters
                     return;
                 }
 
-                // Resolve reg keys from file as non-blank lines after optional comments
-                // (starting with a '#') and any surround whitespace have been stripped
-                var regKeys = File.ReadAllLines(_regKeyFilePath)
-                        .Select(x => x.Split(REG_KEY_FILE_COMMENT_START)[0].Trim())
-                        .Where(x => x.Length > 0);
-
                 using (var ms = new MemoryStream())
                 {
                     body.CopyTo(ms);
 
                     var bodyBytes = ms.ToArray();
                     var agentRegKey = ValidateRegKeySignature(authzHeader, msDateHeader,
-                            regKeys, bodyBytes);
+                            _handler.RegistrationKeys, bodyBytes);
 
                     if (string.IsNullOrEmpty(agentRegKey))
                     {
@@ -228,15 +183,8 @@ namespace Tug.Server.Filters
                 }
 
                 // At this point authorization was successful, so let's remember the Agent ID for future calls
-                var regKeySavePath = Path.Combine(_regSavePath, $"{agentId}.regkey");
-                var detailSavePath = Path.Combine(_regSavePath, $"{agentId}.json");
-                File.WriteAllText(regKeySavePath, agentRegKey);
-                File.WriteAllText(detailSavePath, JsonConvert.SerializeObject(regRequ.Body));
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug("saved registration key to [{savePath}]", regKeySavePath);
-                    _logger.LogDebug("saved registration details to [{savePath}]", detailSavePath);
-                }
+                _handler.StoreAgentAuthorization(agentId.Value, agentRegKey,
+                        JsonConvert.SerializeObject(regRequ.Body));
             }
             else
             {
@@ -244,16 +192,7 @@ namespace Tug.Server.Filters
                 // messages we just need to validate that they are
                 // associated with a previously registered Agent ID
                 // so validate that the Agent ID has been registered
-                var savePath = Path.Combine(_regSavePath, $"{agentId}.json");
-                var isValid = File.Exists(savePath);
-
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug("looking for registration details at [{savePath}]", savePath);
-                    _logger.LogDebug("reg key validation for Agent ID [{agentId}] = [{isValid}]", agentId, isValid);
-                }
-
-                if (!isValid)
+                if (!_handler.IsAgentAuthorized(agentId.Value))
                 {
                     _logger.LogWarning("failed RegKey authorization for Agent ID [{agentId}]", agentId);
                     context.Result = new UnauthorizedResult();
@@ -272,7 +211,7 @@ namespace Tug.Server.Filters
                 throw new InvalidDataException(
                         /*SR*/"registration header is invalid")
                         .WithData(nameof(authzHeader), authzHeader);
-            
+
             authzHeader = authzHeader.Replace(SHARED_AUTHORIZATION_PREFIX, "").Trim();
 
             using (var sha = SHA256.Create())
@@ -296,8 +235,119 @@ namespace Tug.Server.Filters
                     }
                 }
             }
-            
+
             return null;
+        }
+
+        /// <summary>
+        /// Defines an interface that provides necessary persistence-related
+        /// services required by the authorization filter.
+        /// </summary>
+        public interface IAuthzStorageHandler
+        {
+            IEnumerable<string> RegistrationKeys
+            { get; }
+
+            void StoreAgentAuthorization(Guid agentId, string regKey, string regDetails);
+
+            bool IsAgentAuthorized(Guid agentId);
+        }
+
+        /// <summary>
+        /// Default implementation of a handler that is based on local disk-based
+        /// storage services.
+        /// </summary>
+        public class LocalAuthzStorageHandler : IAuthzStorageHandler
+        {
+            public const string REG_KEY_PATH = "RegistrationKeyPath";
+            public const string REG_SAVE_PATH = "RegistrationSavePath";
+
+            public const string REG_KEY_DEFAULT_FILENAME = "RegistrationKeys.txt";
+            public const char REG_KEY_FILE_COMMENT_START = '#';
+
+            private ILogger _logger;
+            private AuthzSettings _settings;
+
+            private string _regKeyFilePath;
+            private string _regSavePath;
+
+
+            public LocalAuthzStorageHandler(ILogger<LocalAuthzStorageHandler> logger,
+                    IOptions<AuthzSettings> settings)
+            {
+                _logger = logger;
+                _settings = settings.Value;
+
+                if (!(_settings.Params?.ContainsKey(REG_KEY_PATH)).GetValueOrDefault())
+                    throw new InvalidOperationException(
+                            /*SR*/"missing required Registration Key Path setting");
+                if (!(_settings.Params?.ContainsKey(REG_SAVE_PATH)).GetValueOrDefault())
+                    throw new InvalidOperationException(
+                            /*SR*/"missing required Registration Save Path setting");
+
+                _regKeyFilePath = Path.GetFullPath(_settings.Params[REG_KEY_PATH].ToString());
+                _regSavePath = Path.GetFullPath(_settings.Params[REG_SAVE_PATH].ToString());
+
+                if (!File.Exists(_regKeyFilePath) && Directory.Exists(_regKeyFilePath))
+                {
+                    _regKeyFilePath = Path.Combine(_regKeyFilePath, REG_KEY_DEFAULT_FILENAME);
+                }
+
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug("resolved reg key file path as [{regKeyFilePath}]", _regKeyFilePath);
+                    _logger.LogDebug("resolved reg save path as [{regSavePath}]", _regSavePath);
+                }
+
+                if (!File.Exists(_regKeyFilePath))
+                    throw new InvalidOperationException(
+                            /*SR*/"could not find registration key file")
+                            .WithData(nameof(_regKeyFilePath), _regKeyFilePath);
+
+                if (!Directory.Exists(_regSavePath))
+                {
+                    _logger.LogInformation("registartion save path not found, trying to create");
+                    var dirInfo = Directory.CreateDirectory(_regSavePath);
+                    if (!dirInfo.Exists)
+                        throw new InvalidOperationException(
+                                /*SR*/"could not create registration save directory")
+                                .WithData(nameof(_regSavePath), _regSavePath);
+                }
+            }
+
+            public IEnumerable<string> RegistrationKeys =>
+                    // Resolve reg keys from file as non-blank lines after optional comments
+                    // (starting with a '#') and any surround whitespace have been stripped
+                    File.ReadAllLines(_regKeyFilePath)
+                            .Select(x => x.Split(REG_KEY_FILE_COMMENT_START)[0].Trim())
+                            .Where(x => x.Length > 0);
+
+            public void StoreAgentAuthorization(Guid agentId, string regKey, string regDetails)
+            {
+                var regKeySavePath = Path.Combine(_regSavePath, $"{agentId}.regkey");
+                var detailSavePath = Path.Combine(_regSavePath, $"{agentId}.json");
+                File.WriteAllText(regKeySavePath, regKey);
+                File.WriteAllText(detailSavePath, regDetails);
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug("saved registration key to [{savePath}]", regKeySavePath);
+                    _logger.LogDebug("saved registration details to [{savePath}]", detailSavePath);
+                }
+            }
+
+            public bool IsAgentAuthorized(Guid agentId)
+            {
+                var savePath = Path.Combine(_regSavePath, $"{agentId}.json");
+                var isValid = File.Exists(savePath);
+
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug("looking for registration details at [{savePath}]", savePath);
+                    _logger.LogDebug("reg key validation for Agent ID [{agentId}] = [{isValid}]", agentId, isValid);
+                }
+
+                return isValid;
+            }
         }
     }
 }
