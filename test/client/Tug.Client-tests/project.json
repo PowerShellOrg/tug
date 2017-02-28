@@ -19,7 +19,7 @@
   //"dotnet-test-xunit": "1.0.0-rc2-build10025",
 
     "dotnet-test-mstest": "1.1.2-preview",
-    "MSTest.TestFramework": "1.0.7-preview",
+    "MSTest.TestFramework": "1.1.11",
 
     // Assemblies with additional test support
     "Tug.UnitTesting": {
