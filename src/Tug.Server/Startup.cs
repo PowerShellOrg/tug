@@ -150,7 +150,7 @@ namespace Tug.Server
                 routeBuilder.MapGet("version", context =>
                 {
                     var version = GetType().GetTypeInfo().Assembly.GetName().Version;
-                    return context.Response.WriteAsync($"{{{version}}}");
+                    return context.Response.WriteAsync($@"{{""version"":""{version}""}}");
                 });
             });
 
