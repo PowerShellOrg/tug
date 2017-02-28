@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tug.Messages.ModelBinding;
 
-namespace Tug.Server.Controllers
+namespace Tug.Server.Mvc
 {
     public static class ModelResultExt
     {
-        private static readonly ILogger LOG = AppLog.Create(typeof(ModelResultExt));
+//        private static readonly ILogger LOG = AppLog.Create(typeof(ModelResultExt));
 
         public const string CONTENT_TYPE_TEXT = "text/plain";
         public const string CONTENT_TYPE_JSON = "application/json";
@@ -58,8 +58,8 @@ namespace Tug.Server.Controllers
                     if (string.IsNullOrEmpty(headerName))
                         headerName = p.Name;
 
-                    if (LOG.IsEnabled(LogLevel.Debug))
-                        LOG.LogDebug($"Adding Header[{headerName}] replace=[{toHeader.Replace}]");
+//                    if (LOG.IsEnabled(LogLevel.Debug))
+//                        LOG.LogDebug($"Adding Header[{headerName}] replace=[{toHeader.Replace}]");
 
                     // TODO:  Add support for string[]???
                     var headerValue = ConvertTo<string>(p.GetValue(model, null));
