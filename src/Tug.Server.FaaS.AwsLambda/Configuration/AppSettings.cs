@@ -7,6 +7,12 @@ namespace Tug.Server.FaaS.AwsLambda.Configuration
 {
     public class AppSettings
     {
+        /// <summary>
+        /// Default prefix used to identify environment variables
+        /// that can override server runtime app configuration.
+        /// </summary>
+        public new const string ConfigEnvPrefix = "TUG_CFG_";
+
         public PullServiceSettings PullService
         { get; set; }
     }

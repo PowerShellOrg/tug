@@ -19,6 +19,12 @@ namespace Tug.Server.FaaS.AwsLambda.Configuration
     /// </remarks>
     public class HostSettings
     {
+        /// <summary>
+        /// Default prefix used to identify environment variables
+        /// that can override server startup bootstrap configuration.
+        /// </summary>
+        public const string ConfigEnvPrefix = "TUG_HOST_";
+
 
         public string AppSettingsS3Bucket
         { get; set; }
