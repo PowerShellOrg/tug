@@ -26,12 +26,11 @@ namespace Tug.Server.FaaS.AwsLambda
         public const string APP_CONFIG_ENV_PREFIX = "TUG_";
 
         private IConfigurationRoot _config;
-        private ILogger _logger;
+        private ILogger _logger = FunctionMain.CreatePreLogger<FunctionStartup>();
 
         public FunctionStartup(IHostingEnvironment env)
         {
-            // _logger = logger;
-            // _logger.LogInformation("Startup constructed");
+            _logger.LogInformation("Startup constructed");
 
             var builder = new ConfigurationBuilder()
                     .SetBasePath(env.ContentRootPath)
@@ -47,7 +46,7 @@ namespace Tug.Server.FaaS.AwsLambda
         // visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // _logger.LogInformation("Configuring services registry");
+            _logger.LogInformation("Configuring services registry");
 
             // Enable and bind to strongly-typed configuration
             // consumers should add dependency on one of:
@@ -67,7 +66,7 @@ namespace Tug.Server.FaaS.AwsLambda
             services.AddSingleton<VeryStrictInputFilter>();
 
             // Add MVC-supporting services
-            //_logger.LogInformation("Adding MVC services");
+            _logger.LogInformation("Adding MVC services");
             services.AddMvc(options =>
             {
                 // Add the filter by service type reference

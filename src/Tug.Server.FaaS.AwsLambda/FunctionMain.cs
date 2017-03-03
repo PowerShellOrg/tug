@@ -7,6 +7,7 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.AspNetCoreServer;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.Extensions.Logging;
 
 // Assembly attribute to enable the Lambda function's
 // JSON input to be converted into a .NET class.
@@ -17,9 +18,17 @@ namespace Tug.Server.FaaS.AwsLambda
 {
     public class FunctionMain : APIGatewayProxyFunction
     {
+        protected static readonly ILoggerFactory _preLoggingFactory = new LoggerFactory();
+        protected static ILogger _logger;
+        public static ILogger<T> CreatePreLogger<T>()
+        {
+            return _preLoggingFactory.CreateLogger<T>();
+        }
 
         protected override void Init(IWebHostBuilder builder)
         {
+            _preLoggingFactory.AddLambdaLogger();
+            _logger = CreatePreLogger<FunctionMain>();
             builder
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<FunctionStartup>()
