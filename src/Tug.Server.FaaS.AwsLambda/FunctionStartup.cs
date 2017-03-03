@@ -3,7 +3,6 @@
  * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
  */
 
-using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,19 +11,17 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
+using Tug.Server.Configuration;
+using FaaSConfig = Tug.Server.FaaS.AwsLambda.Configuration;
 using Tug.Server.Filters;
+using System.Text;
 
 namespace Tug.Server.FaaS.AwsLambda
 {
     public class FunctionStartup
     {
-        /// <summary>
-        /// Prefix used to identify environment variables that can override server app
-        /// configuration.
-        /// </summary>
-        public const string APP_CONFIG_ENV_PREFIX = "TUG_";
-
         private IConfigurationRoot _config;
         private ILogger _logger = FunctionMain.CreatePreLogger<FunctionStartup>();
 
@@ -34,8 +31,13 @@ namespace Tug.Server.FaaS.AwsLambda
 
             var builder = new ConfigurationBuilder()
                     .SetBasePath(env.ContentRootPath)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddEnvironmentVariables(APP_CONFIG_ENV_PREFIX);
+                    // We start with the Host Settings env vars since App Settings inherits
+                    .AddEnvironmentVariables(prefix: FaaSConfig.HostSettings.ConfigEnvPrefix)
+                    // We load in the locally-saved JSON file that was resolved in Main
+                    .AddJsonFile(FaaSConfig.HostSettings.AppSettingsLocalJsonFile,
+                            optional: true, reloadOnChange: true)
+                    // Finally, load up any additional env vars specific to App Settings
+                    .AddEnvironmentVariables(FaaSConfig.AppSettings.ConfigEnvPrefix);
 
             _config = builder.Build();
         }
@@ -105,6 +107,9 @@ namespace Tug.Server.FaaS.AwsLambda
             loggerFactory.AddLambdaLogger(_config);
             _logger = loggerFactory.CreateLogger<FunctionStartup>();
 
+            _logger.LogInformation("Runtime configuration resolved as: ");
+            _logger.LogInformation(ToString(_config, "__|>__", "____"));
+
             _logger.LogInformation("Configuring MVC");
             app.UseMvc(routeBuilder =>
             {
@@ -123,6 +128,30 @@ namespace Tug.Server.FaaS.AwsLambda
                     return context.Response.WriteAsync($@"{{""version"":""{version}""}}");
                 });
             });
+        }
+
+        public static string ToString(IConfiguration c, string pfx = "", string indent = "  ")
+        {
+            var buff = new StringBuilder();
+            ToString(c, pfx, indent, buff);
+            return buff.ToString();
+        }
+
+        public static void ToString(IConfiguration c, string pfx, string indent, StringBuilder buff)
+        {
+            if (buff == null)
+                buff = new StringBuilder();
+
+            // foreach (var kv in c.AsEnumerable(true))
+            // {
+            //     buff.AppendLine($"{pfx}- [{kv.Key}]=[{kv.Value}]");
+            // }
+            pfx += indent;
+            foreach (var sub in c.GetChildren())
+            {
+                buff.AppendLine($"{pfx}[{sub.Key}]=[{sub.Value}] @ [{sub.Path}]:  ");
+                ToString(sub, pfx, indent, buff);
+            }
         }
     }
 }
