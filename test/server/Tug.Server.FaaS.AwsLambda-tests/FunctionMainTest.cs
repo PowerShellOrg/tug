@@ -44,15 +44,33 @@ namespace Tug.Server.FaaS.AwsLambda
             Assert.Equal(expected, response.Body);
         }
 
-        public static APIGatewayProxyRequest GetRequest(string path, string method = null)
+        [Fact]
+        public async void TestRegisterDscAgent()
         {
-            if (path == null || !path.StartsWith("/"))
+            var f = new FunctionMain();
+            var context = new TestLambdaContext();
+            var request = GetRequest(sample:  "./SampleRequests/Put-RegisterDscAgent.json");
+            var response = await f.FunctionHandlerAsync(request, context);
+
+            var version = typeof(FunctionMain).GetTypeInfo().Assembly.GetName().Version.ToString();
+            var expected = $@"{{""version"":""{version}""}}";
+
+            Assert.Equal(200, response.StatusCode);
+            Assert.Equal(expected, response.Body);
+        }
+        public static APIGatewayProxyRequest GetRequest(string path = null, string method = null, string sample = "./SampleRequests/Get-Base.json")
+        {
+            if (path != null && !path.StartsWith("/"))
                 throw new ArgumentException("path must start with '/'", nameof(path));
 
-            var requestSer = File.ReadAllText("./SampleRequests/Get-Base.json");
+            var requestSer = File.ReadAllText(sample);
             var request = JsonConvert.DeserializeObject<APIGatewayProxyRequest>(requestSer);
 
-            request.Path = path;
+            if (path != null)
+            {
+                request.Path = path;
+            }
+
             if (method != null)
             {
                 request.HttpMethod = method;
