@@ -49,11 +49,14 @@ namespace Tug.Server.FaaS.AwsLambda
             _s3 = s3;
             _settings = settings.Value;
 
-            _logger.LogInformation("Using settings:");
-            _logger.LogInformation($"  * {nameof(_settings.S3BucketName)} = [{_settings.S3BucketName}]");
-            _logger.LogInformation($"  * {nameof(_settings.S3KeyPrefixRegistrations)} = [{_settings.S3KeyPrefixRegistrations}]");
-            _logger.LogInformation($"  * {nameof(_settings.S3KeyPrefixConfigurations)} = [{_settings.S3KeyPrefixConfigurations}]");
-            _logger.LogInformation($"  * {nameof(_settings.S3KeyPrefixModules)} = [{_settings.S3KeyPrefixModules}]");
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                _logger.LogTrace("Using settings:");
+                _logger.LogTrace($"  * {nameof(_settings.S3Bucket)} = [{_settings.S3Bucket}]");
+                _logger.LogTrace($"  * {nameof(_settings.S3KeyPrefixRegistrations)} = [{_settings.S3KeyPrefixRegistrations}]");
+                _logger.LogTrace($"  * {nameof(_settings.S3KeyPrefixConfigurations)} = [{_settings.S3KeyPrefixConfigurations}]");
+                _logger.LogTrace($"  * {nameof(_settings.S3KeyPrefixModules)} = [{_settings.S3KeyPrefixModules}]");
+            }
         }
 
         #endregion -- Constructors --
