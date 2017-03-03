@@ -18,7 +18,7 @@
     "xunit": "2.1.0-*",
     "dotnet-test-xunit": "2.2.0-*",
 
-    "Tug.Server.AwsLambda": {
+    "Tug.Server.FaaS.AwsLambda": {
       "target": "project"
     }
   },
