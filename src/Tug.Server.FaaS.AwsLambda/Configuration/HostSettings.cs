@@ -1,3 +1,8 @@
+/*
+ * Copyright © The DevOps Collective, Inc. All rights reserved.
+ * Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ */
+
 namespace Tug.Server.FaaS.AwsLambda.Configuration
 {
     /// <summary>
@@ -25,6 +30,7 @@ namespace Tug.Server.FaaS.AwsLambda.Configuration
         /// </summary>
         public const string ConfigEnvPrefix = "TUG_HOST_";
 
+        public const string AppSettingsLocalJsonFile = "/tmp/appsettings.json";
 
         public string AppSettingsS3Bucket
         { get; set; }
