@@ -50,6 +50,17 @@ namespace Tug.Server.FaaS.AwsLambda
         {
             _logger.LogInformation("Configuring services registry");
 
+            // Configure AWS service clients
+            var awsOptions = _config.GetAWSOptions();
+            services.AddDefaultAWSOptions(awsOptions);
+
+            services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
+            services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDBStreams>();
+            services.AddAWSService<Amazon.S3.IAmazonS3>();
+            services.AddAWSService<Amazon.CloudFront.IAmazonCloudFront>();
+
+            var pullSettings = _config.GetSection(nameof(Configuration.AppSettings.PullService));
+
             // Enable and bind to strongly-typed configuration
             // consumers should add dependency on one of:
             //    IOptions<AppSettings>
@@ -57,10 +68,9 @@ namespace Tug.Server.FaaS.AwsLambda
             //    IOptionsSnapshot<AppSettings> - session/request-scoped
             services.AddOptions();
             services.Configure<Configuration.AppSettings>(_config);
-            services.Configure<Configuration.PullServiceSettings>(
-                    _config.GetSection(nameof(Configuration.AppSettings.PullService)));
+            services.Configure<Configuration.PullServiceSettings>(pullSettings);
             
-            // // Register a single instance of each filter type we'll use down below
+            // Register a single instance of each filter type we'll use down below
             services.AddSingleton<DscRegKeyAuthzFilter.IAuthzStorageHandler,
                     LambdaAuthzStorageHandler>();
             services.AddSingleton<DscRegKeyAuthzFilter>();
@@ -90,13 +100,6 @@ namespace Tug.Server.FaaS.AwsLambda
             // // Register the Helpers
             // services.AddSingleton<ChecksumHelper>();
             // services.AddSingleton<DscHandlerHelper>();
-
-            services.AddDefaultAWSOptions(_config.GetAWSOptions());
-
-            services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
-            services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDBStreams>();
-            services.AddAWSService<Amazon.S3.IAmazonS3>();
-            services.AddAWSService<Amazon.CloudFront.IAmazonCloudFront>();
         }
 
         // This method gets called by the runtime. Use this
