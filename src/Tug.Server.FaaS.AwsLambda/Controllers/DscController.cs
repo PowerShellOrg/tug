@@ -82,7 +82,7 @@ namespace Tug.Server.FaaS.AwsLambda
 
             var putRequ = new PutObjectRequest
             {
-                BucketName = _settings.S3BucketName,
+                BucketName = _settings.S3Bucket,
                 Key = regS3Key,
                 CannedACL = S3CannedACL.Private,
                 ContentBody = JsonConvert.SerializeObject(input.Body),
@@ -121,7 +121,7 @@ namespace Tug.Server.FaaS.AwsLambda
             var regS3Key = $"{_settings.S3KeyPrefixRegistrations}/{input.AgentId}.json";
             _logger.LogDebug($"registration S3 Key resolved as [{regS3Key}]");
 
-            using (var getResp = await _s3.GetObjectAsync(_settings.S3BucketName, regS3Key))
+            using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, regS3Key))
             {
                 if (getResp == null || getResp.ContentLength == 0
                         || getResp.HttpStatusCode != HttpStatusCode.OK)
@@ -189,7 +189,7 @@ namespace Tug.Server.FaaS.AwsLambda
 
                 // If the object key is not found, this seems to manifest as an
                 // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied
-                using (var getResp = await _s3.GetObjectAsync(_settings.S3BucketName, cfgS3Key))
+                using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, cfgS3Key))
                 {
                     if (getResp == null || getResp.ContentLength == 0
                             || getResp.HttpStatusCode != HttpStatusCode.OK)
@@ -279,7 +279,7 @@ namespace Tug.Server.FaaS.AwsLambda
 
             // If the object key is not found, this seems to manifest as an
             // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied
-            using (var getResp = await _s3.GetObjectAsync(_settings.S3BucketName, cfgS3Key))
+            using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, cfgS3Key))
             {
                 if (getResp == null || getResp.ContentLength == 0
                         || getResp.HttpStatusCode != HttpStatusCode.OK)
@@ -333,7 +333,7 @@ namespace Tug.Server.FaaS.AwsLambda
 
             // If the object key is not found, this seems to manifest as an
             // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied
-            using (var getResp = await _s3.GetObjectAsync(_settings.S3BucketName, modS3Key))
+            using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, modS3Key))
             {
                 if (getResp == null || getResp.ContentLength == 0
                         || getResp.HttpStatusCode != HttpStatusCode.OK)
