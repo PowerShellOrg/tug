@@ -7,7 +7,11 @@ namespace Tug.Server.FaaS.AwsLambda.Configuration
 {
     public class PullServiceSettings
     {
-        public string S3BucketName
+        public const string DisabledSettingValue = "#OFF";
+
+        public const int DefaultAuthzRegKeysRefreshMins = 15;
+
+        public string S3Bucket
         { get; set; } //= "dsc-faas-work";
         public string S3KeyAuthzRegKeys
         { get; set; } //= "dsc-service/authz-reg-keys
@@ -18,6 +22,9 @@ namespace Tug.Server.FaaS.AwsLambda.Configuration
         public string S3KeyPrefixConfigurations
         { get; set; } //= "dsc-service/configurations";
         public string S3KeyPrefixModules
-        { get; set; } //= "dsc-service/modules";        
+        { get; set; } //= "dsc-service/modules";
+
+        public int AuthzRegKeysRefreshMins
+        { get; set; } = DefaultAuthzRegKeysRefreshMins;
     }
 }
