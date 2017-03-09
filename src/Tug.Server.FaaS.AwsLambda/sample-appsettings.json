@@ -1,0 +1,27 @@
+{
+    // Configure AWS Lambda Logger
+    "Lambda.Logging": {
+        "IncludeLogLevel": true,
+        "IncludeCategory": true,
+        "IncludeNewline": true,
+        "LogLevel": {
+            "Default": "Debug",
+            "Microsoft": "Information"
+        }
+    },
+
+    // Configure the Tug DSC Service
+    "pullService": {
+        // Where to store various DSC assets
+        "S3BucketName":                  "dsc-faas-work",
+        "S3KeyPrefixAuthzRegistrations": "dsc-service/authz",
+        "S3KeyPrefixRegistrations":      "dsc-service/registrations",
+        "S3KeyPrefixConfigurations":     "dsc-service/configurations",
+        "S3KeyPrefixModules":            "dsc-service/modules",
+
+        // Where to find Authz Reg Keys and how frequently to
+        // refresh from the S3 source (-1 to disable refresh)
+        "S3KeyAuthzRegKeys":      "dsc-service/authz-reg-keys",
+        "AuthzRegKeysRefreshMins": 15
+    }
+}
