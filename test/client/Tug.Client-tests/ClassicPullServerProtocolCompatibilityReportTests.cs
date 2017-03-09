@@ -11,6 +11,11 @@ namespace Tug.Client_tests
     [TestClass]
     public class ClassicPullServerProtocolCompatibilityReportTests : ProtocolCompatibilityTestsBase
     {
+        [ClassInitialize]
+        public new static void ClassInit(TestContext ctx)
+        {
+            ProtocolCompatibilityTestsBase.ClassInit(ctx);
+        }
 
         [TestMethod]
         public void TestSendReport()

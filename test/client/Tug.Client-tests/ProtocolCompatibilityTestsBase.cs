@@ -44,8 +44,7 @@ namespace Tug.Client
 
         protected static TestConfig _testConfig = new TestConfig();
 
-        [ClassInitialize]
-        public static void SetClientLogLevel(TestContext ctx)
+        protected static void ClassInit(TestContext ctx)
         {
             // Set the global logging configuration to log some info
             // which may be useful in debugging and diagnostics

@@ -12,6 +12,12 @@ namespace Tug.Client
     [TestClass]
     public class ClassicPullServerProtocolCompatibilityTests : ProtocolCompatibilityTestsBase
     {
+        [ClassInitialize]
+        public new static void ClassInit(TestContext ctx)
+        {
+            ProtocolCompatibilityTestsBase.ClassInit(ctx);
+        }
+
         [TestMethod]
         public void TestRegisterDscAgent()
         {
@@ -362,6 +368,11 @@ namespace Tug.Client
 
                 // The fixed content is expected to be in UTF-16 Little Endian (LE)
                 var configBody = Encoding.Unicode.GetString(configResult.Content);
+
+File.WriteAllBytes("TestGetConfiguration_Content.tmp", configResult.Content);
+var bytes = File.ReadAllBytes("TestGetConfiguration_Content.tmp");
+configBody = Encoding.Unicode.GetString(bytes);
+
                 // Skip the BOM
                 configBody = configBody.Substring(1);
 
@@ -396,7 +407,8 @@ namespace Tug.Client
 
                 Assert.AreEqual(csumBody, moduleResult.Checksum, "Expected module checksum");
 
-                CollectionAssert.AreEqual(modBody, moduleResult.Content, "Expected MOF config content");
+                Assert.AreEqual(modBody.Length, moduleResult.Content.Length, "Expected module content size");
+                CollectionAssert.AreEqual(modBody, moduleResult.Content, "Expected module content");
             }
         }
 
