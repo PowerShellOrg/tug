@@ -369,10 +369,6 @@ namespace Tug.Client
                 // The fixed content is expected to be in UTF-16 Little Endian (LE)
                 var configBody = Encoding.Unicode.GetString(configResult.Content);
 
-File.WriteAllBytes("TestGetConfiguration_Content.tmp", configResult.Content);
-var bytes = File.ReadAllBytes("TestGetConfiguration_Content.tmp");
-configBody = Encoding.Unicode.GetString(bytes);
-
                 // Skip the BOM
                 configBody = configBody.Substring(1);
 
