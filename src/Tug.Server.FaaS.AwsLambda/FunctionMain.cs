@@ -12,6 +12,11 @@ using Tug.Server.FaaS.AwsLambda.Configuration;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.S3;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using Amazon.Lambda.APIGatewayEvents;
+using Microsoft.AspNetCore.Hosting.Internal;
+using Amazon.Lambda.AspNetCoreServer.Internal;
+using System.Runtime.Serialization;
 
 // Assembly attribute to enable the Lambda function's
 // JSON input to be converted into a .NET class.
@@ -78,30 +83,117 @@ namespace Tug.Server.FaaS.AwsLambda
             }
         }
 
-        // /// <summary>
-        // /// Default constructor that Lambda will invoke.
-        // /// </summary>
-        // public FunctionMain()
-        // { }
+        #region -- Temporary Binary Response Content Kludge --
+
+        // We've temporarily re-implemented some of the functionality in the base class so that
+        // we can hook into, and alter the processing of the response send back out from Lambda
+        // to the API Gateway.  The entry-point handler function is almost all of the same code
+        // as in the base class, except for the call to our version of the <see cref="MyProcessRequest"/>
+        // routine so that we can do some special processing of the response to accomodate binary
+        // response content.
+        //
+        // This is necessary until https://github.com/aws/aws-lambda-dotnet/pull/75  gets merged
+        // in or some other equivalent solution is implemented in the framework. At that  point
+        // this section can be removed.
 
 
-        // /// <summary>
-        // /// A Lambda function to respond to HTTP Get methods from API Gateway
-        // /// </summary>
-        // /// <param name="request"></param>
-        // /// <returns>The list of blogs</returns>
-        // public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
+        // Manage the serialization so the raw requests and responses can be logged.
+        ILambdaSerializer _serializer = new Amazon.Lambda.Serialization.Json.JsonSerializer();
+
+        /// <summary>
+        /// This method is what the Lambda function handler points to.
+        /// </summary>
+        public override async Task<Stream> FunctionHandlerAsync(Stream requestStream, ILambdaContext lambdaContext)
+        {
+            if (this.EnableRequestLogging)
+            {
+                StreamReader reader = new StreamReader(requestStream);
+                string json = reader.ReadToEnd();
+                lambdaContext.Logger.LogLine(json);
+                requestStream.Position = 0;
+            }
+
+            var request = this._serializer.Deserialize<APIGatewayProxyRequest>(requestStream);
+
+            lambdaContext.Logger.Log($"Incoming {request.HttpMethod} requests to {request.Path}");
+            InvokeFeatures features = new InvokeFeatures();
+            MarshallRequest(features, request);
+            var context = this.CreateContext(features);
+
+            var response = await this.MyProcessRequest(lambdaContext, context, features);
+
+            var responseStream = new MemoryStream();
+            this._serializer.Serialize<APIGatewayProxyResponse>(response, responseStream);
+            responseStream.Position = 0;
+
+            if (this.EnableResponseLogging)
+            {
+                StreamReader reader = new StreamReader(responseStream);
+                string json = reader.ReadToEnd();
+                lambdaContext.Logger.LogLine(json);
+                responseStream.Position = 0;
+            }
+
+
+            return responseStream;
+        }
+
+        protected async Task<APIGatewayProxyResponse> MyProcessRequest(ILambdaContext lambdaContext,
+                HostingApplication.Context context, InvokeFeatures features,
+                bool rethrowUnhandledError = false)
+        {
+            _logger.LogInformation("MY PROCESS REQUEST!!!");
+
+            var resp = await base.ProcessRequest(lambdaContext, context, features, rethrowUnhandledError);
+            if (resp.Body != null && resp.Headers.ContainsKey("Content-Type"))
+            {
+                if ("application/octet-stream" == resp.Headers["Content-Type"])
+                {
+                    _logger.LogInformation("SETTING B64!!!");
+
+                    resp = new MyAPIGatewayProxyResponse
+                    {
+                        Body = resp.Body,
+                        Headers = resp.Headers,
+                        StatusCode = resp.StatusCode,
+                        IsBase64Encoded = true,
+                    };
+                }
+            }
+
+            return resp;
+        }
+
+        [DataContract]
+        public class MyAPIGatewayProxyResponse : APIGatewayProxyResponse
+        {
+            /// <summary>
+            /// Flag indicating whether the body should be treated as a base64-encoded string
+            /// </summary>
+            [DataMember(Name = "isBase64Encoded")]
+            public bool IsBase64Encoded { get; set; }
+        }
+
+        // protected override APIGatewayProxyResponse MarshallResponse(IHttpResponseFeature responseFeatures, int statusCodeIfNotSet = 200)
         // {
-        //     context.Logger.LogLine("Get Request\n");
-
-        //     var response = new APIGatewayProxyResponse
+        //     if (responseFeatures.Body != null && responseFeatures.Headers.ContainsKey("Content-Type"))
         //     {
-        //         StatusCode = (int)HttpStatusCode.OK,
-        //         Body = "Hello AWS Serverless",
-        //         Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
-        //     };
+        //         string contentType = responseFeatures.Headers["Content-Type"];
+        //         if (contentType == "BINARY")
+        //         {
+        //             using (var rawBody = new MemoryStream())
+        //             using (var oldBody = responseFeatures.Body)
+        //             {
+        //                 oldBody.Position = 0;
+        //                 oldBody.CopyTo(rawBody);
+        //                 responseFeatures.Body = new MemoryStream(Encoding.UTF8.GetBytes(Convert.ToBase64String(rawBody.ToArray()));
+        //             }
+        //         }
+        //     }
 
-        //     return response;
+        //     return base.MarshallResponse(responseFeatures, statusCodeIfNotSet);
         // }
+
+        #endregion -- Temporary Binary Response Content Kludge --
     }
 }

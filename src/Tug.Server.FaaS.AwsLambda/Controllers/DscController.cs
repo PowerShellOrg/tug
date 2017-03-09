@@ -8,7 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using Amazon.Lambda.APIGatewayEvents;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -143,7 +145,8 @@ namespace Tug.Server.FaaS.AwsLambda
             var detail = input.Body;
             var nodeStatus = DscActionStatus.OK;
             var configCount = (int)regInfo.ConfigurationNames?.Count();
-            _logger.LogDebug($"loaded registration info with config count[{configCount}]");
+            if(_logger.IsEnabled(LogLevel.Debug))
+                _logger.LogDebug($"loaded registration info with config count[{configCount}]");
 
             string configName;
 
@@ -187,8 +190,29 @@ namespace Tug.Server.FaaS.AwsLambda
                 var cfgS3Key = $"{_settings.S3KeyPrefixConfigurations}/{configName}.mof";
                 _logger.LogDebug($"configuration S3 Key resolved as [{cfgS3Key}]");
 
-                // If the object key is not found, this seems to manifest as an
-                // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied
+                // We can't simply try to get the S3 object that corresponds to the
+                // config name being requested because if it doesn't exist, we see
+                // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied;
+                // instead we try to list the object first, and if it's not there, we
+                // can response to the node appropriately with our own error protocol
+                var listResp = await _s3.ListObjectsV2Async(new ListObjectsV2Request
+                {
+                    BucketName = _settings.S3Bucket,
+                    Prefix = cfgS3Key,
+                    MaxKeys = 1,
+                });
+                var firstS3Obj = listResp.S3Objects?.FirstOrDefault();
+                if (_logger.IsEnabled(LogLevel.Debug))
+                    _logger.LogDebug("Request to list S3 objects matching requested config found"
+                            + " [{s3KeyCount}] keys, first is [{s3Key}]", listResp.KeyCount,
+                            firstS3Obj?.Key);
+
+                if (listResp.KeyCount < 1 || firstS3Obj.Key != cfgS3Key)
+                {
+                    _logger.LogWarning($"failed to get configuration by object key [{cfgS3Key}]:");
+                    return NotFound();
+                }
+
                 using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, cfgS3Key))
                 {
                     if (getResp == null || getResp.ContentLength == 0
@@ -277,36 +301,69 @@ namespace Tug.Server.FaaS.AwsLambda
 
             var cfgS3Key = $"{_settings.S3KeyPrefixConfigurations}/{configName}.mof";
 
-            // If the object key is not found, this seems to manifest as an
-            // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied
+            // We can't simply try to get the S3 object that corresponds to the
+            // config name being requested because if it doesn't exist, we see
+            // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied;
+            // instead we try to list the object first, and if it's not there, we
+            // can response to the node appropriately with our own error protocol
+            var listResp = await _s3.ListObjectsV2Async(new ListObjectsV2Request
+            {
+                BucketName = _settings.S3Bucket,
+                Prefix = cfgS3Key,
+                MaxKeys = 1,
+            });
+            var firstS3Obj = listResp.S3Objects.FirstOrDefault();
+            if (_logger.IsEnabled(LogLevel.Debug))
+                _logger.LogDebug("Request to list S3 objects matching requested config found"
+                        + " [{s3KeyCount}] keys, first is [{s3Key}]", listResp.KeyCount,
+                        firstS3Obj?.Key);
+
+            if (listResp.KeyCount < 1 || firstS3Obj.Key != cfgS3Key)
+            {
+                _logger.LogWarning($"failed to get configuration by object key [{cfgS3Key}]:");
+                return NotFound();
+            }
+
             using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, cfgS3Key))
             {
+                // Because of the preceding ListObjects call,
+                // this should never happen, but just in case...
                 if (getResp == null || getResp.ContentLength == 0
                         || getResp.HttpStatusCode != HttpStatusCode.OK)
                 {
                     _logger.LogWarning($"failed to get configuration by object key [{cfgS3Key}]:"
-                            + " contentLen=[{getResp?.ContentLength}]"
-                            + " httpStatus=[{getResp.HttpStatusCode}]");
+                            + $" contentLen=[{getResp?.ContentLength}]"
+                            + $" httpStatus=[{getResp.HttpStatusCode}]");
                     return NotFound();
                 }
 
+                if (_logger.IsEnabled(LogLevel.Debug))
+                    _logger.LogDebug($"got configuration by object key [{cfgS3Key}]:"
+                            + $" contentLen=[{getResp?.ContentLength}]"
+                            + $" httpStatus=[{getResp.HttpStatusCode}]");
+
                 using (var rs = getResp.ResponseStream)
+                using (var rawMs = new MemoryStream())
                 {
-                    // This will be disposed of by the MVC framework
-                    var ms = new MemoryStream();
-                    await rs.CopyToAsync(ms);
+                    await rs.CopyToAsync(rawMs);
+
+                    if (_logger.IsEnabled(LogLevel.Debug))
+                        _logger.LogDebug("buffered configuration content of size [{buffLen}]", rawMs.Length);
 
                     // Make sure we're at the start of the stream to compute the checksum
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var checksum = ComputeChecksum(ms);
-                    // Make sure we're at the start of the stream to return the contents
-                    ms.Seek(0, SeekOrigin.Begin);
+                    rawMs.Position = 0;
+                    var rawBytes = rawMs.ToArray();
+                    var checksum = ComputeChecksum(rawBytes);
+
+                    // This will be disposed of by the MVC framework
+                    var b64Ms = new MemoryStream(Encoding.UTF8.GetBytes(
+                            Convert.ToBase64String(rawBytes)));
 
                     return this.Model(new GetConfigurationResponse
                     {
                         ChecksumAlgorithmHeader = ChecksumAlgorithm,
                         ChecksumHeader = checksum,
-                        Configuration = ms,
+                        Configuration = b64Ms,
                     });
                 }
             }
@@ -331,10 +388,33 @@ namespace Tug.Server.FaaS.AwsLambda
             var modVers = input.ModuleVersion;
             var modS3Key = $"{_settings.S3KeyPrefixModules}/{modName}/{modVers}.zip";
 
-            // If the object key is not found, this seems to manifest as an
-            // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied
+            // We can't simply try to get the S3 object that corresponds to the
+            // config name being requested because if it doesn't exist, we see
+            // Amazon.S3.AmazonS3Exception with an underlying message of Access Denied;
+            // instead we try to list the object first, and if it's not there, we
+            // can response to the node appropriately with our own error protocol
+            var listResp = await _s3.ListObjectsV2Async(new ListObjectsV2Request
+            {
+                BucketName = _settings.S3Bucket,
+                Prefix = modS3Key,
+                MaxKeys = 1,
+            });
+            var firstS3Obj = listResp.S3Objects.FirstOrDefault();
+            if (_logger.IsEnabled(LogLevel.Debug))
+                _logger.LogDebug("Request to list S3 objects matching requested module found"
+                        + " [{s3KeyCount}] keys, first is [{s3Key}]", listResp.KeyCount,
+                        firstS3Obj?.Key);
+
+            if (listResp.KeyCount < 1 || firstS3Obj.Key != modS3Key)
+            {
+                _logger.LogWarning($"failed to get module by object key [{modS3Key}]:");
+                return NotFound();
+            }
+
             using (var getResp = await _s3.GetObjectAsync(_settings.S3Bucket, modS3Key))
             {
+                // Because of the preceding ListObjects call,
+                // this should never happen, but just in case...
                 if (getResp == null || getResp.ContentLength == 0
                         || getResp.HttpStatusCode != HttpStatusCode.OK)
                 {
@@ -344,24 +424,37 @@ namespace Tug.Server.FaaS.AwsLambda
                     return NotFound();
                 }
 
+                if (_logger.IsEnabled(LogLevel.Debug))
+                    _logger.LogDebug($"got module by object key [{modS3Key}]:"
+                            + $" contentLen=[{getResp?.ContentLength}]"
+                            + $" httpStatus=[{getResp.HttpStatusCode}]");
+
                 using (var rs = getResp.ResponseStream)
                 {
-                    // This will be disposed of by the MVC framework
-                    var ms = new MemoryStream();
-                    await rs.CopyToAsync(ms);
-
-                    // Make sure we're at the start of the stream to compute the checksum
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var checksum = ComputeChecksum(ms);
-                    // Make sure we're at the start of the stream to return the contents
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    return this.Model(new GetModuleResponse
+                    using (var rawMs = new MemoryStream())
                     {
-                        ChecksumAlgorithmHeader = ChecksumAlgorithm,
-                        ChecksumHeader = checksum,
-                        Module = ms,
-                    });
+                        await rs.CopyToAsync(rawMs);
+
+                        // Make sure we're at the start of the stream to compute the checksum
+                        rawMs.Seek(0, SeekOrigin.Begin);
+                        var checksum = ComputeChecksum(rawMs);
+                        // Make sure we're at the start of the stream to return the contents
+                        rawMs.Seek(0, SeekOrigin.Begin);
+                        var rawBytes = rawMs.ToArray();
+
+                        var b64 = Encoding.UTF8.GetBytes(Convert.ToBase64String(rawBytes));
+                        _logger.LogDebug("Raw bytes length [{rawBytesLen}]", rawBytes.Length);
+                        _logger.LogDebug("B64 bytes length [{b64BytesLen}]", b64.Length);
+
+                        // This will be disposed of by the MVC framework
+                        var b64Ms = new MemoryStream(b64);
+                        return this.Model(new GetModuleResponse
+                        {
+                            ChecksumAlgorithmHeader = ChecksumAlgorithm,
+                            ChecksumHeader = checksum,
+                            Module = b64Ms,
+                        });
+                    }
                 }
             }
         }
