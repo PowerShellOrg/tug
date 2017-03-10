@@ -1,39 +1,23 @@
-# Empty AWS Serverless Application Project
+# FaaS Tug - AWS Lambda
 
-This starter project consists of:
-* serverless.template - an AWS CloudFormation Serverless Application Model template file for declaring your Serverless functions and other AWS resources
-* Function.cs - class file containing the C# method mapped to the single function declared in the template file
-* aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
-* project.json - .NET Core project file with build and tool declarations for the Amazon.Lambda.Tools Nuget package
 
-You may also have a test project depending on the options selected.
+## Setting Up Your Local Environment
 
-The generated project contains a Serverless template declaration for a single AWS Lambda function that will be exposed through Amazon API Gateway as a HTTP *Get* operation. Edit the template to customize the function or add more functions and other resources needed by your application, and edit the function code in Function.cs. You can then deploy your Serverless application.
+To build/deploy this package you need to create/update up to three (3) files with your local environment details:
+* `deploy-serverless.cmd`
+  * there is a `sample-deploy-serverless.cmd` that you can use to get you started
+  * edit the parameters in this file to match your specific environment
+* `sample-aws-lambda-tools-defaults.json`
+  * there is a `sample-aws-lambda-tools-defaults.json` that you can use to get you started
+  * review and edit this file to match your specific environment
+* `severless.template`
+  * defines the CloudFormation template used to deploy the Lambda function using a SAM
+    deployment model
+  * normally you *do not* need to modify this file, as all the variable elements are
+    input as parameters in the `deploy-serverless.cmd` file, but you can adjust some
+    of the settings as necessary
 
-## Here are some steps to follow from Visual Studio:
+## Notes
 
-To deploy your Serverless application, right click the project in Solution Explorer and select *Publish to AWS Lambda*.
-
-To view your deployed application open the Stack View window by double-clicking the stack name shown beneath the AWS CloudFormation node in the AWS Explorer tree. The Stack View also displays the root URL to your published application.
-
-## Here are some steps to follow to get started from the command line:
-
-Once you have edited your template and code you can use the following command lines to deploy your application from the command line (these examples assume the project name is *EmptyServerless*):
-
-Restore dependencies
-```
-    cd "EmptyServerless"
-    dotnet restore
-```
-
-Execute unit tests
-```
-    cd "EmptyServerless/test/EmptyServerless.Tests"
-    dotnet test
-```
-
-Deploy application
-```
-    cd "EmptyServerless/src/EmptyServerless"
-    dotnet lambda deploy-serverless
-```
+* If you keep getting "Missing authentication Token" error don't forget to DEPLOY the API:
+  * http://www.awslessons.com/2017/aws-api-gateway-missing-authentication-token/'
