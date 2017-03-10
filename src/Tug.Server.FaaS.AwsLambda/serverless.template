@@ -1,26 +1,127 @@
+
+// If you keep getting "Missing authentication Token" error don't
+// forget to re-DEPLOY the API in the API Gateway console:
+//    http://www.awslessons.com/2017/aws-api-gateway-missing-authentication-token/'
+
+
+// NOTE:  You normally DO NOT have to modify this file as the variable elements
+//        are represented by input Template Parameters that are managed in the
+//        deploy-serverless.cmd batch file -- so make your normal edits there
+
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
   "Transform" : "AWS::Serverless-2016-10-31",
   "Description" : "An AWS Serverless Application.",
 
+  // Parameter templates, someof which are required and must be provided
+  // at the time of deploy; these are handled in deploy-serverless.cmd
+
+  "Parameters": {
+    // REQUIRED:
+    "S3Bucket": {
+      "Type": "String",
+      "Description": "The name of the S3 bucket where the app settings are stored and where DSC assets will be managed."
+    },
+    // OPTIONAL:
+    "S3KeyPrefix": {
+      "Type": "String",
+      "Description": "An optional S3 key path prefix where all DSC-related assets will be stored (typically ends with '/').",
+      "Default": ""
+    },
+    // REQUIRED:
+    "TugAppSettingsS3Key": {
+      "Type": "String",
+      "Description": "S3 object path key to retrieve App Runtime Settings (relative to S3KeyPrefix)."
+    },
+    // OPTIONAL:
+    "LambdaFunctionName": {
+      "Type": "String",
+      "Description": "An optional S3 key path prefix where all DSC-related assets will be stored (typically ends with '/').",
+      "Default": "TugDscLambda"
+    }
+  },
+
   "Resources" : {
 
-    "DscPullLambda" : {
+    // This resource name is stricly local to this template and
+    // the corresponding CloudFormation stack it will create
+    "TugDscLambda" : {
+
+      // This is a special CFN Resource Type created
+      // by AWS to support the SAM deployment model
       "Type" : "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "Tug.Server.FaaS.AwsLambda::Tug.Server.FaaS.AwsLambda.FunctionMain::FunctionHandlerAsync",
         "Runtime": "dotnetcore1.0",
+        "Handler": "Tug.Server.FaaS.AwsLambda::Tug.Server.FaaS.AwsLambda.FunctionMain::FunctionHandlerAsync",
+
+        // If not specified this will be randomly generated
+        "FunctionName": { "Ref": "LambdaFunctionName" },
+
+        // This will be replaced by `lambda deploy-serverless`
         "CodeUri": "",
+
+        // These appear to be more than ample to support the DSC
+        // workload -- we may even tune these down eventually        
         "MemorySize": 256,
         "Timeout": 30,
+        
+        // A default role will be created for the function based on Policies property
         "Role": null,
-        "Policies": [ "AWSLambdaBasicExecutionRole" ],
+
+        "Policies": [
+          // We define the AWS pre-defined policy for basic Lambda execution
+          "AWSLambdaBasicExecutionRole",
+          // We also add an inline poiicy that gives
+          // perms to access backend S3 storage
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "Stmt1488226719000",
+                    "Effect": "Allow",
+                    "Action": [
+                        "s3:List*"
+                    ],
+                    "Resource": [
+                        { "Fn::Sub": "arn:aws:s3:::${S3Bucket}" }
+                    ]
+                },
+                {
+                    "Sid": "Stmt1488226719001",
+                    "Effect": "Allow",
+                    "Action": [
+                        "s3:DeleteObject*",
+                        "s3:GetObject*",
+                        "s3:List*",
+                        "s3:PutObject*"
+                    ],
+                    "Resource": [
+                        { "Fn::Sub": "arn:aws:s3:::${S3Bucket}/${S3KeyPrefix}*" }
+                    ]
+                }
+            ]
+          }
+        ],
+        "Environment": {
+          "Variables": {
+            // Defines Env Vars that will be used to resolve configuration settings
+            "TUG_HOST_AppSettingsS3Bucket": { "Fn::Sub" : "${S3Bucket}" },
+            "TUG_HOST_AppSettingsS3Key":    { "Fn::Sub" : "${S3KeyPrefix}${TugAppSettingsS3Key}" }
+          }
+        },
         "Events": {
-          "PutResource": {
+          "AnyRoot": {
             "Type": "Api",
             "Properties": {
-              "Path": "/",
-              "Method": "GET"
+              "Method": "ANY",
+              "Path": "/"
+            }
+          },
+          "AnyResource": {
+            "Type": "Api",
+            "Properties": {
+              "Method": "ANY",
+              "Path": "/{any+}"
             }
           }
         }
