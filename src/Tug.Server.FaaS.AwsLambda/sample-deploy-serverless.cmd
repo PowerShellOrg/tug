@@ -18,12 +18,18 @@
 @REM ** REPLACE:  the S3 object key prefix prepended to path of DSC assets folders
 @SET TUGDSC_S3PREFIX=S3_key_prefix_for_dsc/
 
+@REM ** REPLACE:  the name of the Lambda function (defaults to TugDscLambda)
+@SET TUGDSC_LAMBDA_NAME=
+
 
 @REM Assemble all the CFN template parameters
 @SET TEMPLATE_PARAMS=
 @SET TEMPLATE_PARAMS=%TEMPLATE_PARAMS%;S3Bucket=%TUGDSC_S3BUCKET%
 @SET TEMPLATE_PARAMS=%TEMPLATE_PARAMS%;S3KeyPrefix=%TUGDSC_S3PREFIX%
 @SET TEMPLATE_PARAMS=%TEMPLATE_PARAMS%;TugAppSettingsS3Key=appsettings.json
+@IF NOT "%TUGDSC_LAMBDA_NAME%"=="" @SET TEMPLATE_PARAMS=%TEMPLATE_PARAMS%;LambdaFunctionName=%TUGDSC_LAMBDA_NAME%
+
+@REM Skip the leading ';'
 @SET TEMPLATE_PARAMS=%TEMPLATE_PARAMS:~1%
 
 
