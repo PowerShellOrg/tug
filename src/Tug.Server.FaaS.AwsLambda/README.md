@@ -3,6 +3,9 @@
 This package defines an implementation of Tug DSC Pull Server using a Function-as-a-Service (FaaS)
 model that runs atop [AWS Lambda](https://aws.amazon.com/lambda/).
 
+**IMPORTANT:** Be sure to read the [section below](#important---manual-step-required-after-initial-deployment)
+regarding the *Manual Step* that must be completed after initial deployment.
+
 ## Why FaaS?
 
 The argument for a *serverless* implementation of Tug DSC is actually quite simple.
@@ -55,6 +58,24 @@ To build/deploy this package you need to create/update up to three (3) files wit
   * normally you *do not* need to modify this file, as all the variable elements are
     input as parameters in the `deploy-serverless.cmd` file, but you can adjust some
     of the settings as necessary
+
+## IMPORTANT - Manual Step Required After Initial Deployment
+
+In order to support the DSC Pull Mode protocol on Lambda, it is necessary to complete one manual
+step after the initial deployment of the FaaS Tug DSC to AWS Lambda.  You need to manually add a
+Binary Media Content Type to the API instance within the API Gateway service that routes to the
+Tug DSC Lambda function.  **You only need to complete this step one time -- after the first time
+that you deploy your FaaS Tug DSC.**  After the first time, the setting will persist across any
+further updates.  This is necessary because currently there is no other way to describe this
+setting using the SAM deployment model template file, or any CloudFormation template definition.
+
+> The MIME media type which you need to add is:  **`application/octet-stream`**
+
+You can perform this step either through the [API Gateway console](http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-configure-with-console.html)
+or through the [API Gateway REST interface](http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-configure-with-control-service-api.html).
+Once you complete this step, you will also need to re-deploy your API -- once for each API Stage
+that you have defined.  If you just use the default API instance configuration, you will have
+two instances, `Prod` and `Stage`, and each needs to be re-deployed individually.
 
 ## Notes
 
