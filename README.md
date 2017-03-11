@@ -55,11 +55,12 @@ Here we present a list of the current set of bundles that are being worked on.
     Server, SQLite or whatever flavor of RDBMS you like (maybe even NoSQL when
     EF Core eventually [implements "non-relational databases"](https://github.com/aspnet/EntityFramework/wiki/Roadmap))
 
-* **PS5**:
+* [**PS5**](https://github.com/PowerShellOrg/tug/tree/master/src/Tug.Server.Providers.Ps5DscHandler):
   * a pull server that is powered by PowerShell v5 -- protocol messagess are
     implemented as callbacks to cmdlets that can be overridden/extended by users
   * current state - **fully working** and early access bundle is availble for
     [installation](https://github.com/PowerShellOrg/tug/wiki/HOWTO%3A--Deploy-Prerelease-Tug-Server-%26-PS5-Bundle)
+    and [configuration](https://github.com/PowerShellOrg/tug/tree/master/src/bundles/Tug.Server-ps5/posh-res/samples)
   * includes a default set of cmdlets that implement the same behaviors as the
     **Basic** implemenation
 
@@ -77,7 +78,7 @@ Here we present a list of the current set of bundles that are being worked on.
   * a pull server that is implemented using the Function-as-a-Service paradigm
     (aka *Serverless*)
 
-  * **FaaS - AwsLambda**:
+  * [**FaaS - AwsLambda**](https://github.com/PowerShellOrg/tug/tree/master/src/Tug.Server.FaaS.AwsLambda):
     * a FaaS pull server for the AWS Lambda platform
     * mimics the **Basic** server with its simple design that uses S3 for back-end
       DSC asset storage with some caching for performance improvements
