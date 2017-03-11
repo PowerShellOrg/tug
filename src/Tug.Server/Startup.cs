@@ -91,6 +91,8 @@ namespace Tug.Server
                     appSettings.GetSection(nameof(AppSettings.Handler)));
 
             // Register a single instance of each filter type we'll use down below
+            services.AddSingleton<DscRegKeyAuthzFilter.IAuthzStorageHandler,
+                    DscRegKeyAuthzFilter.LocalAuthzStorageHandler>();
             services.AddSingleton<DscRegKeyAuthzFilter>();
             services.AddSingleton<StrictInputFilter>();
             services.AddSingleton<VeryStrictInputFilter>();
@@ -150,7 +152,7 @@ namespace Tug.Server
                 routeBuilder.MapGet("version", context =>
                 {
                     var version = GetType().GetTypeInfo().Assembly.GetName().Version;
-                    return context.Response.WriteAsync($"{{{version}}}");
+                    return context.Response.WriteAsync($@"{{""version"":""{version}""}}");
                 });
             });
 

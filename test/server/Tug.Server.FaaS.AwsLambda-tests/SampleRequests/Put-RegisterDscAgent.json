@@ -1,0 +1,40 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/Nodes(AgentId='12345678-0000-0000-0000-000000000001')",
+  "httpMethod": "PUT",
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Shared SH2qDnupYIZXsD4JoLPcAe+zo7amisnPi0yZnp3uzes=",
+    "x-ms-date": "2017-03-01T20:46:41.5047965Z",
+    "ProtocolVersion": "2.0"
+  },
+  "queryStringParameters": null,
+  "pathParameters": {
+    "proxy": "api/values"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "AAAAAAAAAAAA",
+    "resourceId": "5agfss",
+    "stage": "test-invoke-stage",
+    "requestId": "test-invoke-request",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": "AAAAAAAAAAAA",
+      "cognitoIdentityId": null,
+      "caller": "BBBBBBBBBBBB",
+      "apiKey": "test-invoke-api-key",
+      "sourceIp": "test-invoke-source-ip",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": "arn:aws:iam::AAAAAAAAAAAA:root",
+      "userAgent": "Apache-HttpClient/4.5.x (Java/1.8.0_102)",
+      "user": "AAAAAAAAAAAA"
+    },
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "GET",
+    "apiId": "t2yh6sjnmk"
+  },
+  "body": "{\"AgentInformation\":{\"LCMVersion\":\"2.0\",\"NodeName\":\"EZS-001322\",\"IPAddress\":\"169.254.16.9;10.20.1.80;192.168.56.1;10.20.43.44;169.254.3.92;127.0.0.1;fe80::5084:f982:d396:1009%15;fe80::58a6:a6cd:f37d:41fd%12;fe80::580c:7793:fe25:ccc0%9;fe80::e44f:9cd6:ad16:d785%7;fe80::442b:a65d:6300:35c%17;::1;fe80::5efe:192.168.56.1%20;fe80::100:7f:fffe%51;fe80::5efe:10.20.1.80%14\"},\"ConfigurationNames\":[\"TestConfig1\"],\"RegistrationInformation\":{\"CertificateInformation\":{\"FriendlyName\":\"Tug.Client-Test\",\"Issuer\":\"Tug.Client.Test\",\"NotAfter\":\"2018-03-01T15:46:41.0125833-05:00\",\"NotBefore\":\"2017-03-01T15:36:41.0125833-05:00\",\"Subject\":\"Tug.Client-TestNode\",\"PublicKey\":\"U3lzdGVtLlNlY3VyaXR5LkNyeXB0b2dyYXBoeS5YNTA5Q2VydGlmaWNhdGVzLlB1YmxpY0tleQ==\",\"Thumbprint\":\"8351F16C2B06634279F2C0287B5430452DA1CD94\",\"Version\":3},\"RegistrationMessageType\":\"ConfigurationRepository\"}}"
+}

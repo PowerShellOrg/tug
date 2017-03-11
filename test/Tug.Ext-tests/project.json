@@ -24,7 +24,7 @@
     "Microsoft.Extensions.Logging": "1.1.0",
 
     "dotnet-test-mstest": "1.1.2-preview",
-    "MSTest.TestFramework": "1.0.7-preview",
+    "MSTest.TestFramework": "1.1.11",
 
     // Assemblies under test
     "Tug.Base": {

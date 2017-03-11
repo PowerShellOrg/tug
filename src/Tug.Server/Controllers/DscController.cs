@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Tug.Messages;
 using Tug.Model;
+using Tug.Server.Mvc;
 using Tug.Server.Util;
 
 namespace Tug.Server.Controllers

@@ -1,0 +1,27 @@
+{
+    "Information": [
+        "This file provides default values for the deployment wizard inside Visual Studio and the AWS Lambda commands added to the .NET Core CLI.",
+        "To learn more about the Lambda commands with the .NET Core CLI execute the following command at the command line in the project root directory.",
+        "dotnet lambda help",
+        "All the command line options for the Lambda command can be specified in this file."
+    ],
+
+    // Specify the name of an AWS Credentials Profile that
+    // will give you privileges to deploy Lambda function
+    "profile": "tug-deploy@tug-aws",
+
+    // Specify the AWS region where Lambda function will be deployed
+    "region": "us-east-1",
+
+    // Give the CloudFormation (CFN) stack a name
+    "stack-name": "tug-dsc-1",
+
+    // Name of local Lambda CFN template
+    "template": "serverless.template",
+
+    // Template parameters will be provided at the CLI
+    "template-parameters": "",
+
+    "configuration": "Release",
+    "framework": "netcoreapp1.0"
+}

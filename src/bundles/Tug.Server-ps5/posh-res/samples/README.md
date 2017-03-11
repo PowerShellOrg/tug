@@ -1,7 +1,10 @@
 
 # Tug Server with PowerShell v5 Handler
 
+Updated for v0.6.0
+
 *(To view this file as formatted HTML, go [here](https://github.com/PowerShellOrg/tug/blob/master/src/bundles/Tug.Server-ps5/posh-res/samples/README.md))*
+
 
 ## Overview
 
@@ -175,5 +178,14 @@ script implement all the DSC actions to support the pull server
 functionality, which includes node registration, status checking,
 retrieval of node configurations and retrival of DSC Resource modules.
 
-The do not currently implement or support the DSC Reporting actions.  This
-functionality will be provided in a future update.
+~~The do not currently implement or support the DSC Reporting actions.  This
+functionality will be provided in a future update.~~
+
+DSC Reporting actions have been implemented in the most recent release.
+
+While the PS5 bundle has been tested for basic *correctness* against the
+Windows LCM that comes with WMF 5.0 and 5.1, it has not yet been heavily
+tested in multi-node configurations.  There is a known contention point
+in the current design due to its use of PowerShell Runspaces that will
+surely impact performance across multiple nodes, but this will be
+addressed with a re-design of this area of the implemenation.
