@@ -41,6 +41,9 @@ Here we present a list of the current set of bundles that are being worked on.
   * a simple, strictly file-based implementation that stores all DSC assets in a
     configurable folder structure
   * current state - works but **not** yet bundled up into an easily usable form
+  * the relatively simple design and implementation details make this a good
+    example of how to *wire up* a custom DSC server using the components provided
+    by Tug for anyone who would like to build their own
 
 * **EFCore**:
   * builds on the **Basic** implementation but adds an EF Core back-end to store
