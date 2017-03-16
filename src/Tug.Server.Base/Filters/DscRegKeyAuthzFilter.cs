@@ -105,6 +105,8 @@ namespace Tug.Server.Filters
                 var msDateDiff = msDateEpoch.Subtract(msDateValue);
                 var minTimeSpan = TimeSpan.FromSeconds(-30);
                 var maxTimeSpan = TimeSpan.FromSeconds(30);
+                if (_logger.IsEnabled(LogLevel.Debug))
+                    _logger.LogDebug($"min=[{minTimeSpan}]; msDateDiff=[{msDateDiff}]; max=[{maxTimeSpan}]");
                 if (msDateDiff < minTimeSpan || msDateDiff > maxTimeSpan)
                 {
                     _logger.LogError("agent registration request provided an out-of-range MS Date",
