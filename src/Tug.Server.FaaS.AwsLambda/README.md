@@ -71,6 +71,13 @@ setting using the SAM deployment model template file, or any CloudFormation temp
 
 > The MIME media type which you need to add is the following:  **`*/*`**
 
+This specifies a wild-card media type that effectively treats all responses as binary and allows
+them to pass through from Lambda to API Gateway to the requesting client.  This is necessary as
+the Binary Content Type support in API Gateway requires that the client send a matching `Accept`
+header content type to trigger this function, but the default DSC LCM client does not send an
+'Accept' header for the binary content requests (i.e. Configuration and Module), so we need to
+treat *all* requests by default as binary content.
+
 You can perform this step either through the [API Gateway console](http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-configure-with-console.html)
 or through the [API Gateway REST interface](http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-configure-with-control-service-api.html).
 Once you complete this step, you will also need to re-deploy your API -- once for each API Stage
