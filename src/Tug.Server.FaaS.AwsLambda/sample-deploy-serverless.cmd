@@ -35,4 +35,15 @@
 
 dotnet lambda deploy-serverless -sb %UPLOAD_S3BUCKET% -sp %UPLOAD_S3PREFIX% -tp %TEMPLATE_PARAMS%
 
+@REM In case everything is peachy, need to remind about this one manual step
+@IF "%ERRORLEVEL%"=="0" (
+    @ECHO ************************************************************
+    @ECHO **  DO NOT FORGET!!!
+    @ECHO **    You have to manually add the wild-card entry '*/*'
+    @ECHO **    as a Binary Media Content Type to your API Gateway
+    @ECHO **    API instance that routes to your Tug DSC Lambda
+    @ECHO.**    (See the README.md for more details^)
+    @ECHO ************************************************************
+)
+
 @ENDLOCAL
