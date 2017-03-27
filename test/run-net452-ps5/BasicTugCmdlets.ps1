@@ -214,7 +214,7 @@ function Get-TugModule {
     )
     $handlerLogger.LogTrace("GET-MODULE: $($PSBoundParameters | ConvertTo-Json -Depth 3)")
 
-    $modulePath = [System.IO.Path]::Combine($dscModulePath, "$($ModuleName)/$($ModuleVersion).zip")
+    $modulePath = [System.IO.Path]::Combine($dscModulePath, "$($ModuleName)_$($ModuleVersion).zip")
     if (-not (Test-Path -PathType Leaf $modulePath)) {
         $handlerLogger.LogWarning("No module found for name [$ModuleName] version [$ModuleVersion]")
         return $null
