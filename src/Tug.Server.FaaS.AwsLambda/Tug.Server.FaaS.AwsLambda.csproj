@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>github.com/PowerShellOrg/tug/graphs/contributors</Authors>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS0169;CS0649</NoWarn>
+    <AssemblyName>Tug.Server.FaaS.AwsLambda</AssemblyName>
+    <OutputType>Library</OutputType>
+    <PackageId>Tug.Server.FaaS.AwsLambda</PackageId>
+    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;portable-net45+win8</PackageTargetFallback>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\shared\SharedAssemblyInfo.cs;..\shared\SharedAssemblyVersionInfo.cs" />
+    <None Update="wwwroot;**\*.cshtml;appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tug.Base\Tug.Base.csproj" />
+    <ProjectReference Include="..\Tug.Server.Base\Tug.Server.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.1.1" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.8.2" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.0.3" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.2.1" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.5.7" />
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.2.3" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.0.0" />
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="1.0.2" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.0.1" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="0.9.0-preview1" />
+    <PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="Amazon.Lambda.Tools" Version="1.3.0-preview1">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Amazon.Lambda.Tools" Version="1.3.0-preview1" />
+  </ItemGroup>
+
+</Project>

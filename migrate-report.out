@@ -1,0 +1,28 @@
+
+Project Tug.Base migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Base).
+
+Project Tug.Client migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Client).
+
+Project Tug.Ext-WORK migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Ext-WORK).
+
+Project Tug.Server migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Server).
+
+Project Tug.Server.Base migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Server.Base).
+
+Project Tug.Server.FaaS.AwsLambda migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Server.FaaS.AwsLambda).
+
+Project Tug.Server.Providers.Ps5DscHandler migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\src\Tug.Server.Providers.Ps5DscHandler).
+
+Project Tug.Ext-tests migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\test\Tug.Ext-tests).
+
+Project Tug.Ext-tests-aux migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\test\Tug.Ext-tests-aux).
+
+Project Tug.UnitTesting migration succeeded (C:\prj\zyborg\PowerShell-tug\tug\test\Tug.UnitTesting).
+Summary
+Total Projects: 10
+Succeeded Projects: 10
+Failed Projects: 0
+
+##BEK:  Also outputted:
+# The project migration has finished. Please visit https://aka.ms/coremigration to report any issues you've encountered or ask for help.
+# Files backed up to C:\prj\zyborg\PowerShell-tug\tug\backup\
