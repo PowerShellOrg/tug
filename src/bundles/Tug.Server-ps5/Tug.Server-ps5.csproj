@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>github.com/PowerShellOrg/tug/graphs/contributors</Authors>
+    <TargetFramework>net452</TargetFramework>
+    <NoWarn>$(NoWarn);CS0169;CS0649</NoWarn>
+    <DebugType>portable</DebugType>
+    <AssemblyName>Tug.Server-ps5</AssemblyName>
+    <PackageId>Tug.Server-ps5</PackageId>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\shared\SharedAssemblyInfo.cs;..\..\shared\SharedAssemblyVersionInfo.cs" />
+  </ItemGroup>
+
+  <!--
+    From the original project.json:
+
+      "dependencies": {
+        // "Tug.Server": {
+        //   "target": "project"
+        // }
+        // // We don't create a direct dependency and instead pull in the
+        // // extension assemblies during the packaging into the EXT folder
+        // //,
+        // //"Tug.Server.Providers.Ps5DscHandler": {
+        // //  "target": "project"
+        // //}
+      },
+    -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tug.Server\Tug.Server.csproj" />
+    <!--
+      We don't create a direct dependency and instead pull in the
+      extension assemblies during the packaging into the EXT folder
+      -->
+    <!--
+    <ProjectReference Include="..\..\Tug.Server.Providers.Ps5DscHandler\Tug.Server.Providers.Ps5DscHandler.csproj" />
+    -->
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <DefineConstants>$(DefineConstants);DOTNET_FRAMEWORK</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>
