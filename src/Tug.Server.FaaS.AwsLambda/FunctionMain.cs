@@ -83,6 +83,13 @@ namespace Tug.Server.FaaS.AwsLambda
             }
         }
 
+        // We no longer need to do this kludge since this PR was accepted:
+        //    https://github.com/aws/aws-lambda-dotnet/pull/75
+        //
+        // We will delete this bit of old reference code in a forthcoming
+        // commit after testing and some usage confirms expected behavior
+
+        /*
         #region -- Temporary Binary Response Content Kludge --
 
         // We've temporarily re-implemented some of the functionality in the base class so that
@@ -195,5 +202,6 @@ namespace Tug.Server.FaaS.AwsLambda
         // }
 
         #endregion -- Temporary Binary Response Content Kludge --
+        */
     }
 }

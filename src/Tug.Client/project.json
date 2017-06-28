@@ -26,16 +26,16 @@
   },
 
   "dependencies": {
-    "Microsoft.Extensions.Logging.Console": "1.1.0",
-    "NLog.Extensions.Logging": "1.0.0-rtm-alpha5",
-    "Microsoft.Extensions.CommandLineUtils": "1.1.0",
-    "Microsoft.Extensions.Configuration.Json": "1.1.0",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
-    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0",
-    "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
-    "Microsoft.Extensions.Configuration.Binder": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.2",
+    "NLog.Extensions.Logging": "1.0.0-rtm-beta5",
+    "Microsoft.Extensions.CommandLineUtils": "1.1.1",
+    "Microsoft.Extensions.Configuration.Json": "1.1.2",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.2",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.1.2",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.1.2",
+    "Microsoft.Extensions.Configuration.Binder": "1.1.2",
     
-    "Newtonsoft.Json": "9.0.1",
+    "Newtonsoft.Json": "10.0.3",
 
     "Tug.Base": {
       "target": "project"
@@ -55,7 +55,7 @@
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.1"
+          "version": "1.1.2"
         },
 
         // For System.Net.WebProxy and others
