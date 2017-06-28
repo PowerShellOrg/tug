@@ -32,7 +32,7 @@
     "MSTest.TestFramework": "1.1.11",
 
     // ASP.NET Core Test Host
-    "Microsoft.AspNetCore.TestHost": "1.1.0",
+    "Microsoft.AspNetCore.TestHost": "1.1.2",
 
     // Assemblies with additional test support
     "Tug.UnitTesting": {
@@ -67,7 +67,7 @@
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.1"
+          "version": "1.1.2"
         },
         "System.Security.Cryptography.Algorithms": "4.3.0"
       }

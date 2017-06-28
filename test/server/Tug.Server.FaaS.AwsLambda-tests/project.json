@@ -6,16 +6,16 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.1"
+      "version": "1.1.2"
     },
 
     "Microsoft.DotNet.InternalAbstractions": "1.0.0",
 
     "Amazon.Lambda.Core": "1.0.0*",
-    "Amazon.Lambda.APIGatewayEvents": "1.0.2",
+    "Amazon.Lambda.APIGatewayEvents": "1.1.0",
     "Amazon.Lambda.TestUtilities": "1.0.0",
 
-    "xunit": "2.1.0-*",
+    "xunit": "2.2.0-*",
     "dotnet-test-xunit": "2.2.0-*",
 
     "Tug.Server.FaaS.AwsLambda": {
