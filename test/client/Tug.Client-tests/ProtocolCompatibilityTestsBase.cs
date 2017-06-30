@@ -10,6 +10,8 @@ namespace Tug.Client
 {
     public class ProtocolCompatibilityTestsBase
     {
+        public const string TestConfigEnvPrefix = "TSTCFG_";
+
         // This defines configuration settings for running the
         // the tests that can be overridden on the command line
         // by using the format:   /cfg_prop=value
@@ -50,12 +52,20 @@ namespace Tug.Client
             // which may be useful in debugging and diagnostics
             Tug.Client.AppLog.Factory.AddConsole(LogLevel.Information);
 
-            // Bind optional configuration overrides to our test config
-            new ConfigurationBuilder()
-                .AddCommandLine(Environment.GetCommandLineArgs()
-                        .Where(x => x.StartsWith("/")).ToArray())
-                .Build()
-                .Bind(_testConfig);
+            // // Bind optional configuration overrides to our test config
+            // new ConfigurationBuilder()
+            //     .AddCommandLine(Environment.GetCommandLineArgs()
+            //             .Where(x => x.StartsWith("/")).ToArray())
+            //     .Build()
+            //     .Bind(_testConfig);
+
+            // Bind optional configuration overrides from env vars to our test config
+            var cfg = new ConfigurationBuilder()
+                .AddEnvironmentVariables(TestConfigEnvPrefix)
+                .Build();
+            foreach (var kv in cfg.AsEnumerable())
+                Console.WriteLine($"TestConfig Override[{kv.Key}]=[{kv.Value}]");
+            cfg.Bind(_testConfig);
         }
 
         protected static DscPullConfig BuildConfig(bool newAgentId = false)
