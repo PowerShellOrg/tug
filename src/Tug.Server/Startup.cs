@@ -16,7 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
-using NLog.Web;
 using Tug.Server.Configuration;
 using Tug.Server.Filters;
 using Tug.Server.Util;

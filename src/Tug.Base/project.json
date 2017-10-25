@@ -1,0 +1,70 @@
+{
+  // Assembly Manifest Details are defined in
+  // AssemblyInfo.cs and SharedAssemblyInfo.cs
+
+  "authors": [
+    "github.com/PowerShellOrg/tug/graphs/contributors"
+  ],
+  "language": "en-US",
+
+  "buildOptions": {
+    "debugType": "portable",
+    "nowarn": [
+      "CS0169", // The field 'X' is never used
+      "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
+    ],
+
+    "compile": {
+      "includeFiles": [
+        // Include in the shared assembly manifest details
+        "../shared/SharedAssemblyInfo.cs",
+        "../shared/SharedAssemblyVersionInfo.cs"
+      ]
+    }
+  },
+
+  "dependencies": {
+    "Microsoft.Composition": "1.0.30",
+    "Microsoft.Extensions.PlatformAbstractions": "1.1.0",
+    "Microsoft.Extensions.DependencyModel": "1.1.0",
+
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Configuration": "1.1.0",
+
+    "Microsoft.AspNetCore.Mvc": "1.1.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_CORE"
+        ]
+      },
+      "imports": [
+        "portable-net45+win8" // Needed to include MEF2
+      ],
+      "dependencies": {
+        "NETStandard.Library": "1.6.1",
+        "System.Runtime.Loader": "4.3.0",
+        "System.ComponentModel.Annotations": "4.3.0"
+      }
+    }
+    ,
+    "net452": {
+      "buildOptions": {
+        "define": [
+          "DOTNET_FRAMEWORK"
+        ]
+      },
+      "frameworkAssemblies": {
+        // These are needed here as per:
+        //    https://github.com/dotnet/cli/issues/3817
+        "System.Numerics": "4.0.0.0",
+        "System.ComponentModel.DataAnnotations": "4.0.0.0"
+      },
+      "dependencies": {
+      }
+    }
+  }
+}
