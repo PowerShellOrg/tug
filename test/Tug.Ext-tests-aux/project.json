@@ -1,0 +1,37 @@
+{
+  "name": "Tug.Ext-tests-aux",
+  "version": "0.5.0-*",
+
+  "buildOptions": {
+    "debugType": "portable",
+    "nowarn": [
+      "CS0169", // The field 'X' is never used
+      "CS0649"  // Field 'X' is never assigned to, and will always have its default value null
+    ]
+  },
+
+  "dependencies": {
+    "Tug.Ext-tests": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.4",
+        "portable-net451+win8"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      }
+    },
+    "net452": {
+      "buildOptions": {},
+      "dependencies": {}
+    }
+  }
+}
