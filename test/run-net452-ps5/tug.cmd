@@ -6,8 +6,9 @@
 @ECHO THIS_DIR=%THIS_DIR%
 
 @SET PROJ_ROOT=%THIS_DIR%..\..\src\Tug.Server
+@SET PROJ_FILE=%PROJ_ROOT%\Tug.Server.csproj
 @SET DOTNET_MONIK=-f net452
 
-dotnet run -p %PROJ_ROOT% %DOTNET_MONIK% -- %* 
+dotnet run -p %PROJ_FILE% %DOTNET_MONIK% -- %* 
 
 @ENDLOCAL
