@@ -207,7 +207,7 @@ namespace Tug.Server
                 var configPath = Path.Combine(Directory.GetCurrentDirectory(), "nlog.config");
                 _logger.LogInformation($"  * enabling NLog with config=[{configPath}]");
                 loggerFactory.AddNLog();
-                env.ConfigureNLog(configPath);
+                loggerFactory.ConfigureNLog(configPath);
             }
 
             // Initiate and switch to runtime logging

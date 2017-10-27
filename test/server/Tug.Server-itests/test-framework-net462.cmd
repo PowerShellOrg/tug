@@ -2,9 +2,14 @@
 @SET THIS=%0
 @SET THIS_DIR=%~dp0
 
+@FOR %%* IN (.) DO @SET THIS_PROJ=%%~nx*
+
 @ECHO THIS=%THIS%
 @ECHO THIS_DIR=%THIS_DIR%
+@ECHO THIS_PROJ=%THIS_PROJ%
+@ECHO.
 
-dotnet test %THIS_DIR% %* -f net462 %*
+@ECHO *** REMEMBER - WE'RE SKIPPING THE BUILD ***
+dotnet test %THIS_DIR%%THIS_PROJ%.csproj --no-build -f net452 %*
 
 @ENDLOCAL

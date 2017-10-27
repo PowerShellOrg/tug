@@ -1,0 +1,53 @@
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.682, 1638142418273, vstest.console.dll, TestPluginCache: Discovering the extensions using extension path.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.698, 1638142451846, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.Extensions.TrxLogger: Resolving assembly.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.699, 1638142454481, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.Extensions.TrxLogger: Resolved assembly. 
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.701, 1638142459303, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter: Resolving assembly.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.702, 1638142461017, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter: Resolved assembly. 
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.703, 1638142464268, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface: Resolving assembly.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.704, 1638142466292, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface: Resolved assembly. 
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.704, 1638142467424, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices: Resolving assembly.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.705, 1638142469628, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices: Resolved assembly. 
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.706, 1638142471474, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.TestFramework: Resolving assembly.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.707, 1638142473658, vstest.console.dll, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.TestFramework: Resolved assembly. 
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.708, 1638142477201, vstest.console.dll, TestPluginCache: Discovered the extensions using extension path 'C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll'.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.708, 1638142477755, vstest.console.dll, TestPluginCache: Discoverers are 'Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.MSTestDiscoverer, Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.709, 1638142478125, vstest.console.dll, TestPluginCache: Executors are 'executor://MSTestAdapter/v2'.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.709, 1638142478425, vstest.console.dll, TestPluginCache: Setting providers are ''.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.709, 1638142478709, vstest.console.dll, TestPluginCache: Loggers are 'logger://Microsoft/TestPlatform/TrxLogger/v2'.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.718, 1638142500305, vstest.console.dll, RunTestsArgumentProcessor:Execute: Test run is starting.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.728, 1638142526345, vstest.console.dll, Using effective platform:X86 effective framework:.NETFramework,Version=v4.5.2
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.734, 1638142539107, vstest.console.dll, RunTestsArgumentProcessor:Execute: Queuing Test run.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.734, 1638142539650, vstest.console.dll, TestRequestManager.RunTests: run tests started.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.738, 1638142550289, vstest.console.dll, TestEngine: Initializing Parallel Execution as MaxCpuCount is set to: 1
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.745, 1638142566513, vstest.console.dll, ProxyExecutionManager: Test host is shared. SetupChannel it early.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:11.762, 1638142607561, vstest.console.dll, Listening on port : 57938
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.802, 1638142706350, vstest.console.dll, DefaultTestHostmanager: Full path of TestHost\testhost.x86.exe is C:\Program Files\dotnet\sdk\1.0.4\TestHost\testhost.x86.exe
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.803, 1638142707413, vstest.console.dll, Launching default test Host Process C:\Program Files\dotnet\sdk\1.0.4\TestHost\testhost.x86.exe with arguments  --port 57938 --parentprocessid 10648 --diag foo.host.17-06-23_15-35-11_78325_1.out
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:11.803, 1638142708102, vstest.console.dll, ProcessHelper: Starting process 'C:\Program Files\dotnet\sdk\1.0.4\TestHost\testhost.x86.exe' with command line ' --port 57938 --parentprocessid 10648 --diag foo.host.17-06-23_15-35-11_78325_1.out'
+TpTrace Information: 0 : 10648, 5, 2017/06/23, 15:35:11.963, 1638143097304, vstest.console.dll, Accepted Client request and set the flag
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:12.088, 1638143402259, vstest.console.dll, TestRunRequest.ExecuteAsync: Creating test run request.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:12.089, 1638143403239, vstest.console.dll, TestRunRequest.ExecuteAsync: Starting.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:12.089, 1638143403657, vstest.console.dll, TestRunRequest.ExecuteAsync: Starting run with settings:TestRunCriteria:
+   KeepAlive=False,FrequencyOfRunStatsChangeEvent=10,RunStatsChangeEventTimeout=00:00:01.5000000,TestCaseFilter=,TestExecutorLauncher=
+   Settingsxml=<RunSettings>
+  <RunConfiguration>
+    <ResultsDirectory>C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\TestResults</ResultsDirectory>
+    <TargetPlatform>X86</TargetPlatform>
+    <TargetFrameworkVersion>.NETFramework,Version=v4.5.2</TargetFrameworkVersion>
+    <DesignMode>False</DesignMode>
+  </RunConfiguration>
+</RunSettings>
+
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:12.089, 1638143403784, vstest.console.dll, TestRunRequest.ExecuteAsync: Wait for the first run request is over.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:12.105, 1638143443580, vstest.console.dll, TestRunRequest.ExecuteAsync: Started.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:12.105, 1638143444134, vstest.console.dll, TestRunRequest.WaitForCompletion: Waiting with timeout -1.
+TpTrace Verbose: 0 : 10648, 4, 2017/06/23, 15:35:12.176, 1638143616933, vstest.console.dll, TestRunRequest:SendTestRunMessage: Starting.
+TpTrace Information: 0 : 10648, 4, 2017/06/23, 15:35:12.177, 1638143618172, vstest.console.dll, TestRunRequest:SendTestRunMessage: Completed.
+TpTrace Information: 0 : 10648, 4, 2017/06/23, 15:35:13.892, 1638147795810, vstest.console.dll, AssemblyResolver: System.Data.Common: Resolving assembly.
+TpTrace Verbose: 0 : 10648, 4, 2017/06/23, 15:35:13.914, 1638147851218, vstest.console.dll, TestRunRequest:TestRunComplete: Starting. IsAborted:False IsCanceled:False.
+TpTrace Information: 0 : 10648, 4, 2017/06/23, 15:35:14.033, 1638148140902, vstest.console.dll, TestRunRequest:TestRunComplete: Completed.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:14.033, 1638148141351, vstest.console.dll, TestRunRequest.Dispose: Starting.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:14.033, 1638148141584, vstest.console.dll, TestRunRequest.Dispose: Completed.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:14.034, 1638148141833, vstest.console.dll, TestRequestManager.RunTests: run tests completed, sucessful: True.
+TpTrace Information: 0 : 10648, 1, 2017/06/23, 15:35:14.034, 1638148142118, vstest.console.dll, RunTestsArgumentProcessor:Execute: Test run is completed.
+TpTrace Verbose: 0 : 10648, 1, 2017/06/23, 15:35:14.034, 1638148142360, vstest.console.dll, Executor.Execute: Exiting with exit code of 1

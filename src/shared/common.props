@@ -1,0 +1,15 @@
+<Project>
+
+  <PropertyGroup>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>github.com/PowerShellOrg/tug/graphs/contributors</Authors>
+
+    <!--
+      CS0169 - The field 'X' is never used
+      CS0649 - Field 'X' is never assigned to, and will always have its default value null
+      -->
+    <NoWarn>$(NoWarn);CS0169;CS0649</NoWarn>
+    <UserSecretsId>Tug</UserSecretsId>
+  </PropertyGroup>
+
+</Project>

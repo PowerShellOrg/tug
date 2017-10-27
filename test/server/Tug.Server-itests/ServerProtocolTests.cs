@@ -47,7 +47,7 @@ namespace Tug.Server
             Directory.SetCurrentDirectory(myDir);
 
             var hostBuilder = new WebHostBuilder()
-                    .UseLoggerFactory(AppLog.Factory)
+                    // .UseLoggerFactory(AppLog.Factory)
                     .UseStartup<Startup>();
             
             _tugServer = new TestServer(hostBuilder);
@@ -56,7 +56,12 @@ namespace Tug.Server
             _defaultClient = BuildClient();
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void TestDoNothing()
+		{
+		}
+
+		[TestMethod]
         public void TestRegisterDscAgent()
         {
             _defaultClient.RegisterDscAgent().Wait();

@@ -1,0 +1,460 @@
+TpTrace Information: 0 : 10372, 1, 2017/06/23, 15:35:11.904, 1638142964536, testhost.x86.exe, DefaultEngineInvoker: Using Application Configuration: '<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <startup useLegacyV2RuntimeActivationPolicy="true">
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0" />
+  </startup>
+  <runtime>
+    <legacyUnhandledExceptionPolicy enabled="1" />
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <probing privatePath="Extensions" />
+      <!-- Test adapters compiled against version 11-14, need to be redirected to version 15. -->
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.TestPlatform.ObjectModel" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="11.0.0.0-14.0.0.0" newVersion="15.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.TestWindow.Interfaces" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="11.0.0.0-14.0.0.0" newVersion="15.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.QualityTools.UnitTestFramework" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="10.1.0.0" newVersion="10.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.QualityTools.Resource" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="10.0.0.0-14.0.0.0" newVersion="15.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.QualityTools.ControllerObject" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="10.0.0.0-14.0.0.0" newVersion="15.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.QualityTools.ExecutionCommon" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="10.0.0.0-14.0.0.0" newVersion="15.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.VisualStudio.QualityTools.Common" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="10.0.0.0-14.0.0.0" newVersion="15.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-9.0.0.0" newVersion="9.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.diagnostics>
+    <switches>
+      <add name="TpTraceLevel" value="0" />
+    </switches>
+  </system.diagnostics>
+  <appSettings>
+    <!--<add key="ExecutionThreadApartmentState" value ="MTA"/>-->
+    <!--<add key="TraceLogMaxFileSizeInKb" value ="10240"/>-->
+    <!-- MsTest Adapter Specific AppSettings -->
+    <add key="TestProjectRetargetTo35Allowed" value="true" />
+  </appSettings>
+</configuration>'
+TpTrace Information: 0 : 10372, 1, 2017/06/23, 15:35:11.931, 1638143019931, testhost.x86.exe, DefaultEngineInvoker: Monitoring parent process with id: '10648'
+TpTrace Information: 0 : 10372, 1, 2017/06/23, 15:35:11.948, 1638143062819, testhost.x86.exe, DefaultEngineInvoker: Initialize communication on port number: '57938'
+TpTrace Information: 0 : 10372, 1, 2017/06/23, 15:35:11.950, 1638143067292, testhost.x86.exe, Trying to connect to server on port : 57938
+TpTrace Information: 0 : 10372, 6, 2017/06/23, 15:35:11.956, 1638143081014, testhost.x86.exe, Connected to the server successfully 
+TpTrace Information: 0 : 10372, 1, 2017/06/23, 15:35:12.169, 1638143600084, testhost.x86.exe, DefaultEngineInvoker: Start Request Processing.
+TpTrace Information: 0 : 10372, 5, 2017/06/23, 15:35:12.223, 1638143729978, testhost.x86.exe, Discovery Session Initialize.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.243, 1638143780315, testhost.x86.exe, TestPluginCache: Updating loadOnlyWellKnownExtensions from False to False.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.244, 1638143781807, testhost.x86.exe, TestPluginCache: Using directories for assembly resolution 'C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452'.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.244, 1638143782184, testhost.x86.exe, TestPluginCache: Updated the available extensions to 'C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll'.
+TpTrace Information: 0 : 10372, 5, 2017/06/23, 15:35:12.248, 1638143790917, testhost.x86.exe, Execution started.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.249, 1638143794263, testhost.x86.exe, TestExecutorService: Loading the extensions
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.254, 1638143806979, testhost.x86.exe, TestPluginCache: Discovering the extensions using extension path.
+TpTrace Error: 0 : 10372, 8, 2017/06/23, 15:35:12.255, 1638143808635, testhost.x86.exe, Default extensions folder does not exist
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.260, 1638143821213, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.269, 1638143841976, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter: Resolved assembly. 
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.286, 1638143883708, testhost.x86.exe, TestPluginCache: Discovered the extensions using extension path 'C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll'.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.287, 1638143886504, testhost.x86.exe, TestPluginCache: Discoverers are 'Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.MSTestDiscoverer, Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.287, 1638143886746, testhost.x86.exe, TestPluginCache: Executors are 'executor://MSTestAdapter/v2'.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.287, 1638143886913, testhost.x86.exe, TestPluginCache: Setting providers are ''.
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.287, 1638143887069, testhost.x86.exe, TestPluginCache: Loggers are ''.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.360, 1638144064115, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.360, 1638144065785, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: Resolved assembly. 
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.361, 1638144067545, testhost.x86.exe, TestPluginManager.CreateTestExtension: Attempting to load test extension: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.MSTestDiscoverer
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.361, 1638144067925, testhost.x86.exe, TestDiscoveryManager: LoadExtensions: Created discoverer Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.MSTestDiscoverer
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.361, 1638144068110, testhost.x86.exe, TestExecutorService: Loaded the discoverers
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.365, 1638144077325, testhost.x86.exe, TestPluginManager.CreateTestExtension: Attempting to load test extension: Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.MSTestExecutor
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.371, 1638144092667, testhost.x86.exe, TestExecutorExtensionManager: Loading executor Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.MSTestExecutor
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.372, 1638144093050, testhost.x86.exe, TestExecutorService: Loaded the executors
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.374, 1638144098214, testhost.x86.exe, TestExecutorService: Loaded the settings providers
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.374, 1638144098444, testhost.x86.exe, TestExecutorService: Loaded the extensions
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.391, 1638144139991, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.Common.resources, Version=15.0.0.0, Culture=en-US, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.391, 1638144141277, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.Common.resources, Version=15.0.0.0, Culture=en-US, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.393, 1638144145072, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.Common.resources, Version=15.0.0.0, Culture=en, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.393, 1638144146054, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.Common.resources, Version=15.0.0.0, Culture=en, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.403, 1638144170323, testhost.x86.exe, TestDiscoveryManager: Discovering tests from sources C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dll
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:12.408, 1638144182218, testhost.x86.exe, BaseRunTests.RunTestInternalWithExecutors: Running tests for executor://MSTestAdapter/v2
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.437, 1638144251792, testhost.x86.exe, MSTestExecutor: Changed the working directory to C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.440, 1638144260600, testhost.x86.exe, TestSourceHost: Not running in portable mode
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.448, 1638144278738, testhost.x86.exe, TestSourceHost: Creating assembly resolver with resolution paths C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.720, 1638144941261, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.721, 1638144944114, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: Resolved assembly. 
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.721, 1638144944599, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.721, 1638144944827, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: Resolved from cache.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.727, 1638144960350, testhost.x86.exe, TestSourceHost: Creating app-domain for source C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dll with application base path C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.921, 1638145432293, testhost.x86.exe, TestSourceHost: assemblyenumerator location: C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll , fullname: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.AssemblyResolver 
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.924, 1638145439095, testhost.x86.exe, TestSourceHost: resolver type: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.AssemblyResolver , resolve type assembly: C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll 
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:12.990, 1638145598576, testhost.x86.exe, MSTestDiscoverer: Found 6 tests from source C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dll
+TpTrace Error: 0 : 10372, 8, 2017/06/23, 15:35:12.998, 1638145618944, testhost.x86.exe, C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dllMSTestDiscoverer:DiaSession: Could not create diaSession for source:. Reason:Could not find the manifest file C:\Program Files\dotnet\sdk\1.0.4\TestHost\TestPlatform.ObjectModel.x86.manifest for Registry free Com registration.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.004, 1638145632807, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.ObjectModel.resources, Version=15.0.0.0, Culture=en-US, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.004, 1638145634190, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.ObjectModel.resources, Version=15.0.0.0, Culture=en-US, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.006, 1638145637594, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.ObjectModel.resources, Version=15.0.0.0, Culture=en, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.006, 1638145638999, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.ObjectModel.resources, Version=15.0.0.0, Culture=en, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.022, 1638145677865, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources, Version=14.0.0.0, Culture=en-US, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.023, 1638145679900, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources, Version=14.0.0.0, Culture=en-US, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.026, 1638145686184, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources, Version=14.0.0.0, Culture=en, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.027, 1638145689466, testhost.x86.exe, AssemblyResolver: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources, Version=14.0.0.0, Culture=en, PublicKeyToken=b03f5f7f11d50a3a: Resolving assembly.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.046, 1638145735817, testhost.x86.exe, MSTestExecutor: Changed the working directory to C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.047, 1638145737956, testhost.x86.exe, TestSourceHost: Not running in portable mode
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.047, 1638145738605, testhost.x86.exe, TestSourceHost: Creating assembly resolver with resolution paths C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.069, 1638145791531, testhost.x86.exe, TestSourceHost: Creating app-domain for source C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dll with application base path C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.298, 1638146349150, testhost.x86.exe, TestSourceHost: assemblyenumerator location: C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll , fullname: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.AssemblyResolver 
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.301, 1638146356320, testhost.x86.exe, TestSourceHost: resolver type: Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.AssemblyResolver , resolve type assembly: C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll 
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.307, 1638146371445, testhost.x86.exe, Created unit-test runner C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dll
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.315, 1638146391776, testhost.x86.exe, Executing test TestRegisterDscAgent
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.759, 1638147472874, testhost.x86.exe, Executed test TestRegisterDscAgent
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.768, 1638147493933, testhost.x86.exe, MSTestExecutor:Test Tug.Server.ServerProtocolTests.TestRegisterDscAgent failed. ErrorMessage:Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)., ErrorStackTrace:   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+.
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.770, 1638147499953, testhost.x86.exe, InProgressTests is null
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.773, 1638147505724, testhost.x86.exe, TestRunCache: No test found corresponding to testResult 'TestRegisterDscAgent  Failed
+  Message: Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).
+  StackTrace:
+   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+
+  Test Messages:
+  StdOutMsgs:
+info: Tug.Server.Program[0]
+      Commencing PRE-logging on startup
+info: Tug.Server.Startup[0]
+      Resolving final runtime configuration
+' in inProgress list.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.773, 1638147506109, testhost.x86.exe, Executing test TestRegisterDscAgent_BadContent_AgentInfo
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.773, 1638147507131, testhost.x86.exe, Executed test TestRegisterDscAgent_BadContent_AgentInfo
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.773, 1638147507396, testhost.x86.exe, MSTestExecutor:Test Tug.Server.ServerProtocolTests.TestRegisterDscAgent_BadContent_AgentInfo failed. ErrorMessage:Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)., ErrorStackTrace:   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+.
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147507887, testhost.x86.exe, InProgressTests is null
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147508110, testhost.x86.exe, TestRunCache: No test found corresponding to testResult 'TestRegisterDscAgent_BadContent_AgentInfo  Failed
+  Message: Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).
+  StackTrace:
+   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+' in inProgress list.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147508350, testhost.x86.exe, Executing test TestRegisterDscAgent_BadContent_CertInfo
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147509089, testhost.x86.exe, Executed test TestRegisterDscAgent_BadContent_CertInfo
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147509302, testhost.x86.exe, MSTestExecutor:Test Tug.Server.ServerProtocolTests.TestRegisterDscAgent_BadContent_CertInfo failed. ErrorMessage:Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)., ErrorStackTrace:   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+.
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147509642, testhost.x86.exe, InProgressTests is null
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.774, 1638147509845, testhost.x86.exe, TestRunCache: No test found corresponding to testResult 'TestRegisterDscAgent_BadContent_CertInfo  Failed
+  Message: Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).
+  StackTrace:
+   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+' in inProgress list.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147510202, testhost.x86.exe, Executing test TestGetDscAction
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147510896, testhost.x86.exe, Executed test TestGetDscAction
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147511105, testhost.x86.exe, MSTestExecutor:Test Tug.Server.ServerProtocolTests.TestGetDscAction failed. ErrorMessage:Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)., ErrorStackTrace:   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+.
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147511323, testhost.x86.exe, InProgressTests is null
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147511579, testhost.x86.exe, TestRunCache: No test found corresponding to testResult 'TestGetDscAction  Failed
+  Message: Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).
+  StackTrace:
+   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+' in inProgress list.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147511801, testhost.x86.exe, Executing test TestGetConfiguration
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.775, 1638147512423, testhost.x86.exe, Executed test TestGetConfiguration
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.776, 1638147512700, testhost.x86.exe, MSTestExecutor:Test Tug.Server.ServerProtocolTests.TestGetConfiguration failed. ErrorMessage:Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)., ErrorStackTrace:   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+.
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.776, 1638147512912, testhost.x86.exe, InProgressTests is null
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.776, 1638147513100, testhost.x86.exe, TestRunCache: No test found corresponding to testResult 'TestGetConfiguration  Failed
+  Message: Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).
+  StackTrace:
+   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+' in inProgress list.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.776, 1638147513320, testhost.x86.exe, Executing test TestGetModule
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.776, 1638147514002, testhost.x86.exe, Executed test TestGetModule
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.776, 1638147514184, testhost.x86.exe, Executing cleanup methods.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.779, 1638147521469, testhost.x86.exe, Executed cleanup methods.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.779, 1638147522031, testhost.x86.exe, MSTestExecutor:Test Tug.Server.ServerProtocolTests.TestGetModule failed. ErrorMessage:Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)., ErrorStackTrace:   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+.
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.780, 1638147522413, testhost.x86.exe, InProgressTests is null
+TpTrace Warning: 0 : 10372, 8, 2017/06/23, 15:35:13.780, 1638147522705, testhost.x86.exe, TestRunCache: No test found corresponding to testResult 'TestGetModule  Failed
+  Message: Class Initialization method Tug.Server.ServerProtocolTests.Init threw exception. System.IO.FileLoadException: System.IO.FileLoadException: Could not load file or assembly 'Microsoft.Extensions.Logging.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).
+  StackTrace:
+   at Tug.Server.Startup.ConfigureLogging(IHostingEnvironment env, ILoggerFactory loggerFactory)
+   at Tug.Server.Startup..ctor(IHostingEnvironment env, ILoggerFactory loggerFactory)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Extensions.Internal.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.Internal.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.AspNetCore.Hosting.Internal.StartupLoader.LoadMethods(IServiceProvider hostingServiceProvider, Type startupType, String environmentName)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilderExtensions.<>c__DisplayClass1_0.<UseStartup>b__1(IServiceProvider sp)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactoryService(FactoryService factoryService, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScoped(ScopedCallSite scopedCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitSingleton(SingletonCallSite singletonCallSite, ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(IServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.<>c__DisplayClass16_0.<RealizeService>b__0(ServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureStartup()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.EnsureApplicationServices()
+   at Microsoft.AspNetCore.Hosting.Internal.WebHost.BuildApplication()
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Microsoft.AspNetCore.TestHost.TestServer..ctor(IWebHostBuilder builder)
+   at Tug.Server.ServerProtocolTests.Init(TestContext ctx) in C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\ServerProtocolTests.cs:line 53
+' in inProgress list.
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.780, 1638147523485, testhost.x86.exe, Executed tests belonging to source C:\prj\zyborg\PowerShell-tug\tug\test\server\Tug.Server-itests\bin\Debug\net452\Tug.Server-itests.dll
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:13.784, 1638147532200, testhost.x86.exe, TestExecutionManager.RunTestInternalWithExecutors: Completed running tests for executor://MSTestAdapter/v2
+TpTrace Information: 0 : 10372, 8, 2017/06/23, 15:35:13.788, 1638147542646, testhost.x86.exe, Sending test run complete
+TpTrace Verbose: 0 : 10372, 8, 2017/06/23, 15:35:13.848, 1638147690115, testhost.x86.exe, BaseRunTests.RunTests: Run is complete.
+TpTrace Information: 0 : 10372, 5, 2017/06/23, 15:35:14.033, 1638148141028, testhost.x86.exe, Session End message received from server. Closing the connection.
+TpTrace Information: 0 : 10372, 5, 2017/06/23, 15:35:14.034, 1638148143057, testhost.x86.exe, Closing the connection !

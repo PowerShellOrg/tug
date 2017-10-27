@@ -19,5 +19,6 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 // SharedAssemblyInfo.cs and SharedAssemblyVersionInfo.cs files
 /////////////////////////////////////////////////////////////////
 
+// THIS WAS MOVED TO MSBUILD FILE
 // Defines the ID for User Secrets
-[assembly: UserSecretsId("Tug.Server")]
+//[assembly: UserSecretsId("Tug.Server")]

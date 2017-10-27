@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+#if DOTNET_FRAMEWORK
+using  Microsoft.AspNetCore.Hosting.WindowsServices;
+#endif
+
 namespace Tug.Server
 {
     public class Program
@@ -58,6 +62,9 @@ namespace Tug.Server
                 ["detailedErrors"] = false.ToString(),
                 ["urls"] = "http://*:5000", // "http://localhost:5080;https://localhost:5443"
 
+#if DOTNET_FRAMEWORK
+                ["service"] = false.ToString(),
+#endif
             };
 
         #endregion -- Fields --
@@ -124,6 +131,17 @@ namespace Tug.Server
                 .UseStartup<Startup>();
             
             var host = hostBuilder.Build();
+
+            
+#if DOTNET_FRAMEWORK
+            if (_hostingConfig.GetValue<bool>("service"))
+            {
+                _logger.LogInformation("Running as Windows Service");
+                host.RunAsService();
+                return;
+            }
+#endif
+
             host.Run();
         }
 
@@ -197,4 +215,26 @@ namespace Tug.Server
 
         #endregion -- Methods --
     }
+
+    // public class TugWebHostService : WebHostService
+    // {
+    //     public TugWebHostService(IWebHost host) : base(host)
+    //     {
+    //     }
+
+    //     protected override void OnStarting(string[] args)
+    //     {
+    //         base.OnStarting(args);
+    //     }
+
+    //     protected override void OnStarted()
+    //     {
+    //         base.OnStarted();
+    //     }
+
+    //     protected override void OnStopping()
+    //     {
+    //         base.OnStopping();
+    //     }
+    // }
 }

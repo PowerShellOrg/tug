@@ -27,3 +27,18 @@
 @SET THIS_DIR=%~dp0
 
 dotnet migrate "%THIS_DIR%global.json" --report-file "%THIS_DIR%migrate-report.out"
+
+dotnet new sln
+
+dotnet sln add src\Tug.Base\Tug.Base.csproj src\Tug.Server.Base\Tug.Server.Base.csproj
+dotnet sln add src\Tug.Client\Tug.Client.csproj
+dotnet sln add src\Tug.Server\Tug.Server.csproj
+dotnet sln add src\Tug.Server.Providers.Ps5DscHandler\Tug.Server.Providers.Ps5DscHandler.csproj
+dotnet sln add src\Tug.Server.FaaS.AwsLambda\Tug.Server.FaaS.AwsLambda.csproj
+
+dotnet sln add test\Tug.UnitTesting\Tug.UnitTesting.csproj
+dotnet sln add test\Tug.Ext-tests\Tug.Ext-tests.csproj
+dotnet sln add test\Tug.Ext-tests-aux\Tug.Ext-tests-aux.csproj
+dotnet sln add test\client\Tug.Client-tests\Tug.Client-tests.csproj
+dotnet sln add test\server\Tug.Server-itests\Tug.Server-itests.csproj
+dotnet sln add test\server\Tug.Server.FaaS.AwsLambda-tests\Tug.Server.FaaS.AwsLambda-tests.csproj
