@@ -106,6 +106,7 @@ PS> ipmo Tug.Server-ps5
 PS> Install-TugServer -Verbose
 ```
 
+
 Original SLN file:
 ```
 C:\prj\zyborg\PowerShell-tug\tug>dotnet sln TugDSC.sln list
@@ -131,3 +132,8 @@ test\Tug.Ext-tests-aux\Tug.Ext-tests-aux.csproj
 bundles
 src\bundles\Tug.Server-ps5\Tug.Server-ps5.csproj
 ```
+
+## Related Links:
+* https://github.com/PowerShellOrg/dsc-traek - Node.js impl of DSC pull server (from MSFT)
+* https://github.com/grayzu/DSCPullServerUI - Sample Pull Server WebApp (UI) (from MSFT PS team member)
+* https://www.youtube.com/watch?v=y3-_XBQTpS8 - "What's up with DSC PS?" from 2015-Sep
