@@ -105,3 +105,29 @@ PS> Install-Module -Repository tug-pre Tug.Server-ps5
 PS> ipmo Tug.Server-ps5
 PS> Install-TugServer -Verbose
 ```
+
+Original SLN file:
+```
+C:\prj\zyborg\PowerShell-tug\tug>dotnet sln TugDSC.sln list
+Project reference(s)
+--------------------
+src
+src\Tug.Base\Tug.Base.csproj
+src\Tug.Client\Tug.Client.csproj
+src\Tug.Server.Base\Tug.Server.Base.csproj
+src\Tug.Server\Tug.Server.csproj
+src\Tug.Server.Providers.Ps5DscHandler\Tug.Server.Providers.Ps5DscHandler.csproj
+src\Tug.Server.FaaS.AwsLambda\Tug.Server.FaaS.AwsLambda.csproj
+src\Tug.Ext-WORK\Tug.Ext-WORK.csproj
+test
+test\Tug.UnitTesting\Tug.UnitTesting.csproj
+client
+test\client\Tug.Client-tests\Tug.Client-tests.csproj
+server
+test\server\Tug.Server-itests\Tug.Server-itests.csproj
+test\server\Tug.Server.FaaS.AwsLambda-tests\Tug.Server.FaaS.AwsLambda-tests.csproj
+test\Tug.Ext-tests\Tug.Ext-tests.csproj
+test\Tug.Ext-tests-aux\Tug.Ext-tests-aux.csproj
+bundles
+src\bundles\Tug.Server-ps5\Tug.Server-ps5.csproj
+```
