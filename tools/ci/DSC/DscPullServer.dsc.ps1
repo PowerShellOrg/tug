@@ -37,8 +37,8 @@ Configuration DscPullServer {
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -ModuleVersion 7.0.0.0
-    Import-DscResource -ModuleName xWebAdministration -ModuleVersion 1.17.0.0
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration -ModuleVersion 8.0.0.0
+    Import-DscResource -ModuleName xWebAdministration -ModuleVersion 1.19.0.0
 
     . "$PSScriptRoot\DscCommon.ps1"
 
