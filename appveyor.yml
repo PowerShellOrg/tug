@@ -17,6 +17,7 @@ init:
         ## As per:  https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
         iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     }
+    
 environment:
   NUGET_TUGPRE_URL:
     secure: lPKGVCppnueaexpFZEAw6bNX0wMmjTM1woyhGuOlSpWv2+W/jyeVrWi6WUWa8DZI
@@ -106,3 +107,4 @@ on_finish:
         $blockRdp = $true
         iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     }
+    
