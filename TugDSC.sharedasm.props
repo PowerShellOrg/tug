@@ -1,0 +1,54 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    - References:
+    -  * https://github.com/dotnet/sdk/issues/2#issuecomment-238368991
+    -->
+
+  <Import Project="$(MSBuildThisFileDirectory)/TugDSC.common.props" />
+
+  
+  <PropertyGroup>
+    <!-- Versioning - base is static, build is computed by CI -->
+    <BuildNum Condition="$(BuildNum)==''">0</BuildNum>
+    <CommonVersion>0.7.0.$(BuildNum)</CommonVersion>
+    <AssemblyVersion>$(CommonVersion)</AssemblyVersion>
+    <FileVersion>$(CommonVersion)</FileVersion>
+    <Version>$(CommonVersion)-ea</Version>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Compile Include="$(SharedSourceDir)/SharedAssemblyInfo.cs" />
+    <!--
+    <Compile Include="$(SharedSourceDir)/SharedAssemblyVersionInfo.cs" />
+    -->
+    <Compile Include="$(SharedSourceDir)/SharedGlobalSuppressions.cs" />
+  </ItemGroup>
+
+  <!--
+    - We disable the generation of these by MSBuild because we pull in common
+    - manifest properties from shared source files which are pulled in above
+    -->
+  <PropertyGroup>
+    <!-- These need to be defined in the project-specific build file -->
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- These are defined globally in a shared source file - we don't define these
+         in build configuration properties because not all of them support that. -->
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- These are computed dynamically -->
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>true</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyConfigurationAttribute>true</GenerateAssemblyConfigurationAttribute>
+  </PropertyGroup>
+
+</Project>

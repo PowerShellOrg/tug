@@ -2,17 +2,24 @@ version: 0.6.0.{build}
 branches:
   only:
   - ci
+  - ci2
   - migrate-sdk104
 skip_tags: true
 init:
 - ps: >-
     ## Need to delete .NET Core 1.1 SDK components to roll back to 1.0
+
     ## because of some incompatible behavior (such as during dotnet test)
+
     del -Recurse -Force "C:\Program Files\dotnet\sdk\1.0.0-preview2-1-003177"
+
     del -Recurse -Force "C:\Program Files\dotnet\shared\Microsoft.NETCore.App\1.1.0"
+
     del -Recurse -Force 'C:\Program Files\dotnet\swidtag\Microsoft .NET Core 1.1.0 - SDK 1.0.0 Preview 2.1-003177 (x64).swidtag'
 
+
     ## Check if we should Enable RDP access
+
     if ([int]$((Resolve-DnsName blockrdp.tug-ci.tug.bkkr.us -Type TXT).Text)) {
         ## As per:  https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
         iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -28,79 +35,124 @@ hosts:
 install:
 - ps: >-
     ## We want to setup a local PowerShell DSC Pull Server to support
+
     ## some of the unit tests that validate protocol compatibility
+
     Install-WindowsFeature PowerShell,PowerShell-ISE,DSC-Service
+
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+
     Install-Module xWebAdministration -Force
+
     Install-Module xPSDesiredStateConfiguration -Force
+
 
     Start-Service W3SVC ## This is normally not running on AV
 
+
     ## Run it once to create new cert
+
     .\tools\ci\DSC\DscPullServer.dsc.ps1 -RegistrationKey c3ea5066-ce5a-4d12-a42a-850be287b2d8
+
     ## Run it a second time to install cert
+
     .\tools\ci\DSC\DscPullServer.dsc.ps1 -RegistrationKey c3ea5066-ce5a-4d12-a42a-850be287b2d8
+
 
     ## Publish a Test MOF used by unit tests
+
     .\tools\ci\DSC\TestConfig1.dsc.ps1
 
+
     ## Copy over exactly as found
+
     .\tools\ci\DSC\StaticTestConfig-copy.ps1
+
     .\tools\ci\DSC\xPSDesiredStateConfiguration-copy.ps1
 build_script:
 - ps: >-
     ## With a little help from:
+
     ##    https://github.com/StevenLiekens/dotnet-core-appveyor/blob/master/appveyor.yml
+
 
 
     #$Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 
+
     appveyor-retry dotnet restore -v Minimal
 
+
     dotnet build "src\Tug.Base"           #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+
     dotnet build "src\Tug.Client"         #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 
+
     dotnet build "src\Tug.Server.Base"    #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+
     dotnet build "src\Tug.Server"         #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+
     dotnet build "src\Tug.Server.Providers.Ps5DscHandler" #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 
+
     dotnet build "test\Tug.Ext-tests"     #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+
     dotnet build "test\Tug.Ext-tests-aux" #-c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
 
+
     dotnet build "test\client\Tug.Client-tests"
+
     dotnet build "test\server\Tug.Server-itests"
 test_script:
 - ps: >-
     ## We're only testing .NET Framework for now because there are some
+
     ## inconsistencies on AV for .NET Core that are failing dynamic loading
+
     dotnet test "test\Tug.Ext-tests\Tug.Ext-tests.csproj" -f net452
+
 
     dotnet test "test\client\Tug.Client-tests\Tug.Client-tests.csproj"
 
+
     ## Only testing .NET Framework for now -- this test assembly is based on
+
     ## 4.6.2 because it's the minimum needed to support ASP.NET Core TestHost
+
     dotnet test "test\server\Tug.Server-itests\Tug.Server-itests.csproj" -f net462
 deploy: off
 on_success:
 - ps: >-
     ## If builds and tests are successful, package up
+
     ## some pre-configured bundles and publish them
+
     $bundlePath = '.\src\bundles\Tug.Server-ps5'
+
     $modulePath = $bundlePath + '\bin\posh-modules\Tug.Server-ps5'
 
+
     dotnet build $bundlePath
+
     & "$bundlePath\build-posh-module.cmd"
 
+
     ## Push bundle to a pre-release Nuget Repo
+
     $nugetUrl = $env:NUGET_TUGPRE_URL
+
     $nugetKey = $env:NUGET_TUGPRE_API_KEY
 
+
     Update-ModuleManifest -Path $modulePath\Tug.Server-ps5.psd1 -ModuleVersion $env:APPVEYOR_BUILD_VERSION
+
     Register-PSRepository -Name tug-pre -PackageManagementProvider nuget -SourceLocation $nugetUrl -PublishLocation $nugetUrl
+
     Publish-Module -Path $modulePath -Repository tug-pre -NuGetApiKey $nugetKey
 on_finish:
 - ps: >-
     ## Check if we should Enable RDP access
+
     if ([int]$((Resolve-DnsName blockrdp.tug-ci.tug.bkkr.us -Type TXT).Text)) {
         ## As per:  https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
         $blockRdp = $true

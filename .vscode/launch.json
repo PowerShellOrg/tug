@@ -2,6 +2,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "TugDSC.Server.WebAppHost - .NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            //"preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/TugDSC.Server.WebAppHost/bin/Debug/netcoreapp2.0/TugDSC.Server.WebAppHost.dll",
+            "args": ["/h:host_foo:some:nested:value=host_bar", "/c:app_foo=app_bar"],
+            "cwd": "${workspaceRoot}/src/TugDSC.Server.WebAppHost",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
             "name": "Tug.Client - .NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
@@ -54,7 +65,7 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
-            "processId": "${command.pickProcess}"
+            "processId": "${command:pickProcess}"
         }
     ]
 }

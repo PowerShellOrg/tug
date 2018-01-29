@@ -1,3 +1,12 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+    "cSpell.words": [
+        "asms",
+        "assms",
+        "authz",
+        "csum",
+        "dotnetfw",
+        "ext",
+        "rtasm"
+    ]
 }

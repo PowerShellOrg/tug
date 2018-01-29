@@ -25,5 +25,5 @@ internal static class ASMINFO
 
     // DON'T FORGET TO UPDATE APPVEYOR.YML
     // ReSharper disable once InconsistentNaming
-    public const string VERSION = "0.6.0";
+    public const string VERSION = "0.7.0";
 }

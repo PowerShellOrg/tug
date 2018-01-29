@@ -1,11 +1,21 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-    <PropertyGroup>
-        <SharedSourceDir>$(MSBuildThisFileDirectory)/src/shared</SharedSourceDir>
-        <NETStandardMoniker>netstandard2.0</NETStandardMoniker>
-        <NETCoreAppMoniker>netcoreapp2.0</NETCoreAppMoniker>
-        <NETFrameworkMoniker>net461</NETFrameworkMoniker>
-    </PropertyGroup>
+  <!--
+    - References:
+    -   * https://docs.microsoft.com/en-us/dotnet/core/tools/csproj
+    -   * https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties
+    -   * https://github.com/dotnet/sdk/issues/2#issuecomment-238368991
+    -->
+
+  <PropertyGroup>
+    <SharedSourceDir>$(MSBuildThisFileDirectory)/src/shared</SharedSourceDir>
+    <NETStandardMoniker>netstandard2.0</NETStandardMoniker>
+    <NETCoreAppMoniker>netcoreapp2.0</NETCoreAppMoniker>
+    
+    <!-- Disabling .NET Framework for now -->
+    <!-- <NETFrameworkMoniker>net461</NETFrameworkMoniker> -->
+    <NETFrameworkMoniker></NETFrameworkMoniker>
+  </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == '$(NETStandardMoniker)' ">
     <DefineConstants>$(DefineConstants);DOTNET_CORE</DefineConstants>
@@ -20,28 +30,16 @@
   </PropertyGroup>
 
 
-    <PropertyGroup>
-        <NeutralLanguage>en-US</NeutralLanguage>
-        <Authors>github.com/PowerShellOrg/tug/graphs/contributors</Authors>
-        <!--
-          * https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0169
-            The private field 'class member' is never used
-          * https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0649
-            Field 'field' is never assigned to, and will always have its default value 'value'
-          -->
-        <CommonNoWarn>CS0169;CS0649</CommonNoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-        <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-        <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-    </PropertyGroup>
+  <PropertyGroup>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>github.com/PowerShellOrg/tug/graphs/contributors</Authors>
+    <!--
+      * https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0169
+        The private field 'class member' is never used
+      * https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0649
+        Field 'field' is never assigned to, and will always have its default value 'value'
+      -->
+    <CommonNoWarn>CS0169;CS0649</CommonNoWarn>
+  </PropertyGroup>
 
 </Project>

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(MSBuildThisFileDirectory)/../../TugDSC.common.props" />
+  <Import Project="$(MSBuildThisFileDirectory)/../../TugDSC.sharedasm.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TugDSC.Server</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>TugDSC Server Abstractions</AssemblyTitle>
+    <AssemblyDescription>Server-specific Abstractions &amp; Components</AssemblyDescription>
+  </PropertyGroup>
+
+  <!--
+    - NOTE: we can't use the MS.AspNetCore.All meta-package here because this is a netstandard
+    -       classlib and the meta-package requires targeting netcoreapp.  A really good write up
+    -       with all the details is here:
+    -       https://weblog.west-wind.com/posts/2017/Sep/26/A-few-notes-on-creating-Class-Libraries-for-ASPNET-Core
+    -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TugDSC.Abstractions\TugDSC.Abstractions.csproj" />
+  </ItemGroup>
+
+
+</Project>
