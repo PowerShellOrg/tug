@@ -10,16 +10,50 @@ namespace TugDSC.Testing.MSTest
 {
     public static class TugAssert
     {
-        public static void ThrowsExceptionWhen<T>(Func<T, bool> condition,
-                Action action, string message = null)
-            where T : Exception
+        public static void ThrowsAny(this Assert assert, Action action, string message = null,
+                params object[] parameters)
         {
-            ThrowsExceptionWhen<T>(condition, action, message, null);
+            if (message == null)
+                message = string.Empty;
+            message = string.Format(message, parameters);
+
+            try
+            {
+                action();
+                message = string.Format("Any exception was expected but not thrown. {0}", message);
+                throw new AssertFailedException(message);
+            }
+            catch (Exception)
+            { }
         }
 
-        public static void ThrowsExceptionWhen<T>(Func<T, bool> condition,
-                Action action, string message, params object[] parameters)
-            where T : Exception
+        public static void ThrowsAny<T>(this Assert assert, Action action, string message = null,
+                params object[] parameters) where T : Exception
+        {
+            if (message == null)
+                message = string.Empty;
+            message = string.Format(message, parameters);
+
+            try
+            {
+                action();
+                message = string.Format("Any exception was expected but not thrown. {0}", message);
+                throw new AssertFailedException(message);
+            }
+            catch (Exception ex)
+            {
+                if (ex as T == null)
+                {
+                    message = string.Format(
+                            "An exception assignable to {0} was expected, but caught {1}. {2}",
+                            typeof(T).Name, ex.GetType().Name, message);
+                    throw new AssertFailedException(message);
+                }
+            }
+        }
+
+        public static void ThrowsWhen<T>(this Assert assert, Func<T, bool> condition, Action action,
+                string message = null, params object[] parameters) where T : Exception
         {
             Exception expected = null;
             try
@@ -31,11 +65,37 @@ namespace TugDSC.Testing.MSTest
                 expected = ex;
             }
 
-            Assert.ThrowsException<T>(() =>
+            Assert.ThrowsException<T>(() => expected != null
+                    ? throw expected : 0, message, parameters);
+            Assert.IsTrue(condition((T)expected), message, parameters);
+        }
+
+        public static void ThrowsAnyWhen<T>(this Assert assert, Func<T, bool> condition,
+                Action action, string message = null, params object[] parameters) where T : Exception
+        {
+            if (message == null)
+                message = string.Empty;
+            message = string.Format(message, parameters);
+
+            Exception expected = null;
+            try
             {
-                if (expected != null) throw expected;
-            }, message, parameters);
-            
+                action();
+                message = string.Format("Any exception was expected but not thrown. {0}", message);
+                throw new AssertFailedException(message);
+            }
+            catch (Exception ex)
+            {
+                if (ex as T == null)
+                {
+                    message = string.Format(
+                            "An exception assignable to {0} was expected, but caught {1}. {2}",
+                            typeof(T).Name, ex.GetType().Name, message);
+                    throw new AssertFailedException(message);
+                }
+                expected = ex;
+            }
+
             Assert.IsTrue(condition((T)expected), message, parameters);
         }
     }
