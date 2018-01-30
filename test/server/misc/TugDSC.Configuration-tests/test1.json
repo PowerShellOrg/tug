@@ -1,0 +1,45 @@
+{
+    "StrKey": "StrVal",
+
+    "IntKey1": 199,
+    "IntKey2": "299",
+    
+    "BoolKey1": true,
+    "BoolKey2": "true",
+    
+    "StrListKey": [
+        "One",
+        "Two",
+        "Three"
+    ],
+
+    "Type1Key0": {
+        "S1": "s1Value",
+        "I1": "499",
+        "B1": "true"
+    },
+
+    "Type1Key1": {
+        "$type": "TugDSC.Configuration.Tests.OfTypeTests+Type2, TugDSC.Configuration-tests",
+        "S1": "s1Value",
+        "I1": "499",
+        "B1": "true",
+
+        "ValueGetter": {
+            "$type": "TugDSC.Configuration.Tests.OfTypeTests+BasicValueGetter, TugDSC.Configuration-tests",
+            "Value": "FooBar"
+        }
+    },
+
+    "Type1Key2": {
+        "$type": "TugDSC.Configuration.Tests.OfTypeTests+Type2, TugDSC.Configuration-tests",
+        "S1": "s1Value",
+        "I1": "499",
+        "B1": "true",
+
+        "ValueGetter": {
+            "$type": "TugDSC.Configuration.Tests.OfTypeTests+ToUpperValueGetter, TugDSC.Configuration-tests",
+            "Value": "FooBar"
+        }
+    }
+}
