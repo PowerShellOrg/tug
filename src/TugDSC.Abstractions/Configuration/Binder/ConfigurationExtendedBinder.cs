@@ -277,14 +277,14 @@ namespace TugDSC.Configuration.Binder
                 // If we don't have an instance, try to create one
                 if (instance == null)
                 {
-                    // We are alrady done if binding to a new collection instance worked
+                    // We are already done if binding to a new collection instance worked
                     instance = AttemptBindToCollectionInterfaces(type, config);
                     if (instance != null)
                     {
                         return instance;
                     }
 
-                    // This is one of our enhancements
+                    // TugDSC:  This is one of our enhancements
                     var typeName = config["$type"];
                     if (!string.IsNullOrEmpty(typeName))
                     {
