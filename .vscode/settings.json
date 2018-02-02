@@ -2,6 +2,9 @@
 {
     "cSpell.words": [
         "ASMNAME",
+        "HMACSHA",
+        "Requ",
+        "Shhh",
         "asms",
         "assms",
         "authz",
@@ -10,6 +13,7 @@
         "dyna",
         "ext",
         "finalizer",
+        "jsons",
         "nlog",
         "rtasm",
         "uncomment"
