@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 [CmdletBinding(DefaultParameterSetName="Default")]
 param(
     [Parameter(ParameterSetName="Predefined")]
