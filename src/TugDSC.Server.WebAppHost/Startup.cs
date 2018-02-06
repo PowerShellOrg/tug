@@ -33,10 +33,23 @@ namespace TugDSC.Server.WebAppHost
         /// </summary>
         public const string APP_CONFIG_FILENAME = "appsettings.json";
 
+        /// Defines an optional CLI parameter that can be used to override the
+        /// default configuration file.  If specified, the path to the config
+        /// file should be specified immediately after (i.e. no space) and
+        /// although not strictly enforced, should be fully qualified with
+        /// complete path.
+        public const string APP_CONFIG_CLI_OVERRIDE = "--config=";
+
         /// <summary>
         /// File name of an optional JSON file used to override server app configuration.
         /// </summary>
         public const string APP_USER_CONFIG_FILENAME = "appsettings.user.json";
+        /// Defines an optional CLI parameter that can be used to override the
+        /// default user configuration file.  If specified, the path to the config
+        /// file should be specified immediately after (i.e. no space) and
+        /// although not strictly enforced, should be fully qualified with
+        /// complete path.
+        public const string APP_USER_CONFIG_CLI_OVERRIDE = "--userconfig=";
 
         /// <summary>
         /// Prefix used to identify environment variables that can override server app
@@ -177,14 +190,30 @@ namespace TugDSC.Server.WebAppHost
             if (Program.RunAsService)
                 basePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
+            // Resolve the app config filenames
+            var jsonFile = args?.FirstOrDefault(x => x.StartsWith(APP_CONFIG_CLI_OVERRIDE))
+                    ?.Substring(APP_CONFIG_CLI_OVERRIDE.Length) ?? APP_CONFIG_FILENAME;
+             _logger.LogInformation("Resolved app config file as [{0}]", jsonFile);
+            var userFile = args?.FirstOrDefault(x => x.StartsWith(APP_USER_CONFIG_CLI_OVERRIDE))
+                    ?.Substring(APP_USER_CONFIG_CLI_OVERRIDE.Length) ?? APP_USER_CONFIG_FILENAME;
+             _logger.LogInformation("Resolved user-local app config file as [{0}]", userFile);
+
+            if (args?.Length > 0)
+            {
+                var jsonFileOverride = args.FirstOrDefault(x => x.StartsWith(APP_CONFIG_CLI_OVERRIDE));
+                var userFileOverride = args.FirstOrDefault(x => x.StartsWith("--userconfig="));
+
+                jsonFile = args.FirstOrDefault(x => x.StartsWith(APP_CONFIG_CLI_OVERRIDE))?.Substring(APP_CONFIG_CLI_OVERRIDE.Length) ?? jsonFile;
+            }
+
             // Resolve the runtime configuration settings
             var appConfigBuilder = new ConfigurationBuilder();
             // Base path for any file-based config sources
             appConfigBuilder.SetBasePath(basePath);
             // Default location for all configuration settings
-            appConfigBuilder.AddJsonFile(APP_CONFIG_FILENAME, optional: false);
+            appConfigBuilder.AddJsonFile(jsonFile, optional: false);
             // Optional location for user-specific local overrides
-            appConfigBuilder.AddJsonFile(APP_USER_CONFIG_FILENAME, optional: true);
+            appConfigBuilder.AddJsonFile(userFile, optional: true);
             // Allows overriding any setting using envVars that being with TUG_CFG_
             appConfigBuilder.AddEnvironmentVariables(prefix: APP_CONFIG_ENV_PREFIX);
             // A good place to store secrets for dev/test
