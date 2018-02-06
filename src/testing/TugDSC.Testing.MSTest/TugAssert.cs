@@ -56,17 +56,18 @@ namespace TugDSC.Testing.MSTest
                 string message = null, params object[] parameters) where T : Exception
         {
             Exception expected = null;
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                expected = ex;
-            }
+            Assert.ThrowsException<T>(() => {
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    expected = ex;
+                    throw;
+                }
+            }, message, parameters);
 
-            Assert.ThrowsException<T>(() => expected != null
-                    ? throw expected : 0, message, parameters);
             Assert.IsTrue(condition((T)expected), message, parameters);
         }
 
