@@ -27,7 +27,7 @@ namespace TugDSC.Client.CLIApp
             { get; set; } = "12345678-0000-0000-0000-000000000001";
 
             public string server_url
-            { get; set; } = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/"; // "http://localhost:5000/"; // "http://DSC-LOCALHOST:5000/"; // 
+            { get; set; } = "http://DSC-SERVER1.tugnet:8080/PSDSCPullServer.svc/";
 
             public string reg_key
             { get; set; } = "c3ea5066-ce5a-4d12-a42a-850be287b2d8";
