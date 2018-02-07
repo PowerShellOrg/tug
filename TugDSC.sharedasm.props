@@ -1,11 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <!-- We define this flag to allow us to guard against multiple imports -->
+    <TugDSC_sharedasm_props>true</TugDSC_sharedasm_props>
+  </PropertyGroup>
+
   <!--
     - References:
     -  * https://github.com/dotnet/sdk/issues/2#issuecomment-238368991
     -->
 
-  <Import Project="$(MSBuildThisFileDirectory)/TugDSC.common.props" />
+  <Import Project="$(MSBuildThisFileDirectory)/TugDSC.common.props"
+      Condition="'$(TugDSC_common_props)' == ''" />
 
   
   <PropertyGroup>

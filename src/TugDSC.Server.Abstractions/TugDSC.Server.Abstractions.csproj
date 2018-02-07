@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(MSBuildThisFileDirectory)/../../TugDSC.common.props" />
-  <Import Project="$(MSBuildThisFileDirectory)/../../TugDSC.sharedasm.props" />
+  <Import Project="$(MSBuildThisFileDirectory)/../../TugDSC.common.props"
+      Condition="'$(TugDSC_common_props)' == ''" />
+  <Import Project="$(MSBuildThisFileDirectory)/../../TugDSC.sharedasm.props"
+      Condition="'$(TugDSC_sharedasm_props)' == ''" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
