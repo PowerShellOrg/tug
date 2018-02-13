@@ -261,7 +261,7 @@ namespace TugDSC.Server.Providers
 
         public virtual FileContent GetConfiguration(Guid agentId, string configName)
         {
-            var configPath = Path.Combine(ConfigurationPath, $"SHARED/{configName}.mof");
+            var configPath = Path.Combine(ConfigurationPath, $"{configName}.mof");
             if (!File.Exists(configPath))
             {
                 Logger.LogWarning($"unable to find ConfigurationName=[{configName}] for AgentId=[{agentId}]");
@@ -283,7 +283,7 @@ namespace TugDSC.Server.Providers
 
         public virtual FileContent GetModule(Guid? agentId, string moduleName, string moduleVersion)
         {
-            var modulePath = Path.Combine(ModulePath, $"{moduleName}/{moduleVersion}.zip");
+            var modulePath = Path.Combine(ModulePath, $"{moduleName}_{moduleVersion}.zip");
             if (!File.Exists(modulePath))
                 return null;
 
