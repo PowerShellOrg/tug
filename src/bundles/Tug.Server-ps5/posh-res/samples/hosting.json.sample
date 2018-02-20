@@ -8,6 +8,6 @@
 	// "captureStartupErrors": "false",
 	// "contentRoot": ".",
 	// "detailedErrors": "false",
-	// "urls" = "http://*:5000"
+	// "urls" : "http://*:5000"
 
 }
