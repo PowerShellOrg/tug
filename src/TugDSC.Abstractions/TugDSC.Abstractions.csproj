@@ -6,7 +6,7 @@
       Condition="'$(TugDSC_sharedasm_props)' == ''" />
 
   <PropertyGroup>
-    <TargetFrameworks>$(NETStandardMoniker);$(NETFrameworkMoniker)</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <NoWarn>$(NoWarn);$(CommonNoWarn)</NoWarn>
     <RootNamespace>TugDSC</RootNamespace>
   </PropertyGroup>
@@ -30,6 +30,12 @@
     <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.0.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.0.*" />
+
+    <!-- These have to be explicitly referenced so we don't get a version
+         downgrade error during publish to a specific target RID -->
+    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
   </ItemGroup>
 
 
