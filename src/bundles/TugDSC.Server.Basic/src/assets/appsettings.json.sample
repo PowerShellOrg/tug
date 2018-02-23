@@ -1,0 +1,60 @@
+{
+    "Logging": {
+        "IncludeScopes": false,
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        },
+        "Console": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        }
+    },
+
+    "appSettings": {
+        "checksum": {
+            // The SHA-256 checksum calculator is the only one supported by the default LCM
+            // that's built-in to PS up to version 5.1 -- this preserves backward compatibility
+            "default": "SHA-256"
+        },
+
+        "authz": {
+            "params": {
+                // This is where we look for the file containing reg keys,
+                // which is named "RegistrationKeys.txt" by default.  In this
+                // file we look for non-blank lines after removing any comments
+                // starting with the '#' character and trimming from both ends
+                "RegistrationKeyPath": "var/DscService/Authz",
+                // We keep our own copy of registrations that is separate from
+                // those saved by the Pull Handler down below which is strictly
+                // for authz purposes -- these may overlap but could cause conflicts
+                "RegistrationSavePath": "var/DscService/Authz/Registrations"
+            }
+        },
+
+
+        // The default handler is the "Basic" handler which uses
+        // file-based paths to store DSC Modules and Configurations
+        "handler": {
+            //"provider": "basic",
+            "params": {
+                "RegistrationSavePath": "var/DscService/Registrations",
+                "ConfigurationPath": "var/DscService/Configuration",
+                "ModulePath": "var/DscService/Modules",
+                "ReportsPath": "var/DscService/Reports"
+            }
+        }
+    },
+
+    "__installMeta": {
+        // These values are automatically populated
+        // during installation and help support safe
+        // upgrades without overwriting manual changes
+        "installVersion": "@@INSTALL_VERSION@@",
+        "installDateUTC": "@@INSTALL_DATEUTC@@",
+        "installDirPath": "@@INSTALL_DIRPATH@@",
+        "installHashMap": "@@INSTALL_HASHMAP@@"
+    }
+}

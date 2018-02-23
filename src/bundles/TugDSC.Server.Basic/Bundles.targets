@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(MSBuildThisFileDirectory)/../../../TugDSC.common.props"
+      Condition="'$(TugDSC_common_props)' == ''" />
+  <Import Project="$(MSBuildThisFileDirectory)/../../../TugDSC.sharedasm.props"
+      Condition="'$(TugDSC_sharedasm_props)' == ''" />
+
+  <Target Name="SaveVersion">
+    <WriteLinesToFile File="$(VersOut)" Lines="$(CommonVersion)" Overwrite="true" />
+  </Target>
+</Project>

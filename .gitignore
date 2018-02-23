@@ -234,5 +234,6 @@ _Pvt_Extensions
 .fake/
 .DS_Store
 **/_IGNORE
+**/_TMP
 src/Tug.Server.FaaS.AwsLambda/deploy-serverless.cmd
 src/Tug.Server.FaaS.AwsLambda/aws-lambda-tools-defaults.json
