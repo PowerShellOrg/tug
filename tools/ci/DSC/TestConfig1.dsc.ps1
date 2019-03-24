@@ -1,6 +1,7 @@
 <#
- # Copyright © The DevOps Collective, Inc. All rights reserved.
- # Licnesed under GNU GPL v3. See top-level LICENSE.txt for more details.
+ # PowerShell.org Tug DSC Pull Server
+ # Copyright (c) The DevOps Collective, Inc.  All rights reserved.
+ # Licensed under the MIT license.  See the LICENSE file in the project root for more information.
  #>
 
 ## This DSC configuration is used by the unit tests to verify

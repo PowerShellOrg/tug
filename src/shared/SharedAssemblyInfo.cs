@@ -7,5 +7,5 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyCompany("github.com/PowerShellOrg")]
 [assembly: AssemblyProduct("TugDSC")]
-[assembly: AssemblyCopyright("Copyright © The DevOps Collective, Inc. All rights reserved. Licensed under GNU GPL v3.")]
+[assembly: AssemblyCopyright("Copyright (c) The DevOps Collective, Inc. All rights reserved. Licensed under the MIT license.")]
 [assembly: AssemblyTrademark("TugDSC™")]
