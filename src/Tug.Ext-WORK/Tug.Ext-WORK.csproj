@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Copyright>Copyright © 2016 The DevOps Collective, Inc. All rights reserved. Licnesed under GNU GPL v3.</Copyright>
+    <Copyright>Copyright (c) The DevOps Collective, Inc. All rights reserved. Licensed under the MIT license.</Copyright>
     <AssemblyTitle>Tug Client</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
     <VersionPrefix>0.5.1</VersionPrefix>
